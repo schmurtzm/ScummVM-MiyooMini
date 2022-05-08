@@ -2,3 +2,6 @@
 	path = devtools/create_prince
 	url = https://github.com/scummvm/game-translations
 	branch = prince-and-the-coward
+[submodule "backends/platform/libretro"]
+	path = backends/platform/libretro
+	url = https://github.com/StupidHoroscope/libretro-scummvm-miyoo-backend.git
