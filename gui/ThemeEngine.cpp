@@ -654,6 +654,7 @@ bool ThemeEngine::addBitmap(const Common::String &filename, const Common::String
 		_bitmaps.erase(filename);
 	}
 
+/*
 	if (!scalablefile.empty()) {
 		Graphics::SVGBitmap *image = nullptr;
 		Common::ArchiveMemberList members;
@@ -678,6 +679,7 @@ bool ThemeEngine::addBitmap(const Common::String &filename, const Common::String
 
 		return true;
 	}
+*/
 
 	const Graphics::Surface *srcSurface = nullptr;
 
