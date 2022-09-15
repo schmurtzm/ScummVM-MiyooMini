@@ -27,6 +27,8 @@
 #include "common/system.h"
 #include "common/endian.h"
 
+#include "audio/mixer.h"
+
 #include "scumm/imuse/imuse.h"
 #include "scumm/imuse/imuse_internal.h"
 #include "scumm/imuse/instrument.h"
@@ -41,10 +43,9 @@ namespace Scumm {
 //
 ////////////////////////////////////////
 
-IMuseInternal::IMuseInternal() :
-	_native_mt32(false),
-	_enable_gs(false),
-	_isAmiga(false),
+IMuseInternal::IMuseInternal(ScummEngine *vm, MidiDriverFlags sndType, uint32 initFlags) :
+	_native_mt32((initFlags & kFlagNativeMT32) || (initFlags & kFlagRolandGS)), // GS Mode emulates MT-32 on a GS device, so _native_mt32 should always be true
+	_enable_gs(initFlags & kFlagRolandGS),
 	_midi_adlib(nullptr),
 	_midi_native(nullptr),
 	_sysex(nullptr),
@@ -63,7 +64,9 @@ IMuseInternal::IMuseInternal() :
 	_music_volume(0),
 	_trigger_count(0),
 	_snm_trigger_index(0),
-	_pcSpeaker(false) {
+	_soundType(sndType),
+	_game_id(vm->_game.id),
+	_mutex(vm->_mixer->mutex()) {
 	memset(_channel_volume, 0, sizeof(_channel_volume));
 	memset(_channel_volume_eff, 0, sizeof(_channel_volume_eff));
 	memset(_volchan_table, 0, sizeof(_volchan_table));
@@ -161,7 +164,7 @@ bool IMuseInternal::isMT32(int sound) {
 		return false;
 
 	case MKTAG('R', 'O', 'L', ' '): // Unfortunately FOA Amiga also uses this resource type
-		return !_isAmiga;
+		return _soundType != MDT_AMIGA && _soundType != MDT_MACINTOSH;
 
 	case MKTAG('M', 'A', 'C', ' '): // Occurs in the Mac version of FOA and MI2
 		return false;
@@ -250,7 +253,7 @@ bool IMuseInternal::supportsPercussion(int sound) {
 		return false;
 
 	case MKTAG('R', 'O', 'L', ' '): // Roland LAPC/MT-32/CM32L track, but also used by INDY4 Amiga
-		return !_isAmiga;
+		return _soundType != MDT_AMIGA && _soundType != MDT_MACINTOSH;
 
 	case MKTAG('M', 'A', 'C', ' '): // Occurs in the Mac version of FOA and MI2
 		// This is MIDI, i.e. uses MIDI style program changes, but without a
@@ -462,6 +465,7 @@ int32 IMuseInternal::doCommand(int numargs, int a[]) {
 	return doCommand_internal(numargs, a);
 }
 
+
 uint32 IMuseInternal::property(int prop, uint32 value) {
 	Common::StackLock lock(_mutex, "IMuseInternal::property()");
 	switch (prop) {
@@ -473,27 +477,6 @@ uint32 IMuseInternal::property(int prop, uint32 value) {
 			_tempoFactor = value;
 		break;
 
-	case IMuse::PROP_NATIVE_MT32:
-		_native_mt32 = (value > 0);
-		Instrument::nativeMT32(_native_mt32);
-		if (_midi_native && _native_mt32)
-			initMT32(_midi_native);
-		break;
-
-	case IMuse::PROP_GS:
-		_enable_gs = (value > 0);
-
-		// GS Mode emulates MT-32 on a GS device, so _native_mt32 should always be true
-		if (_midi_native && _enable_gs) {
-			_native_mt32 = true;
-			initGM(_midi_native);
-		}
-		break;
-
-	case IMuse::PROP_AMIGA:
-		_isAmiga = (value > 0);
-		break;
-
 	case IMuse::PROP_LIMIT_PLAYERS:
 		if (value > 0 && value <= ARRAYSIZE(_players))
 			_player_limit = (int)value;
@@ -501,14 +484,6 @@ uint32 IMuseInternal::property(int prop, uint32 value) {
 
 	case IMuse::PROP_RECYCLE_PLAYERS:
 		_recycle_players = (value != 0);
-		break;
-
-	case IMuse::PROP_GAME_ID:
-		_game_id = value;
-		break;
-
-	case IMuse::PROP_PC_SPEAKER:
-		_pcSpeaker = (value != 0);
 		break;
 
 	default:
@@ -671,7 +646,7 @@ bool IMuseInternal::startSound_internal(int sound, int offset) {
 	if (_game_id == GID_SAMNMAX && sound == 82 && getSoundStatus_internal(81, false))
 		ImClearTrigger(81, 1);
 
-	// Workaround for monkey2 bug #1410 / Scabb Island
+	// WORKAROUND for monkey2 bug #1410 / Scabb Island
 	//
 	// Tunes involved:
 	// 100 - Captain Dread's map
@@ -688,11 +663,11 @@ bool IMuseInternal::startSound_internal(int sound, int offset) {
 	if (_game_id == GID_MONKEY2 && (sound == 107) && (getSoundStatus_internal(100, true) == 1))
 		return false;
 
-	// In some cases 107 is running and doesn't get killed at Dread's map
+	// WORKAROUND: In some cases 107 is running and doesn't get killed at Dread's map
 	if (_game_id == GID_MONKEY2 && (sound == 100) && (getSoundStatus_internal(107, true) == 1))
 		IMuseInternal::stopSound_internal(107);
 
-	// Workaround for monkey2 bug #1410 / Booty Island
+	// WORKAROUND for monkey2 bug #1410 / Booty Island
 	//
 	// Tunes involved
 	// 100 - Captain Dread's map
@@ -1428,9 +1403,9 @@ int IMuseInternal::get_volchan_entry(uint a) {
 	return -1;
 }
 
-IMuseInternal *IMuseInternal::create(OSystem *syst, MidiDriver *nativeMidiDriver, MidiDriver *adlibMidiDriver) {
-	IMuseInternal *i = new IMuseInternal;
-	i->initialize(syst, nativeMidiDriver, adlibMidiDriver);
+IMuseInternal *IMuseInternal::create(ScummEngine *vm, MidiDriver *nativeMidiDriver, MidiDriver *adlibMidiDriver, MidiDriverFlags sndType, uint32 initFlags) {
+	IMuseInternal *i = new IMuseInternal(vm, sndType, initFlags);
+	i->initialize(vm->_system, nativeMidiDriver, adlibMidiDriver);
 	return i;
 }
 
@@ -1461,6 +1436,18 @@ int IMuseInternal::initialize(OSystem *syst, MidiDriver *native_midi, MidiDriver
 	init_players();
 	init_queue();
 	init_parts();
+
+	if (_midi_native && _soundType != MDT_MACINTOSH && _soundType != MDT_AMIGA) {
+		if (_native_mt32 && !_enable_gs) {
+			Instrument::nativeMT32(_native_mt32);
+			initMT32(_midi_native);
+		} else if (_enable_gs) {
+			initGS(_midi_native);
+		} else if (!_native_mt32) {
+			// If GS is disabled we do the "normal" init from the original GM drivers.
+			initGM();
+		}
+	}
 
 	_initialized = true;
 
@@ -1512,7 +1499,7 @@ void IMuseInternal::initMT32(MidiDriver *midi) {
 	_system->delayMillis(1000);
 }
 
-void IMuseInternal::initGM(MidiDriver *midi) {
+void IMuseInternal::initGS(MidiDriver *midi) {
 	byte buffer[12];
 	int i;
 
@@ -1617,6 +1604,31 @@ void IMuseInternal::initGM(MidiDriver *midi) {
 		memcpy(&buffer[4], "\x40\x01\x34\x6A\x21", 5);
 		midi->sysEx(buffer, 9);
 		debug(2, "GS SysEx: Reverb Time is 106");
+	}
+}
+
+void IMuseInternal::initGM() {
+	// These are the init messages from the DOTT General Midi
+	// driver. This is the major part of the bug fix for bug
+	// no. 13460 ("DOTT: Incorrect MIDI pitch bending").
+	// SAMNMAX has some less of the default settings (since
+	// the driver works a bit different), but it uses the same
+	// value for the pitch bend range.
+	MidiDriver *m = _midi_native;
+	for (int i = 0; i < 16; ++i) {
+		m->send(0x0064B0 | i);
+		m->send(0x0065B0 | i);
+		m->send(0x1006B0 | i);
+		m->send(0x7F07B0 | i);
+		m->send(0x3F0AB0 | i);
+		m->send(0x0000C0 | i);
+		m->send(0x4000E0 | i);
+		m->send(0x0001B0 | i);
+		m->send(0x0040B0 | i);
+		m->send(0x405BB0 | i);
+		m->send(0x005DB0 | i);
+		m->send(0x0000B0 | i);
+		m->send(0x007BB0 | i);
 	}
 }
 
@@ -1744,7 +1756,7 @@ void IMuseInternal::reallocateMidiChannels(MidiDriver *midi) {
 
 void IMuseInternal::setGlobalInstrument(byte slot, byte *data) {
 	if (slot < 32) {
-		if (_pcSpeaker)
+		if (_soundType == MDT_PCSPK)
 			_global_instruments[slot].pcspk(data);
 		else
 			_global_instruments[slot].adlib(data);
@@ -1764,7 +1776,7 @@ void IMuseInternal::copyGlobalInstrument(byte slot, Instrument *dest) {
 	if (_global_instruments[slot].isValid()) {
 		// In case we have an valid instrument set up, copy it to the part.
 		_global_instruments[slot].copy_to(dest);
-	} else if (_pcSpeaker) {
+	} else if (_soundType == MDT_PCSPK) {
 		debug(0, "Trying to use non-existent global PC Speaker instrument %d", slot);
 		dest->pcspk(defaultInstr);
 	} else {
@@ -1784,8 +1796,8 @@ void IMuseInternal::copyGlobalInstrument(byte slot, Instrument *dest) {
  * of the implementation to be changed and updated
  * without requiring a recompile of the client code.
  */
-IMuse *IMuse::create(OSystem *syst, MidiDriver *nativeMidiDriver, MidiDriver *adlibMidiDriver) {
-	IMuseInternal *engine = IMuseInternal::create(syst, nativeMidiDriver, adlibMidiDriver);
+IMuse *IMuse::create(ScummEngine *vm, MidiDriver *nativeMidiDriver, MidiDriver *adlibMidiDriver, MidiDriverFlags sndType, uint32 flags) {
+	IMuseInternal *engine = IMuseInternal::create(vm, nativeMidiDriver, adlibMidiDriver, sndType, flags);
 	return engine;
 }
 

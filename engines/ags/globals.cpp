@@ -22,6 +22,7 @@
 #include "ags/globals.h"
 #include "ags/shared/ac/game_setup_struct.h"
 #include "ags/shared/ac/sprite_cache.h"
+#include "ags/shared/ac/dialog_topic.h"
 #include "ags/shared/core/asset_manager.h"
 #include "ags/shared/debugging/debug_manager.h"
 #include "ags/shared/font/fonts.h"
@@ -253,6 +254,8 @@ Globals::Globals() {
 	_StaticInventoryArray = new StaticArray();
 	_StaticDialogArray = new StaticArray();
 
+	_scummvmGfxFilter = new AGS::Engine::GfxFilterInfo("StdScale", "Nearest-neighbour");
+
 	// gfxfilter_aad3d.cpp globals
 	_aad3dFilterInfo = new AGS::Engine::GfxFilterInfo("Linear", "Linear interpolation");
 
@@ -349,14 +352,12 @@ Globals::Globals() {
 	_runDialogOptionKeyPressHandlerFunc = new NonBlockingScriptFunction("dialog_options_key_press", 3);
 	_runDialogOptionTextInputHandlerFunc = new NonBlockingScriptFunction("dialog_options_text_input", 2);
 	_runDialogOptionRepExecFunc = new NonBlockingScriptFunction("dialog_options_repexec", 1);
+	_runDialogOptionCloseFunc = new NonBlockingScriptFunction("dialog_options_close", 1);
 	_scsystem = new ScriptSystem();
 	_scriptModules = new std::vector<PScript>();
 	_moduleInst = new std::vector<ccInstance *>();
 	_moduleInstFork = new std::vector<ccInstance *>();
 	_moduleRepExecAddr = new std::vector<RuntimeScriptValue>();
-	_characterScriptObjNames = new std::vector<String>();
-	_objectScriptObjNames = new String[MAX_ROOM_OBJECTS];
-	_guiScriptObjNames = new std::vector<String>();
 
 	// script_runtime.cpp globals
 	Common::fill(_loadedInstances, _loadedInstances + MAX_LOADED_INSTANCES,
@@ -368,7 +369,7 @@ Globals::Globals() {
 
 	// translation.cpp globals
 	_trans = new AGS::Shared::Translation();
-	_transtree = new StringMap();
+	_transtree = new AGS::Shared::StringMap();
 
 	// walk_behind.cpp globals
 	Common::fill(_walkBehindLeft, _walkBehindLeft + MAX_WALK_BEHINDS, 0);
@@ -511,6 +512,7 @@ Globals::~Globals() {
 	delete _StaticRegionArray;
 	delete _StaticInventoryArray;
 	delete _StaticDialogArray;
+	delete _scummvmGfxFilter;
 
 	// gfxfilter_aad3d.cpp globals
 	delete _aad3dFilterInfo;
@@ -598,14 +600,12 @@ Globals::~Globals() {
 	delete _runDialogOptionKeyPressHandlerFunc;
 	delete _runDialogOptionTextInputHandlerFunc;
 	delete _runDialogOptionRepExecFunc;
+	delete _runDialogOptionCloseFunc;
 	delete _scsystem;
 	delete _scriptModules;
 	delete _moduleInst;
 	delete _moduleInstFork;
 	delete _moduleRepExecAddr;
-	delete _characterScriptObjNames;
-	delete[] _objectScriptObjNames;
-	delete _guiScriptObjNames;
 
 	// system_imports.cpp globals
 	delete _simp;

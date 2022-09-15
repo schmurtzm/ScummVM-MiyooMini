@@ -72,6 +72,7 @@
 #include "ags/shared/util/stream.h"
 #include "ags/shared/util/string_compat.h"
 #include "ags/shared/util/wgt2_allg.h"
+#include "ags/globals.h"
 
 namespace AGS3 {
 
@@ -292,7 +293,6 @@ void IAGSEngine::DrawTextWrapped(int32 xx, int32 yy, int32 wid, int32 font, int3
 		draw_and_invalidate_text(ds, xx, yy + linespacing * i, font, text_color, _GP(Lines)[i].GetCStr());
 }
 
-Bitmap glVirtualScreenWrap;
 void IAGSEngine::SetVirtualScreen(BITMAP *bmp) {
 	if (!_G(gfxDriver)->UsesMemoryBackBuffer()) {
 		debug_script_warn("SetVirtualScreen: this plugin requires software graphics driver to work correctly.");
@@ -300,10 +300,10 @@ void IAGSEngine::SetVirtualScreen(BITMAP *bmp) {
 	}
 
 	if (bmp) {
-		glVirtualScreenWrap.WrapAllegroBitmap(bmp, true);
-		_G(gfxDriver)->SetMemoryBackBuffer(&glVirtualScreenWrap);
+		_GP(glVirtualScreenWrap).WrapAllegroBitmap(bmp, true);
+		_G(gfxDriver)->SetMemoryBackBuffer(&_GP(glVirtualScreenWrap));
 	} else {
-		glVirtualScreenWrap.Destroy();
+		_GP(glVirtualScreenWrap).Destroy();
 		_G(gfxDriver)->SetMemoryBackBuffer(nullptr);
 	}
 }
@@ -393,7 +393,7 @@ int IAGSEngine::GetNumObjects() {
 	return _G(croom)->numobj;
 }
 AGSObject *IAGSEngine::GetObject(int32 num) {
-	if (num >= _G(croom)->numobj)
+	if (num < 0 || static_cast<uint32_t>(num) >= _G(croom)->numobj)
 		quit("!IAGSEngine::GetObject: invalid object");
 
 	return (AGSObject *)&_G(croom)->obj[num];
@@ -846,7 +846,7 @@ Engine::GameInitError pl_register_plugins(const std::vector<Shared::PluginInfo> 
 		EnginePlugin *apl = &_GP(plugins).back();
 
 		// Copy plugin info
-		snprintf(apl->filename, sizeof(apl->filename), "%s", name.GetCStr());
+		apl->filename = name;
 		if (info.DataLen) {
 			apl->savedata = (char *)malloc(info.DataLen);
 			memcpy(apl->savedata, info.Data.get(), info.DataLen);
@@ -854,18 +854,17 @@ Engine::GameInitError pl_register_plugins(const std::vector<Shared::PluginInfo> 
 		apl->savedatasize = info.DataLen;
 
 		// Compatibility with the old SnowRain module
-		if (ags_stricmp(apl->filename, "ags_SnowRain20") == 0) {
-			strcpy(apl->filename, "ags_snowrain");
+		if (apl->filename.CompareNoCase("ags_SnowRain20") == 0) {
+			apl->filename = "ags_snowrain";
 		}
 
-		String expect_filename = apl->library.GetFilenameForLib(apl->filename);
 		if (apl->library.Load(apl->filename)) {
 			apl->_plugin = apl->library.getPlugin();
-			AGS::Shared::Debug::Printf(kDbgMsg_Info, "Plugin '%s' loaded as '%s', resolving imports...", apl->filename, expect_filename.GetCStr());
-
+			AGS::Shared::Debug::Printf(kDbgMsg_Info, "Plugin '%s' loaded from '%s', resolving imports...", apl->filename.GetCStr(), apl->library.GetFilePath().GetCStr());
 		} else {
+			String expect_filename = apl->library.GetFilenameForLib(apl->filename);
 			AGS::Shared::Debug::Printf(kDbgMsg_Info, "Plugin '%s' could not be loaded (expected '%s')",
-			                           apl->filename, expect_filename.GetCStr());
+			                           apl->filename.GetCStr(), expect_filename.GetCStr());
 			_GP(plugins).pop_back();
 			continue;
 		}

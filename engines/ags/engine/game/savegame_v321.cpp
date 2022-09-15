@@ -32,7 +32,7 @@
 #include "ags/shared/core/types.h"
 #include "ags/engine/ac/character_extras.h"
 #include "ags/shared/ac/common.h"
-#include "ags/shared/ac/dialog_topic.h"
+#include "ags/engine/ac/dialog.h"
 #include "ags/engine/ac/button.h"
 #include "ags/engine/ac/dynamic_sprite.h"
 #include "ags/engine/ac/game.h"
@@ -175,7 +175,6 @@ static void ReadMoveList_Aligned(Stream *in) {
 	AlignedStream align_s(in, Shared::kAligned_Read);
 	for (int i = 0; i < _GP(game).numcharacters + MAX_ROOM_OBJECTS + 1; ++i) {
 		_GP(mls)[i].ReadFromFile_Legacy(&align_s);
-
 		align_s.Reset();
 	}
 }
@@ -188,7 +187,7 @@ static void ReadGameSetupStructBase_Aligned(Stream *in) {
 static void ReadCharacterExtras_Aligned(Stream *in) {
 	AlignedStream align_s(in, Shared::kAligned_Read);
 	for (int i = 0; i < _GP(game).numcharacters; ++i) {
-		_GP(charextra)[i].ReadFromFile(&align_s);
+		_GP(charextra)[i].ReadFromSavegame(&align_s, 0);
 		align_s.Reset();
 	}
 }
@@ -214,7 +213,7 @@ void ReadAnimatedButtons_Aligned(Stream *in, int num_abuts) {
 	AlignedStream align_s(in, Shared::kAligned_Read);
 	for (int i = 0; i < num_abuts; ++i) {
 		AnimatingGUIButton abtn;
-		abtn.ReadFromFile(&align_s, 0);
+		abtn.ReadFromSavegame(&align_s, 0);
 		AddButtonAnimation(abtn);
 		align_s.Reset();
 	}
@@ -287,7 +286,7 @@ static void restore_game_overlays(Stream *in) {
 	ReadOverlays_Aligned(in, has_bitmap, num_overs);
 	for (size_t i = 0; i < num_overs; ++i) {
 		if (has_bitmap[i])
-			_GP(screenover)[i].pic = read_serialized_bitmap(in);
+			_GP(screenover)[i].SetImage(read_serialized_bitmap(in));
 	}
 }
 

@@ -42,6 +42,7 @@
 #define BLADERUNNER_ORIGINAL_BUGS     0
 
 namespace Common {
+class Archive;
 struct Event;
 }
 
@@ -113,6 +114,11 @@ public:
 	static const int kActorVoiceOver = kActorCount - 1;
 	static const int kMaxCustomConcurrentRepeatableEvents = 20;
 
+	static const int16 kOriginalGameWidth  = 640;
+	static const int16 kOriginalGameHeight = 480;
+	static const int16 kDemoGameWidth      = 320;
+	static const int16 kDemoGameHeight     = 200;
+
 	// Incremental number to keep track of significant revisions of the ScummVM bladerunner engine
 	// that could potentially introduce incompatibilities with old save files or require special actions to restore compatibility
 	// This is stored in game global variable "kVariableGameVersion"
@@ -129,6 +135,8 @@ public:
 	bool _gameIsRunning;
 	bool _windowIsActive;
 	int  _playerLosesControlCounter;
+	int  _extraCPos;
+	uint8 _extraCNotify;
 
 	Common::String   _languageCode;
 	Common::Language _language;
@@ -223,12 +231,14 @@ public:
 	bool _vqaIsPlaying;
 	bool _vqaStopIsRequested;
 	bool _subtitlesEnabled;  // tracks the state of whether subtitles are enabled or disabled from ScummVM GUI option or KIA checkbox (the states are synched)
+	bool _showSubtitlesForTextCrawl;
 	bool _sitcomMode;
 	bool _shortyMode;
 	bool _noDelayMillisFramelimiter;
 	bool _framesPerSecondMax;
 	bool _disableStaminaDrain;
 	bool _cutContent;
+	bool _enhancedEdition;
 	bool _validBootParam;
 
 	int _walkSoundId;
@@ -258,6 +268,8 @@ public:
 	uint32 _actorUpdateTimeLast;
 
 	uint32 _timeOfMainGameLoopTickPrevious;
+
+	bool _isNonInteractiveDemo;
 
 	// This addon is to emulate keeping a keyboard key pressed (continuous / repeated firing of the event)
 	// -- code is pretty much identical from our common\events.cpp (KeyboardRepeatEventSourceWrapper)
@@ -320,11 +332,13 @@ public:
 		kMpActionScrollUp,                     // ScummVM addition (scroll list up)
 		kMpActionScrollDown,                   // ScummVM addition (scroll list down)
 		kMpConfirmDlg,                         // default <Return> or <KP_Enter>
-		kMpDeleteSelectedSvdGame               // default <Delete> or <KP_Period>
+		kMpDeleteSelectedSvdGame,              // default <Delete> or <KP_Period>
+		kMpActionToggleCluePrivacy             // default <right click>
 	};
 
 private:
 	MIXArchive _archives[kArchiveCount];
+	Common::Archive *_archive;
 
 public:
 	BladeRunnerEngine(OSystem *syst, const ADGameDescription *desc);
@@ -402,6 +416,8 @@ public:
 	bool closeArchive(const Common::String &name);
 	bool isArchiveOpen(const Common::String &name) const;
 
+	bool openArchiveEnhancedEdition();
+
 	void syncSoundSettings() override;
 	bool isSubtitlesEnabled();
 	void setSubtitlesEnabled(bool newVal);
@@ -424,6 +440,9 @@ public:
 	Graphics::Surface generateThumbnail() const;
 
 	Common::String getTargetName() const;
+
+	uint8 getExtraCNotify();
+	void  setExtraCNotify(uint8 val);
 };
 
 static inline const Graphics::PixelFormat gameDataPixelFormat() {

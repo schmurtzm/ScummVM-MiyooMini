@@ -43,6 +43,8 @@ struct MULTI_INIT {
 	int32 mulY;				///< multi-objects initial y ani position
 	int32 mulZ;				///< multi-objects initial z position
 	uint32 otherFlags;		///< multi-objects Tinsel 2 - other flags
+
+	const FRAME *GetFrame() const;
 } PACKED_STRUCT;
 
 #include "common/pack-end.h"	// END STRUCT PACKING
@@ -131,6 +133,13 @@ bool MultiHasShape(		  // Returns TRUE if the object currently has an image
 
 void MultiForceRedraw(
 	OBJECT *pMultiObj);	// multi-part object to be forced
+
+struct FREEL;
+OBJECT *InsertReelObj(const FREEL *reels);
+struct FILM;
+enum class SysReel;
+const FILM *GetSystemReelFilm(SysReel reelIndex);
+OBJECT *InsertSystemReelObj(SysReel reelIndex);
 
 } // End of namespace Tinsel
 

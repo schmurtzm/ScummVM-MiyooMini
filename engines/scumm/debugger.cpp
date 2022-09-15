@@ -35,6 +35,8 @@
 #include "scumm/scumm.h"
 #include "scumm/sound.h"
 
+#include "scumm/akos.h"
+
 namespace Scumm {
 
 void debugC(int channel, const char *s, ...) {
@@ -77,12 +79,14 @@ ScummDebugger::ScummDebugger(ScummEngine *s)
 	registerCmd("object",    WRAP_METHOD(ScummDebugger, Cmd_Object));
 	registerCmd("script",    WRAP_METHOD(ScummDebugger, Cmd_Script));
 	registerCmd("scr",       WRAP_METHOD(ScummDebugger, Cmd_Script));
+	registerCmd("cosdump",   WRAP_METHOD(ScummDebugger, Cmd_Cosdump));
 	registerCmd("scripts",   WRAP_METHOD(ScummDebugger, Cmd_PrintScript));
 	registerCmd("importres", WRAP_METHOD(ScummDebugger, Cmd_ImportRes));
 
 	if (_vm->_game.id == GID_LOOM)
 		registerCmd("drafts",  WRAP_METHOD(ScummDebugger, Cmd_PrintDraft));
-
+	if (_vm->_game.id == GID_INDY3)
+		registerCmd("grail",  WRAP_METHOD(ScummDebugger, Cmd_PrintGrail));
 	if (_vm->_game.id == GID_MONKEY && _vm->_game.platform == Common::kPlatformSegaCD)
 		registerCmd("passcode",  WRAP_METHOD(ScummDebugger, Cmd_Passcode));
 
@@ -102,10 +106,6 @@ ScummDebugger::ScummDebugger(ScummEngine *s)
 #endif
 
 	registerCmd("resetcursors",    WRAP_METHOD(ScummDebugger, Cmd_ResetCursors));
-}
-
-ScummDebugger::~ScummDebugger() {
-	 // we need this destructor, even if it is empty, for __SYMBIAN32__
 }
 
 void ScummDebugger::preEnter() {
@@ -528,6 +528,329 @@ bool ScummDebugger::Cmd_PrintScript(int argc, const char **argv) {
 	return true;
 }
 
+bool ScummDebugger::Cmd_Cosdump(int argc, const char **argv) {
+	const byte *akos;
+	const byte *aksq;
+	uint32 curpos;
+	uint32 code;
+	uint32 aend;
+	int costume;
+	int count;
+	int i;
+
+	if (argc < 2) {
+		debugPrintf("Syntax: cosdump <num>\n");
+		return true;
+	}
+
+	costume = atoi(argv[1]);
+	if (costume >= _vm->_numCostumes) {
+		debugPrintf("Costume %d is out of range (range: 1 - %d)\n", costume, _vm->_numCostumes);
+		return true;
+	}
+
+	akos = _vm->getResourceAddress(rtCostume, costume);
+
+	curpos = 0;
+	aksq = _vm->findResourceData(MKTAG('A','K','S','Q'), akos);
+	if (aksq == nullptr) {
+		debugPrintf("Costume %d does not have AKSQ block\n", costume);
+		return true;
+	}
+	aend = READ_BE_UINT32(aksq - 4) - 8;
+	debugPrintf("DUMP COSTUME SCRIPT %d (size %d)\n", costume, aend);
+	while (curpos < aend) {
+		code = GB(0);
+		if (code & 0x80)
+			code = READ_BE_UINT16(aksq + curpos);
+		debugPrintf("[%04x] (%04x) ", curpos, code);
+		switch (code) {
+		case AKC_Return:
+			debugPrintf("RETURN\n");
+			curpos += 2;
+			break;
+		case AKC_SetVar:
+			debugPrintf("VAR[%d] = %d\n", GB(4), GW(2));
+			curpos += 5;
+			break;
+		case AKC_CmdQue3:
+			debugPrintf("START SOUND %d\n", GB(2));
+			curpos += 3;
+			break;
+		case AKC_C016:
+			debugPrintf("IF SOUND RUNNING VAR[%d] GOTO [%04x]\n", GB(4), GUW(2));
+			curpos += 5;
+			break;
+		case AKC_C017:
+			debugPrintf("IF NOT SOUND RUNNING VAR[%d] GOTO [%04x]\n", GB(4), GUW(2));
+			curpos += 5;
+			break;
+		case AKC_C018:
+			debugPrintf("IF SOUND RUNNING %d GOTO [%04x]\n", GB(4), GUW(2));
+			curpos += 5;
+			break;
+		case AKC_C019:
+			debugPrintf("IF NOT SOUND RUNNING %d GOTO [%04x]\n", GB(4), GUW(2));
+			curpos += 5;
+			break;
+		case AKC_ComplexChan:
+			debugPrintf("DRAW:\n");
+			curpos += 2;
+			count = GB(0);
+			curpos++;
+			for (i = 0; i < count; i++) {
+				code = GB(4);
+				if (code & 0x80) {
+					code = READ_BE_UINT16(aksq + curpos + 4);
+					debugPrintf("\tEXTENDED OFFSET %d POS %d,%d\n", code, GW(0), GW(2));
+					curpos++;
+				} else {
+					debugPrintf("\tOFFSET %d POS %d,%d\n", code, GW(0), GW(2));
+				}
+				curpos += 5;
+			}
+			break;
+		case AKC_C021:
+			debugPrintf("CONDITION MASK DRAW [%04x] [", curpos + GB(2));
+			count = GB(3);
+			for (i = 0; i < count; i++) {
+				if (i)
+					debugPrintf(", ");
+				debugPrintf("%d", GB(4));
+				curpos++;
+			}
+			debugPrintf("]\n");
+			curpos += 4;
+			count = GB(0);
+			curpos++;
+			for (i = 0; i < count; i++) {
+				code = GB(4);
+				if (code & 0x80) {
+					code = READ_BE_UINT16(aksq + curpos + 4);
+					debugPrintf("\tEXTENDED OFFSET %d POS %d,%d\n", code, GW(0), GW(2));
+					curpos++;
+				} else {
+					debugPrintf("\tOFFSET %d POS %d,%d\n", code, GW(0), GW(2));
+				}
+				curpos += 5;
+			}
+			break;
+		case AKC_C022:
+			debugPrintf("CONDITION MASK DRAW [%04x] [", curpos + GB(2));
+			count = GB(3);
+			for (i = 0; i < count; i++) {
+				if (i)
+					debugPrintf(", ");
+				debugPrintf("%d", GB(4));
+				curpos++;
+			}
+			debugPrintf("] AT OFFSET %d, %d:\n", GW(2), GW(4));
+			curpos += 6;
+			count = GB(0);
+			curpos++;
+			for (i = 0; i < count; i++) {
+				code = GB(4);
+				if (code & 0x80) {
+					code = READ_BE_UINT16(aksq + curpos + 4);
+					debugPrintf("\tEXTENDED OFFSET %d POS %d,%d\n", code, GW(0), GW(2));
+					curpos++;
+				} else {
+					debugPrintf("\tOFFSET %d POS %d,%d\n", code, GW(0), GW(2));
+				}
+				curpos += 5;
+			}
+			break;
+		case AKC_ComplexChan2:
+			debugPrintf("DRAW AT OFFSET %d, %d:\n", GW(2), GW(4));
+			curpos += 6;
+			count = GB(0);
+			curpos++;
+			for (i = 0; i < count; i++) {
+				code = GB(4);
+				if (code & 0x80) {
+					code = READ_BE_UINT16(aksq + curpos + 4);
+					debugPrintf("\tEXTENDED OFFSET %d POS %d,%d\n", code, GW(0), GW(2));
+					curpos++;
+				} else {
+					debugPrintf("\tOFFSET %d POS %d,%d\n", code, GW(0), GW(2));
+				}
+				curpos += 5;
+			}
+			break;
+		case AKC_Jump:
+			debugPrintf("GOTO [%04x]\n", GUW(2));
+			curpos += 4;
+			break;
+		case AKC_JumpIfSet:
+			debugPrintf("IF VAR[%d] GOTO [%04x]\n", GB(4), GUW(2));
+			curpos += 5;
+			break;
+		case AKC_AddVar:
+			debugPrintf("VAR[%d] += %d\n", GB(4), GW(2));
+			curpos += 5;
+			break;
+		case AKC_C042:
+			debugPrintf("START SOUND %d SOFT\n", GB(2));
+			curpos += 3;
+			break;
+		case AKC_C044:
+			debugPrintf("START SOUND VAR[%d] SOFT\n", GB(2));
+			curpos += 3;
+			break;
+		case AKC_C045:
+			debugPrintf("USER CONDITION %d = VAR[%d] GOTO [%04x] \n", GB(3), GB(4), GB(2));
+			curpos += 5;
+			break;
+		case AKC_C046:
+			debugPrintf("VAR[%d] = USER CONDITION %d GOTO [%04x] \n", GB(4), GB(3), GB(2));
+			curpos += 5;
+			break;
+		case AKC_C047:
+			debugPrintf("TALK CONDITION %d SET GOTO [%04x] \n", GB(3), GB(2));
+			curpos += 4;
+			break;
+		case AKC_C048:
+			debugPrintf("VAR[%d] = TALK CONDITION %d GOTO [%04x] \n", GB(4), GB(3), GB(2));
+			curpos += 5;
+			break;
+		case AKC_Ignore:
+			debugPrintf("IGNORE %d\n", GB(2));
+			curpos += 3;
+			break;
+		case AKC_IncVar:
+			debugPrintf("VAR[0]++\n");
+			curpos += 2;
+			break;
+		case AKC_CmdQue3Quick:
+			debugPrintf("START SOUND QUICK\n");
+			curpos += 2;
+			break;
+		case AKC_JumpE:
+			debugPrintf("IF VAR[%d] == %d GOTO [%04x]\n", GB(4), GW(5), GUW(2));
+			curpos += 7;
+			break;
+		case AKC_JumpNE:
+			debugPrintf("IF VAR[%d] != %d GOTO [%04x]\n", GB(4), GW(5), GUW(2));
+			curpos += 7;
+			break;
+		case AKC_JumpL:
+			debugPrintf("IF VAR[%d] < %d GOTO [%04x]\n", GB(4), GW(5), GUW(2));
+			curpos += 7;
+			break;
+		case AKC_JumpLE:
+			debugPrintf("IF VAR[%d] <= %d GOTO [%04x]\n", GB(4), GW(5), GUW(2));
+			curpos += 7;
+			break;
+		case AKC_JumpG:
+			debugPrintf("IF VAR[%d] > %d GOTO [%04x]\n", GB(4), GW(5), GUW(2));
+			curpos += 7;
+			break;
+		case AKC_JumpGE:
+			debugPrintf("IF VAR[%d] >= %d GOTO [%04x]\n", GB(4), GW(5), GUW(2));
+			curpos += 7;
+			break;
+		case AKC_StartAnim:
+			debugPrintf("START ANIMATION %d\n", GB(2));
+			curpos += 3;
+			break;
+		case AKC_StartVarAnim:
+			debugPrintf("START ANIMATION VAR[%d]\n", GB(2));
+			curpos += 3;
+			break;
+		case AKC_Random:
+			debugPrintf("VAR[%d] = RANDOM BETWEEN %d AND %d\n", GB(6), GW(2), GW(4));
+			curpos += 7;
+			break;
+		case AKC_SetActorClip:
+			debugPrintf("ZCLIP %d\n", GB(2));
+			curpos += 3;
+			break;
+		case AKC_StartAnimInActor:
+			debugPrintf("START ANIMATION ACTOR VAR[%d] VAR[%d]\n", GB(2), GB(3));
+			curpos += 4;
+			break;
+		case AKC_SetVarInActor:
+			debugPrintf("ACTOR VAR[%d] VAR[%d] = %d\n", GB(2), GB(3), GW(4));
+			curpos += 6;
+			break;
+		case AKC_HideActor:
+			debugPrintf("DESTROY ACTOR\n");
+			curpos += 2;
+			break;
+		case AKC_SetDrawOffs:
+			debugPrintf("SET DRAW OFFSETS %d %d\n", GW(2), GW(4));
+			curpos += 6;
+			break;
+		case AKC_JumpTable:
+			debugPrintf("GOTO OFFSET AT VAR[%d]\n", GB(2));
+			curpos += 3;
+			break;
+		// case AKC_SoundStuff:
+		// 	break;
+		// case AKC_Flip:
+		// 	break;
+		// case AKC_Cmd3:
+		// 	break;
+		// case AKC_Ignore3:
+		// 	break;
+		case AKC_Ignore2:
+			debugPrintf("START SOUND VAR[%d]\n", GB(2));
+			curpos += 3;
+			break;
+		// case AKC_C08E:
+		// 	break;
+		// case AKC_SkipE:
+		// 	break;
+		// case AKC_SkipNE:
+		// 	break;
+		// case AKC_SkipL:
+		// 	break;
+		// case AKC_SkipLE:
+		// 	break;
+		// case AKC_SkipG:
+		// 	break;
+		// case AKC_SkipGE:
+		// 	break;
+		// case AKC_ClearFlag:
+		// 	break;
+		case AKC_C0A0:
+			debugPrintf("START TALK %d {%d}\n", GB(2), GB(3));
+			curpos += 4;
+			break;
+		case AKC_C0A1:
+			debugPrintf("IF ACTOR TALKING GOTO [%04x]\n", GUW(2));
+			curpos += 4;
+			break;
+		case AKC_C0A2:
+			debugPrintf("IF NOT ACTOR TALKING GOTO [%04x]\n", GUW(2));
+			curpos += 4;
+			break;
+		case AKC_C0A3:
+			debugPrintf("START TALK VAR[%d]\n", GB(2));
+			curpos += 3;
+			break;
+		// case AKC_C0A4:
+		// 	break;
+		// case AKC_C0A5:
+		// 	break;
+		// case AKC_C0A6:
+		// 	break;
+		// case AKC_C0A7:
+		// 	break;
+		case AKC_EndSeq:
+			debugPrintf("STOP\n");
+			curpos += 2;
+			break;
+		default:
+			warning("DEFAULT OP, breaking...\n");
+			return true;
+			break;
+		}
+	}
+
+	return true;
+}
+
 bool ScummDebugger::Cmd_Actor(int argc, const char **argv) {
 	Actor *a;
 	int actnum;
@@ -535,6 +858,7 @@ bool ScummDebugger::Cmd_Actor(int argc, const char **argv) {
 
 	if (argc < 3) {
 		debugPrintf("Syntax: actor <actornum> <command> <parameter>\n");
+		debugPrintf("Valid commands: animvar|anim|condmask|costume|_elevation|ignoreboxes|name|x|y\n");
 		return true;
 	}
 
@@ -580,15 +904,17 @@ bool ScummDebugger::Cmd_Actor(int argc, const char **argv) {
 			debugPrintf("Actor[%d].costume = %d\n", actnum, a->_costume);
 		}
 	} else if (!strcmp(argv[2], "name")) {
-		debugPrintf("Name of actor %d: %s\n", actnum,
-			_vm->getObjOrActorName(_vm->actorToObj(actnum)));
+		const byte *name = _vm->getObjOrActorName(_vm->actorToObj(actnum));
+		if (!name)
+			name = (const byte *)"(null)";
+		debugPrintf("Name of actor %d: %s\n", actnum, name);
 	} else if (!strcmp(argv[2], "condmask")) {
 		if (argc > 3) {
 			a->_heCondMask = value;
 		}
 		debugPrintf("Actor[%d]._heCondMask = 0x%X\n", actnum, a->_heCondMask);
 	} else {
-		debugPrintf("Unknown actor command '%s'\nUse <ignoreboxes |costume> as command\n", argv[2]);
+		debugPrintf("Unknown actor command '%s'\n", argv[2]);
 	}
 
 	return true;
@@ -604,6 +930,8 @@ bool ScummDebugger::Cmd_PrintActor(int argc, const char **argv) {
 	for (i = 1; i < _vm->_numActors; i++) {
 		a = _vm->_actors[i];
 		const byte *name = _vm->getObjOrActorName(_vm->actorToObj(a->_number));
+		if (!name)
+			name = (const byte *)"(null)";
 		if (a->_visible)
 			debugPrintf("|%2d|%-12.12s|%4d|%4d|%3d|%3d|%4d|%3d|%3d|%3d|%3d|%3d|%3d|%3d|$%08x|\n",
 						 a->_number, name, a->getRealPos().x, a->getRealPos().y, a->_width,  a->_bottom - a->_top,
@@ -629,6 +957,8 @@ bool ScummDebugger::Cmd_PrintObjects(int argc, const char **argv) {
 			continue;
 		int classData = (_vm->_game.version != 0 ? _vm->_classData[o->obj_nr] : 0);
 		const byte *name = _vm->getObjOrActorName(o->obj_nr);
+		if (!name)
+			name = (const byte *)"(null)";
 		debugPrintf("|%4d|%-12.12s|%4d|%4d|%5d|%6d|%5d|%2d|$%08x|\n",
 				o->obj_nr, name, o->x_pos, o->y_pos, o->width, o->height, o->state,
 				o->fl_object_index, classData);
@@ -682,7 +1012,10 @@ bool ScummDebugger::Cmd_Object(int argc, const char **argv) {
 			debugPrintf("State of object %d: %d\n", obj, _vm->getState(obj));
 		}
 	} else if (!strcmp(argv[2], "name")) {
-		debugPrintf("Name of object %d: %s\n", obj, _vm->getObjOrActorName(obj));
+		const byte *name = _vm->getObjOrActorName(obj);
+		if (!name)
+			name = (const byte *)"(null)";
+		debugPrintf("Name of object %d: %s\n", obj, name);
 	} else {
 		debugPrintf("Unknown object command '%s'\nUse <pickup | state | name> as command\n", argv[2]);
 	}
@@ -995,6 +1328,28 @@ bool ScummDebugger::Cmd_PrintDraft(int argc, const char **argv) {
 			(draft & 0x2000) ? 'K' : ' ',
 			(draft & 0x4000) ? 'U' : ' ');
 	}
+
+	return true;
+}
+
+bool ScummDebugger::Cmd_PrintGrail(int argc, const char **argv) {
+	if (_vm->_game.id != GID_INDY3) {
+		debugPrintf("Command only works with Indy3\n");
+		return true;
+	}
+
+	if (_vm->_currentRoom != 86) {
+		debugPrintf("Command only works in room 86\n");
+		return true;
+	}
+
+	const int grailNumber = _vm->_scummVars[253];
+	if (grailNumber < 1 || grailNumber > 10) {
+		debugPrintf("Couldn't find the Grail number\n");
+		return true;
+	}
+
+	debugPrintf("Real Grail is Grail #%d\n", grailNumber);
 
 	return true;
 }

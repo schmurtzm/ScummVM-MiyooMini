@@ -132,8 +132,8 @@ static const Plugin *detectPlugin() {
 	}
 
 	// Query the plugin for the game descriptor
-	printf("   Looking for a plugin supporting this target... %s\n", plugin->getName());
 	const MetaEngineDetection &metaEngine = plugin->get<MetaEngineDetection>();
+	printf("   Looking for a plugin supporting this target... %s\n", metaEngine.getEngineName());
 	DebugMan.addAllDebugChannels(metaEngine.getDebugChannels());
 	PlainGameDescriptor game = metaEngine.findGame(gameId.c_str());
 	if (!game.gameId) {
@@ -224,7 +224,7 @@ static Common::Error runGame(const Plugin *plugin, const Plugin *enginePlugin, O
 		// Print a warning; note that scummvm_main will also
 		// display an error dialog, so we don't have to do this here.
 		warning("%s failed to instantiate engine: %s (target '%s', path '%s')",
-			plugin->getName(),
+			metaEngineDetection.getEngineName(),
 			err.getDesc().c_str(),
 			target.c_str(),
 			dir.getPath().c_str()
@@ -366,12 +366,6 @@ static void setupGraphics(OSystem &system) {
 
 	system.applyBackendSettings();
 
-	// When starting up launcher for the first time, the user might have specified
-	// a --gui-theme option, to allow that option to be working, we need to initialize
-	// GUI here.
-	// FIXME: Find a nicer way to allow --gui-theme to be working
-	GUI::GuiManager::instance();
-
 	// Set initial window caption
 	system.setWindowCaption(Common::U32String(gScummVMFullVersion));
 
@@ -422,7 +416,6 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
 	// Load the config file (possibly overridden via command line):
 	if (settings.contains("config")) {
 		ConfMan.loadConfigFile(settings["config"]);
-		settings.erase("config");
 	} else {
 		ConfMan.loadDefaultConfigFile();
 	}

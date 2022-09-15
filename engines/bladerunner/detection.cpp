@@ -42,6 +42,7 @@ namespace BladeRunner {
 static const PlainGameDescriptor bladeRunnerGames[] = {
 	{"bladerunner", "Blade Runner"},
 	{"bladerunner-final", "Blade Runner with restored content"},
+	{"bladerunner-ee", "Blade Runner: Enhanced Edition"},
 	{nullptr, nullptr}
 };
 
@@ -101,6 +102,17 @@ static const ADExtraGuiOptionsMap optionsList[] = {
 			0
 		}
 	},
+	{
+		GAMEOPTION_SHOW_SUBS_IN_CRAWL,
+		{
+			_s("Show subtitles during text crawl"),
+			_s("During the intro cutscene, show subtitles during the text crawl"),
+			"use_crawl_subs",
+			true,
+			0,
+			0
+		}
+	},
 	AD_EXTRA_GUI_OPTIONS_TERMINATOR
 };
 
@@ -110,8 +122,8 @@ class BladeRunnerMetaEngineDetection : public AdvancedMetaEngineDetection {
 public:
 	BladeRunnerMetaEngineDetection();
 
-	const char *getEngineId() const override;
 	const char *getName() const override;
+	const char *getEngineName() const override;
 	const char *getOriginalCopyright() const override;
 	const DebugChannelDef *getDebugChannels() const override;
 };
@@ -121,13 +133,23 @@ BladeRunnerMetaEngineDetection::BladeRunnerMetaEngineDetection()
 		BladeRunner::gameDescriptions,
 		sizeof(BladeRunner::gameDescriptions[0]),
 		BladeRunner::bladeRunnerGames,
-		BladeRunner::optionsList) {}
-
-const char *BladeRunnerMetaEngineDetection::getEngineId() const {
-	return "bladerunner";
+		BladeRunner::optionsList) {
+		// Setting this, allows the demo files to be copied in the BladeRunner
+		// game data folder and be detected and subsequently launched without
+		// any issues (eg. like ScummVM launching Blade Runner instead of the demo).
+		// Although the demo files are not part of the original game's installation
+		// or CD content, it's nice to support the use case whereby the user
+		// manually copies the demo files in the Blade Runner game data folder
+		// and expects ScummVM to detect both, offer a choice on which to add,
+		// and finally launch the proper one depending on which was added.
+		_flags = kADFlagUseExtraAsHint;
 }
 
 const char *BladeRunnerMetaEngineDetection::getName() const {
+	return "bladerunner";
+}
+
+const char *BladeRunnerMetaEngineDetection::getEngineName() const {
 	return "Blade Runner";
 }
 

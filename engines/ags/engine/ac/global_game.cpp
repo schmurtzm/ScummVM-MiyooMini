@@ -77,6 +77,11 @@ namespace AGS3 {
 
 using namespace AGS::Shared;
 
+void AbortGame() {
+	// make sure scripts stop at the next step
+	cancel_all_scripts();
+}
+
 void GiveScore(int amnt) {
 	GUI::MarkSpecialLabelsForUpdate(kLabelMacro_AllScore);
 	_GP(play).score += amnt;
@@ -548,7 +553,7 @@ void GetLocationName(int xxx, int yyy, char *tempo) {
 			if (_GP(play).get_loc_name_last_time != 1000 + mover)
 				GUI::MarkSpecialLabelsForUpdate(kLabelMacro_Overhotspot);
 			_GP(play).get_loc_name_last_time = 1000 + mover;
-			strcpy(tempo, get_translation(_GP(game).invinfo[mover].name));
+			snprintf(tempo, MAX_MAXSTRLEN, "%s", get_translation(_GP(game).invinfo[mover].name));
 		} else if ((_GP(play).get_loc_name_last_time > 1000) && (_GP(play).get_loc_name_last_time < 1000 + MAX_INV)) {
 			// no longer selecting an item
 			GUI::MarkSpecialLabelsForUpdate(kLabelMacro_Overhotspot);
@@ -578,7 +583,7 @@ void GetLocationName(int xxx, int yyy, char *tempo) {
 	// on character
 	if (loctype == LOCTYPE_CHAR) {
 		onhs = _G(getloctype_index);
-		strcpy(tempo, get_translation(_GP(game).chars[onhs].name));
+		snprintf(tempo, MAX_MAXSTRLEN, "%s", get_translation(_GP(game).chars[onhs].name));
 		if (_GP(play).get_loc_name_last_time != 2000 + onhs)
 			GUI::MarkSpecialLabelsForUpdate(kLabelMacro_Overhotspot);
 		_GP(play).get_loc_name_last_time = 2000 + onhs;
@@ -587,7 +592,7 @@ void GetLocationName(int xxx, int yyy, char *tempo) {
 	// on object
 	if (loctype == LOCTYPE_OBJ) {
 		aa = _G(getloctype_index);
-		strcpy(tempo, get_translation(_G(croom)->obj[aa].name.GetCStr()));
+		snprintf(tempo, MAX_MAXSTRLEN, "%s", get_translation(_G(croom)->obj[aa].name.GetCStr()));
 		// Compatibility: < 3.1.1 games returned space for nameless object
 		// (presumably was a bug, but fixing it affected certain games behavior)
 		if (_G(loaded_game_file_version) < kGameVersion_311 && tempo[0] == 0) {
@@ -600,7 +605,8 @@ void GetLocationName(int xxx, int yyy, char *tempo) {
 		return;
 	}
 	onhs = _G(getloctype_index);
-	if (onhs > 0) strcpy(tempo, get_translation(_G(croom)->hotspot[onhs].Name.GetCStr()));
+	if (onhs > 0)
+		snprintf(tempo, MAX_MAXSTRLEN, "%s", get_translation(_G(croom)->hotspot[onhs].Name.GetCStr()));
 	if (_GP(play).get_loc_name_last_time != onhs)
 		GUI::MarkSpecialLabelsForUpdate(kLabelMacro_Overhotspot);
 	_GP(play).get_loc_name_last_time = onhs;
@@ -636,16 +642,29 @@ int SaveScreenShot(const char *namm) {
 void SetMultitasking(int mode) {
 	if ((mode < 0) | (mode > 1))
 		quit("!SetMultitasking: invalid mode parameter");
+	// Save requested setting
+	_GP(usetup).multitasking = mode;
 
-	if (_GP(usetup).override_multitasking >= 0) {
+	// Account for the override config option (must be checked first!)
+	if ((_GP(usetup).override_multitasking >= 0) && (mode != _GP(usetup).override_multitasking)) {
+		Debug::Printf("SetMultitasking: overridden by user config: %d -> %d", mode, _GP(usetup).override_multitasking);
 		mode = _GP(usetup).override_multitasking;
 	}
 
-	// Don't allow background running if full screen
-	if ((mode == 1) && (!_GP(scsystem).windowed))
+	// Must run on background if debugger is connected
+	if ((mode == 0) && (_G(editor_debugging_initialized) != 0)) {
+		Debug::Printf("SetMultitasking: overridden by the external debugger: %d -> 1", mode);
+		mode = 1;
+	}
+
+	// Regardless, don't allow background running if exclusive full screen
+	if ((mode == 1) && _G(gfxDriver)->GetDisplayMode().IsRealFullscreen()) {
+		Debug::Printf("SetMultitasking: overridden by fullscreen: %d -> 0", mode);
 		mode = 0;
+	}
 
 	// Install engine callbacks for switching in and out the window
+	Debug::Printf(kDbgMsg_Info, "Multitasking mode set: %d", mode);
 	if (mode == 0) {
 		sys_set_background_mode(false);
 		sys_evt_set_focus_callbacks(display_switch_in_resume, display_switch_out_suspend);
@@ -787,7 +806,7 @@ int WaitImpl(int skip_type, int nloops) {
 		// < 3.6.0 return 1 is skipped by user input, otherwise 0
 		return ((_GP(play).wait_skipped_by & (SKIP_KEYPRESS | SKIP_MOUSECLICK)) != 0) ? 1 : 0;
 	}
-	// >= 3.6.0 return positive keycode, negative mouse button code, or 0 as time-out
+	// >= 3.6.0 return skip (input) type flags with keycode
 	return _GP(play).GetWaitSkipResult();
 }
 
@@ -805,6 +824,10 @@ int WaitMouse(int nloops) {
 
 int WaitMouseKey(int nloops) {
 	return WaitImpl(SKIP_KEYPRESS | SKIP_MOUSECLICK | SKIP_AUTOTIMER, nloops);
+}
+
+int WaitInput(int input_flags, int nloops) {
+	return WaitImpl(input_flags >> 16 | SKIP_AUTOTIMER, nloops);
 }
 
 void SkipWait() {

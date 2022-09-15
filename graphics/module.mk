@@ -20,6 +20,7 @@ MODULE_OBJS := \
 	maccursor.o \
 	macgui/datafiles.o \
 	macgui/macbutton.o \
+	macgui/macdialog.o \
 	macgui/macfontmanager.o \
 	macgui/macmenu.o \
 	macgui/mactext.o \
@@ -31,7 +32,9 @@ MODULE_OBJS := \
 	managed_surface.o \
 	nine_patch.o \
 	opengl/context.o \
+	opengl/debug.o \
 	opengl/shader.o \
+	palette.o \
 	pixelformat.o \
 	primitives.o \
 	renderer.o \
@@ -57,6 +60,7 @@ MODULE_OBJS += \
 	tinygl/arrays.o \
 	tinygl/clear.o \
 	tinygl/clip.o \
+	tinygl/fog.o \
 	tinygl/get.o \
 	tinygl/image_util.o \
 	tinygl/init.o \

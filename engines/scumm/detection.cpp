@@ -69,7 +69,7 @@ using namespace Scumm;
 
 class ScummMetaEngineDetection : public MetaEngineDetection {
 public:
-	const char *getEngineId() const override {
+	const char *getName() const override {
 		return "scumm";
 	}
 
@@ -77,12 +77,12 @@ public:
 		return debugFlagList;
 	}
 
-	const char *getName() const override;
+	const char *getEngineName() const override;
 	const char *getOriginalCopyright() const override;
 
 	PlainGameList getSupportedGames() const override;
 	PlainGameDescriptor findGame(const char *gameid) const override;
-	DetectedGames detectGames(const Common::FSList &fslist) override;
+	DetectedGames detectGames(const Common::FSList &fslist, uint32 /*skipADFlags*/, bool /*skipIncomplete*/) override;
 
 	const ExtraGuiOptions getExtraGuiOptions(const Common::String &target) const override;
 };
@@ -121,7 +121,7 @@ static Common::String generatePreferredTarget(const DetectorResult &x) {
 	return res;
 }
 
-DetectedGames ScummMetaEngineDetection::detectGames(const Common::FSList &fslist) {
+DetectedGames ScummMetaEngineDetection::detectGames(const Common::FSList &fslist, uint32 /*skipADFlags*/, bool /*skipIncomplete*/) {
 	DetectedGames detectedGames;
 	Common::List<DetectorResult> results;
 	::detectGames(fslist, results, nullptr);
@@ -131,7 +131,7 @@ DetectedGames ScummMetaEngineDetection::detectGames(const Common::FSList &fslist
 		const PlainGameDescriptor *g = findPlainGameDescriptor(x->game.gameid, gameDescriptions);
 		assert(g);
 
-		DetectedGame game = DetectedGame(getEngineId(), x->game.gameid, g->description, x->language, x->game.platform, x->extra);
+		DetectedGame game = DetectedGame(getName(), x->game.gameid, g->description, x->language, x->game.platform, x->extra);
 
 		// Compute and set the preferred target name for this game.
 		// Based on generateComplexID() in advancedDetector.cpp.
@@ -146,7 +146,7 @@ DetectedGames ScummMetaEngineDetection::detectGames(const Common::FSList &fslist
 	return detectedGames;
 }
 
-const char *ScummMetaEngineDetection::getName() const {
+const char *ScummMetaEngineDetection::getEngineName() const {
 	return "SCUMM ["
 
 #if defined(ENABLE_SCUMM_7_8) && defined(ENABLE_HE)
@@ -234,6 +234,24 @@ static const ExtraGuiOption enableEnhancements {
 	0
 };
 
+static const ExtraGuiOption audioOverride {
+	_s("Load modded audio"),
+	_s("Replace music, sound effects, and speech clips with modded audio files, if available."),
+	"audio_override",
+	true,
+	0,
+	0
+};
+
+static const ExtraGuiOption enableOriginalGUI = {
+	_s("Enable the original GUI and Menu"),
+	_s("Allow the game to use the in-engine graphical interface and the original save/load menu."),
+	"original_gui",
+	true,
+	0,
+	0
+};
+
 const ExtraGuiOptions ScummMetaEngineDetection::getExtraGuiOptions(const Common::String &target) const {
 	ExtraGuiOptions options;
 	// Query the GUI options
@@ -243,8 +261,14 @@ const ExtraGuiOptions ScummMetaEngineDetection::getExtraGuiOptions(const Common:
 	const Common::String guiOptions = parseGameGUIOptions(guiOptionsString);
 	const Common::Platform platform = Common::parsePlatform(ConfMan.get("platform", target));
 
+	if (target.empty() || guiOptions.contains(GUIO_ORIGINALGUI)) {
+		options.push_back(enableOriginalGUI);
+	}
 	if (target.empty() || guiOptions.contains(GUIO_ENHANCEMENTS)) {
 		options.push_back(enableEnhancements);
+	}
+	if (target.empty() || guiOptions.contains(GUIO_AUDIO_OVERRIDE)) {
+		options.push_back(audioOverride);
 	}
 	if (target.empty() || gameid == "comi") {
 		options.push_back(comiObjectLabelsOption);

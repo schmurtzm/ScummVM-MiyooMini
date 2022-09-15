@@ -50,26 +50,42 @@ using namespace Hypno;
 
 void parseSN(const char *sn, const char *path, const char *enc, const char *flag) {
 	uint32 sampleRate = 11025;
+	bool stereo = false;
 	if (Common::String("22K") == enc || Common::String("22k") == enc)
 		sampleRate = 22050;
 	else if (HYPNO_ARC_default_sound_rate > 0)
 		sampleRate = HYPNO_ARC_default_sound_rate;
+	if (Common::String("STEREO") == flag)
+		stereo = true;
 
 	if (Common::String("S0") == sn) {
 		g_parsedArc->music = path;
 		g_parsedArc->musicRate = sampleRate;
+		g_parsedArc->musicStereo = stereo;
 	} else if (Common::String("S1") == sn) {
 		g_parsedArc->shootSound = path;
 		g_parsedArc->shootSoundRate = sampleRate;
+		assert(!stereo);
 	} else if (Common::String("S2") == sn) {
 		g_parsedArc->hitSound = path;
 		g_parsedArc->hitSoundRate = sampleRate;
+		assert(!stereo);
 	} else if (Common::String("S4") == sn) {
 		g_parsedArc->enemySound = path;
 		g_parsedArc->enemySoundRate = sampleRate;
+		assert(!stereo);
 	} else if (Common::String("S5") == sn) {
 		g_parsedArc->additionalSound = path;
 		g_parsedArc->additionalSoundRate = sampleRate;
+		assert(!stereo);
+	} else if (Common::String("S7") == sn) {
+		g_parsedArc->noAmmoSound = path;
+		g_parsedArc->noAmmoSoundRate = sampleRate;
+		assert(!stereo);
+	} else if (Common::String("S8") == sn) {
+		g_parsedArc->additionalSound = path;
+		g_parsedArc->additionalSoundRate = sampleRate;
+		assert(!stereo);
 	}
 	debugC(1, kHypnoDebugParser, "SN %s", path);
 }
@@ -166,29 +182,43 @@ hline: 	CTOK NUM {
 		debugC(1, kHypnoDebugParser, "ON %d", $2);
 	}
 	| TPTOK NONETOK NUM FILENAME {
-		ArcadeTransition at("NONE", $4, "", $3);
+		ArcadeTransition at("NONE", $4, "", 0, $3);
 		g_parsedArc->transitions.push_back(at);
 		debugC(1, kHypnoDebugParser, "Tp %s %d %s", "NONE", $3, $4);
 	}
 	| TSTOK FILENAME NUM NUM {
+		ArcadeTransition at($2, "", "", 0, $3);
+		at.selection = true;
+		g_parsedArc->transitions.push_back(at);
 		debugC(1, kHypnoDebugParser, "Ts %s %d %d", $2, $3, $4);
 	}
 	| TPTOK FILENAME NUM FILENAME {
-		ArcadeTransition at($2, $4, "", $3);
+		ArcadeTransition at($2, $4, "", 0, $3);
 		g_parsedArc->transitions.push_back(at);
 		debugC(1, kHypnoDebugParser, "Tp %s %d %s", $2, $3, $4);
 	}
 	| TATOK NUM FILENAME flag enc {
-		ArcadeTransition at("", "", $3, $2);
+		uint32 sampleRate = 11025;
+		bool stereo = false;
+		if (Common::String("22K") == $5 || Common::String("22k") == $5)
+			sampleRate = 22050;
+		if (Common::String("STEREO") == $4)
+			stereo = true;
+
+		ArcadeTransition at("", "", $3, sampleRate, $2);
+		at.soundStereo = stereo;
 		g_parsedArc->transitions.push_back(at);
 		debugC(1, kHypnoDebugParser, "Ta %d %s", $2, $3);
 	}
 	| TTOK FILENAME NUM {
-		ArcadeTransition at($2, "", "", $3);
+		ArcadeTransition at($2, "", "", 0, $3);
 		g_parsedArc->transitions.push_back(at);
 		debugC(1, kHypnoDebugParser, "T %s %d", $2, $3);
 	}
-	| TTOK NONETOK NUM { debugC(1, kHypnoDebugParser, "T NONE %d", $3); }
+	| TTOK NONETOK NUM {
+		ArcadeTransition at("NONE", "", "", 0, $3);
+		g_parsedArc->transitions.push_back(at);
+		debugC(1, kHypnoDebugParser, "T NONE %d", $3); }
 	| NTOK FILENAME  {
 		g_parsedArc->backgroundVideo = $2;
 		debugC(1, kHypnoDebugParser, "N %s", $2);
@@ -315,20 +345,34 @@ bline: FNTOK FILENAME {
 			shoot->animation = $2;
 		else if (Common::String("F4") == $1)
 			shoot->explosionAnimation = $2;
+		else if (Common::String("F6") == $1)
+			shoot->additionalVideo = $2;
 		debugC(1, kHypnoDebugParser, "FN %s", $2);
 	}
 	| AVTOK NUM {
+		assert($2 == 0);
+		shoot->nonHostile = true;
 		debugC(1, kHypnoDebugParser, "AV %d", $2);
 	}
 	| ALTOK NUM {
+		assert(g_parsedArc->shoots.size() > 0);
+		shoot->checkIfDestroyed = g_parsedArc->shoots.back().name;
 		debugC(1, kHypnoDebugParser, "AL %d", $2);
 	}
 	| ABTOK NUM {
+		assert($2 == 1);
+		shoot->playInteractionAudio = true;
 		debugC(1, kHypnoDebugParser, "AB %d", $2);
 	}
-	| DTOK LTOK  { debugC(1, kHypnoDebugParser, "D L");
-	}
+	| DTOK LTOK  {
+		shoot->direction = 'L';
+		debugC(1, kHypnoDebugParser, "D L"); }
+	| DTOK RTOK  {
+		shoot->direction = 'R';
+		debugC(1, kHypnoDebugParser, "D R"); }
 	| J0TOK NUM {
+		assert($2 > 0);
+		shoot->warningVideoIdx = $2;
 		debugC(1, kHypnoDebugParser, "J0 %d", $2);
 	}
 	| FNTOK NONETOK {
@@ -502,6 +546,10 @@ bline: FNTOK FILENAME {
 		shoot->explosionFrames.push_back(fi);
 	}
 	| KTOK NUM NUM NUM {
+		assert($3 > $2);
+		FrameInfo fi($2, $3 - $2);
+		shoot->jumpToTimeAfterKilled = $4;
+		shoot->explosionFrames.push_back(fi);
 		debugC(1, kHypnoDebugParser, "K %d %d %d", $2, $3, $4);
 	}
 	| KTOK NUM NUM { debugC(1, kHypnoDebugParser, "K %d %d", $2, $3);
@@ -509,12 +557,18 @@ bline: FNTOK FILENAME {
 		shoot->explosionFrames.push_back(fi);
 	}
 	| SNTOK FILENAME enc {
-		if (Common::String("S0") == $1)
+		if (Common::String("S0") == $1) {
 			shoot->enemySound = $2;
-		else if (Common::String("S1") == $1)
+			if (Common::String($3) == "11K")
+				shoot->enemySoundRate = 11025;
+			else
+				shoot->enemySoundRate = 22050;
+		} else if (Common::String("S1") == $1)
 			shoot->deathSound = $2;
 		else if (Common::String("S2") == $1)
 			shoot->hitSound = $2;
+		else if (Common::String("S4") == $1)
+			shoot->animalSound = $2;
 
 		debugC(1, kHypnoDebugParser, "SN %s", $2); }
 	| SNTOK {
@@ -523,12 +577,17 @@ bline: FNTOK FILENAME {
 
 	| GTOK { debugC(1, kHypnoDebugParser, "G"); }
 	| TTOK NUM NUM NUM {
+		shoot->interactionFrame = $2;
+		assert($3 == 0);
+		shoot->waitForClickAfterInteraction = $4;
 		debugC(1, kHypnoDebugParser, "T %d %d %d", $2, $3, $4);
 	}
 	| TTOK NUM {
+		shoot->interactionFrame = $2;
 		debugC(1, kHypnoDebugParser, "T %d", $2);
 	}
 	| TTOK {
+		shoot->isAnimal = true;
 		debugC(1, kHypnoDebugParser, "T");
 	}
 	| MTOK {

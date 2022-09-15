@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ScummVM 1.9.0git\n"
 "Report-Msgid-Bugs-To: scummvm-devel@lists.scummvm.org\n"
-"POT-Creation-Date: 2022-05-07 19:56+0000\n"
-"PO-Revision-Date: 2022-04-29 11:23+0000\n"
+"POT-Creation-Date: 2022-09-14 21:07+0000\n"
+"PO-Revision-Date: 2022-08-26 08:55+0000\n"
 "Last-Translator: Eugene Sandulenko <sev@scummvm.org>\n"
 "Language-Team: Ukrainian <https://translations.scummvm.org/projects/scummvm/"
 "scummvm/uk/>\n"
@@ -23,16 +23,16 @@ msgstr ""
 "X-Language-name: Українська\n"
 
 #. I18N: built on <build date> with <compiler>
-#: gui/about.cpp:104
+#: gui/about.cpp:103
 #, c-format
 msgid "(built on %s with %s)"
 msgstr "(зібраний %s з %s)"
 
-#: gui/about.cpp:111
+#: gui/about.cpp:110
 msgid "Features compiled in:"
 msgstr "Включені в білд опції:"
 
-#: gui/about.cpp:120
+#: gui/about.cpp:119
 msgid "Available engines:"
 msgstr "Доступні движки:"
 
@@ -58,18 +58,19 @@ msgctxt "lowres"
 msgid "Go up"
 msgstr "Вгору"
 
-#: gui/browser.cpp:81 gui/chooser.cpp:45 gui/downloadiconsdialog.cpp:161
-#: gui/editgamedialog.cpp:384 gui/editrecorddialog.cpp:66
-#: gui/filebrowser-dialog.cpp:68 gui/fluidsynth-dialog.cpp:152
-#: gui/massadd.cpp:91 gui/options.cpp:2104 gui/predictivedialog.cpp:68
-#: gui/recorderdialog.cpp:67 gui/recorderdialog.cpp:154
-#: gui/remotebrowser.cpp:59 gui/saveload-dialog.cpp:62
-#: gui/saveload-dialog.cpp:418 gui/saveload-dialog.cpp:489
-#: gui/saveload-dialog.cpp:793 gui/saveload-dialog.cpp:1186
-#: gui/themebrowser.cpp:54 gui/unknown-game-dialog.cpp:53
-#: engines/engine.cpp:714 backends/dialogs/gtk/gtk-dialogs.cpp:63
-#: backends/events/default/default-events.cpp:194
-#: backends/events/default/default-events.cpp:218
+#: gui/browser.cpp:81 gui/chooser.cpp:45 gui/downloadiconsdialog.cpp:257
+#: gui/downloadiconsdialog.cpp:452 gui/editgamedialog.cpp:384
+#: gui/editrecorddialog.cpp:66 gui/filebrowser-dialog.cpp:68
+#: gui/fluidsynth-dialog.cpp:152 gui/massadd.cpp:93 gui/options.cpp:2193
+#: gui/predictivedialog.cpp:68 gui/recorderdialog.cpp:73
+#: gui/recorderdialog.cpp:213 gui/remotebrowser.cpp:59
+#: gui/saveload-dialog.cpp:64 gui/saveload-dialog.cpp:457
+#: gui/saveload-dialog.cpp:528 gui/saveload-dialog.cpp:830
+#: gui/saveload-dialog.cpp:1223 gui/themebrowser.cpp:54
+#: gui/unknown-game-dialog.cpp:53 engines/engine.cpp:699
+#: backends/dialogs/gtk/gtk-dialogs.cpp:63
+#: backends/events/default/default-events.cpp:193
+#: backends/events/default/default-events.cpp:217
 #: backends/platform/wii/options.cpp:47 engines/asylum/asylum.cpp:201
 #: engines/buried/saveload.cpp:69 engines/cine/saveload.cpp:863
 #: engines/drascula/saveload.cpp:48 engines/grim/inputdialog.cpp:84
@@ -79,8 +80,8 @@ msgstr "Вгору"
 #: engines/mohawk/riven_stacks/aspit.cpp:349
 #: engines/mohawk/riven_stacks/aspit.cpp:371
 #: engines/mohawk/riven_stacks/aspit.cpp:455 engines/nancy/dialogs.cpp:100
-#: engines/parallaction/saveload.cpp:270 engines/scumm/dialogs.cpp:178
-#: engines/sword1/control.cpp:888 engines/wintermute/wintermute.cpp:182
+#: engines/parallaction/saveload.cpp:270 engines/sword1/control.cpp:888
+#: engines/wintermute/wintermute.cpp:182
 msgid "Cancel"
 msgstr "Відміна"
 
@@ -96,7 +97,7 @@ msgstr "Вибрати"
 msgid "Select directory where to download game data"
 msgstr "Виберіть папку куди завантажувати файли гри"
 
-#: gui/downloaddialog.cpp:49 gui/editgamedialog.cpp:583 gui/launcher.cpp:283
+#: gui/downloaddialog.cpp:49 gui/editgamedialog.cpp:583 gui/launcher.cpp:277
 msgid "Select directory with game data"
 msgstr "Виберіть папку з файлами гри"
 
@@ -108,9 +109,9 @@ msgstr "Від: "
 msgid "To: "
 msgstr "До: "
 
-#: gui/downloaddialog.cpp:63 gui/downloadiconsdialog.cpp:93
-#: gui/downloadiconsdialog.cpp:136 gui/downloadiconsdialog.cpp:146
-#: gui/downloadiconsdialog.cpp:168 gui/downloadiconsdialog.cpp:182
+#: gui/downloaddialog.cpp:63 gui/downloadiconsdialog.cpp:188
+#: gui/downloadiconsdialog.cpp:232 gui/downloadiconsdialog.cpp:242
+#: gui/downloadiconsdialog.cpp:264 gui/downloadiconsdialog.cpp:279
 msgid "Cancel download"
 msgstr "Припинити завантаження"
 
@@ -119,8 +120,8 @@ msgctxt "lowres"
 msgid "Cancel download"
 msgstr "Припинити"
 
-#: gui/downloaddialog.cpp:67 gui/downloadiconsdialog.cpp:94
-#: gui/downloadiconsdialog.cpp:172
+#: gui/downloaddialog.cpp:67 gui/downloadiconsdialog.cpp:189
+#: gui/downloadiconsdialog.cpp:268
 msgid "Hide"
 msgstr "Сховати"
 
@@ -134,29 +135,28 @@ msgstr ""
 
 #: gui/downloaddialog.cpp:118 gui/downloaddialog.cpp:152
 #: gui/filebrowser-dialog.cpp:136 gui/fluidsynth-dialog.cpp:217
-#: gui/launcher.cpp:407 gui/launcher.cpp:436 gui/launcher.cpp:479
-#: gui/options.cpp:3063 gui/options.cpp:3101 gui/saveload-dialog.cpp:343
-#: backends/events/default/default-events.cpp:194 engines/buried/buried.cpp:580
-#: engines/director/events.cpp:91 engines/grim/grim.cpp:357
-#: engines/kyra/gui/saveload_eob.cpp:595 engines/kyra/gui/saveload_eob.cpp:628
+#: gui/launcher.cpp:401 gui/launcher.cpp:430 gui/launcher.cpp:473
+#: gui/options.cpp:3133 gui/options.cpp:3171
+#: backends/events/default/default-events.cpp:193 engines/buried/buried.cpp:580
+#: engines/director/events.cpp:91 engines/grim/grim.cpp:355
+#: engines/kyra/gui/saveload_eob.cpp:597 engines/kyra/gui/saveload_eob.cpp:630
 #: engines/parallaction/metaengine.cpp:145
-#: engines/sci/graphics/controls32.cpp:927
+#: engines/sci/graphics/controls32.cpp:929 engines/toon/toon.cpp:1502
 msgid "Yes"
 msgstr "Так"
 
 #: gui/downloaddialog.cpp:118 gui/downloaddialog.cpp:153
 #: gui/filebrowser-dialog.cpp:136 gui/fluidsynth-dialog.cpp:217
-#: gui/launcher.cpp:407 gui/launcher.cpp:436 gui/launcher.cpp:479
-#: gui/options.cpp:3063 gui/options.cpp:3101 gui/saveload-dialog.cpp:343
-#: engines/buried/buried.cpp:580 engines/director/events.cpp:91
-#: engines/grim/grim.cpp:357 engines/kyra/gui/saveload_eob.cpp:595
-#: engines/kyra/gui/saveload_eob.cpp:628
+#: gui/launcher.cpp:401 gui/launcher.cpp:430 gui/launcher.cpp:473
+#: gui/options.cpp:3133 gui/options.cpp:3171 engines/buried/buried.cpp:580
+#: engines/director/events.cpp:91 engines/grim/grim.cpp:355
+#: engines/kyra/gui/saveload_eob.cpp:597 engines/kyra/gui/saveload_eob.cpp:630
 #: engines/parallaction/metaengine.cpp:151
-#: engines/sci/graphics/controls32.cpp:927
+#: engines/sci/graphics/controls32.cpp:929 engines/toon/toon.cpp:1502
 msgid "No"
 msgstr "Ні"
 
-#: gui/downloaddialog.cpp:136 gui/launcher.cpp:576
+#: gui/downloaddialog.cpp:136 gui/launcher.cpp:575
 msgid "ScummVM couldn't open the specified directory!"
 msgstr "ScummVM не може відкрити вказану папку!"
 
@@ -170,25 +170,25 @@ msgstr ""
 
 #: gui/downloaddialog.cpp:146 gui/editgamedialog.cpp:385
 #: gui/editrecorddialog.cpp:67 gui/fluidsynth-dialog.cpp:153
-#: gui/launcher.cpp:535 gui/launcher.cpp:539 gui/massadd.cpp:88
-#: gui/options.cpp:2106 gui/predictivedialog.cpp:69
-#: gui/saveload-dialog.cpp:1187 engines/engine.cpp:525 engines/engine.cpp:549
+#: gui/launcher.cpp:529 gui/launcher.cpp:533 gui/massadd.cpp:90
+#: gui/options.cpp:2195 gui/predictivedialog.cpp:69
+#: gui/saveload-dialog.cpp:1224 engines/engine.cpp:505 engines/engine.cpp:528
 #: backends/platform/wii/options.cpp:46 engines/agos/animation.cpp:558
 #: engines/buried/saveload.cpp:69
-#: engines/director/lingo/lingo-builtins.cpp:1652
+#: engines/director/lingo/lingo-builtins.cpp:1677
 #: engines/drascula/saveload.cpp:48 engines/grim/inputdialog.cpp:83
-#: engines/groovie/script.cpp:652 engines/nancy/dialogs.cpp:101
+#: engines/groovie/script.cpp:650 engines/nancy/dialogs.cpp:101
 #: engines/parallaction/saveload.cpp:270 engines/saga/music.cpp:99
-#: engines/sci/engine/kgraphics.cpp:75 engines/sci/graphics/controls32.cpp:924
-#: engines/scumm/dialogs.cpp:180 engines/scumm/scumm.cpp:1358
-#: engines/scumm/scumm.cpp:1384 engines/scumm/scumm.cpp:1406
-#: engines/scumm/scumm.cpp:1685 engines/scumm/scumm.cpp:2156
-#: engines/sky/compact.cpp:141 engines/sword1/animation.cpp:531
-#: engines/sword1/animation.cpp:552 engines/sword1/animation.cpp:568
-#: engines/sword1/animation.cpp:576 engines/sword1/control.cpp:888
-#: engines/sword1/logic.cpp:1634 engines/sword2/animation.cpp:428
-#: engines/sword2/animation.cpp:448 engines/sword2/animation.cpp:464
-#: engines/sword2/animation.cpp:474 engines/zvision/file/save_manager.cpp:225
+#: engines/sci/engine/kgraphics.cpp:75 engines/sci/graphics/controls32.cpp:926
+#: engines/scumm/scumm.cpp:1097 engines/scumm/scumm.cpp:1123
+#: engines/scumm/scumm.cpp:1145 engines/scumm/scumm.cpp:1443
+#: engines/scumm/scumm.cpp:1916 engines/sky/compact.cpp:140
+#: engines/sword1/animation.cpp:531 engines/sword1/animation.cpp:552
+#: engines/sword1/animation.cpp:568 engines/sword1/animation.cpp:576
+#: engines/sword1/control.cpp:888 engines/sword1/logic.cpp:1634
+#: engines/sword2/animation.cpp:428 engines/sword2/animation.cpp:448
+#: engines/sword2/animation.cpp:464 engines/sword2/animation.cpp:474
+#: engines/zvision/file/save_manager.cpp:225
 msgid "OK"
 msgstr "OK"
 
@@ -201,61 +201,78 @@ msgstr ""
 "\"%s\" вже існує у вказаній папці.\n"
 "Чи ви дійсно хочете завантажити файли в цю папку?"
 
-#: gui/downloaddialog.cpp:214 gui/downloadiconsdialog.cpp:254
+#: gui/downloaddialog.cpp:214 gui/downloadiconsdialog.cpp:354
 #, c-format
 msgid "Downloaded %s %S / %s %S"
 msgstr "Завантажено %s %S з %s %S"
 
-#: gui/downloaddialog.cpp:221 gui/downloadiconsdialog.cpp:261
+#: gui/downloaddialog.cpp:221 gui/downloadiconsdialog.cpp:361
 #, c-format
 msgid "Download speed: %s %S"
 msgstr "Швидкість завантаження: %s %S"
 
-#: gui/downloadiconsdialog.cpp:81 gui/downloadiconsdialog.cpp:135
+#: gui/downloadiconsdialog.cpp:150
+#, c-format
+msgid "ERROR %d: %s"
+msgstr "ПОМИЛКА %d:%s"
+
+#: gui/downloadiconsdialog.cpp:176 gui/downloadiconsdialog.cpp:231
 msgid "Downloading icons list..."
 msgstr "Завантажую список іконок..."
 
-#: gui/downloadiconsdialog.cpp:145
+#: gui/downloadiconsdialog.cpp:190
+msgid "Clear Cache"
+msgstr "Очистити кеш"
+
+#: gui/downloadiconsdialog.cpp:241
 #, c-format
 msgid "Downloading icons list... %d entries"
 msgstr "Завантажую список іконок... %d записів"
 
-#: gui/downloadiconsdialog.cpp:155
+#: gui/downloadiconsdialog.cpp:251
 #, c-format
 msgid "Detected %d new packs, %s %S"
 msgstr "Знайдено %d нових пакетів, %s %S"
 
-#: gui/downloadiconsdialog.cpp:157
+#: gui/downloadiconsdialog.cpp:253
 msgid "Download"
 msgstr "Завантажити"
 
-#: gui/downloadiconsdialog.cpp:180
+#: gui/downloadiconsdialog.cpp:277
 #, c-format
 msgid "Download complete, downloaded %d packs, %s %S"
 msgstr "Завантаження закінчено, завантажено %d пакетів, %s %S"
 
-#: gui/downloadiconsdialog.cpp:186 gui/downloadiconsdialog.cpp:303
-#: gui/gui-manager.cpp:221 gui/unknown-game-dialog.cpp:53
+#: gui/downloadiconsdialog.cpp:283 gui/downloadiconsdialog.cpp:375
+#: gui/gui-manager.cpp:226 gui/unknown-game-dialog.cpp:53
 #: engines/nancy/dialogs.cpp:313 engines/scumm/help.cpp:124
 #: engines/scumm/help.cpp:139 engines/scumm/help.cpp:164
 #: engines/scumm/help.cpp:190 engines/scumm/help.cpp:208
 msgid "Close"
 msgstr "Закрити"
 
-#: gui/downloadiconsdialog.cpp:308
-#, c-format
-msgid "ERROR %d: %s"
-msgstr "ПОМИЛКА %d:%s"
-
-#: gui/downloadiconsdialog.cpp:325
+#: gui/downloadiconsdialog.cpp:382 gui/downloadiconsdialog.cpp:428
 msgid "ERROR: No icons path set"
 msgstr "ПОМИЛКА: Не завдано шлях до іконок"
 
-#: gui/downloadiconsdialog.cpp:355
+#: gui/downloadiconsdialog.cpp:416
 msgid "No new icons packs available"
 msgstr "Не знайдено нових пакетів іконок"
 
-#: gui/editgamedialog.cpp:141 engines/dialogs.cpp:275
+#: gui/downloadiconsdialog.cpp:452
+#, c-format
+msgid ""
+"You are about to remove %s %s of data, deleting all previously downloaded "
+"icon files. Do you want to proceed?"
+msgstr ""
+"Ви збираєтесь видалити %s%s даних, і видалити всі попередньо завантажені "
+"іконки. Чи ви насправді хочете продовжити?"
+
+#: gui/downloadiconsdialog.cpp:452 gui/updates-dialog.cpp:115
+msgid "Proceed"
+msgstr "Продовжити"
+
+#: gui/editgamedialog.cpp:141 engines/dialogs.cpp:277
 msgid "Game"
 msgstr "Гра"
 
@@ -304,12 +321,13 @@ msgstr ""
 "Мова гри. Зміна цього налаштування не перетворить гру англійською на "
 "українську"
 
-#: gui/editgamedialog.cpp:163 gui/editgamedialog.cpp:178 gui/options.cpp:1368
-#: gui/options.cpp:1388 gui/options.cpp:1401 gui/options.cpp:1415
-#: gui/options.cpp:1427 gui/options.cpp:1447 gui/options.cpp:1461
-#: gui/options.cpp:1840 gui/options.cpp:2258 gui/options.cpp:2331
-#: gui/options.cpp:2511 gui/options.cpp:2951 audio/null.cpp:40
-#: engines/ags/dialogs.cpp:62
+#: gui/editgamedialog.cpp:163 gui/editgamedialog.cpp:178 gui/options.cpp:1436
+#: gui/options.cpp:1458 gui/options.cpp:1473 gui/options.cpp:1489
+#: gui/options.cpp:1501 gui/options.cpp:1521 gui/options.cpp:1535
+#: gui/options.cpp:1929 gui/options.cpp:2338 gui/options.cpp:2412
+#: gui/options.cpp:2592 gui/options.cpp:3020 audio/null.cpp:40
+#: backends/platform/android/options.cpp:112
+#: backends/platform/android/options.cpp:113 engines/ags/dialogs.cpp:62
 msgid "<default>"
 msgstr "<за умовчанням>"
 
@@ -327,12 +345,12 @@ msgctxt "lowres"
 msgid "Platform:"
 msgstr "Платформа:"
 
-#: gui/editgamedialog.cpp:207 gui/options.cpp:1782 gui/options.cpp:1952
-#: backends/graphics/sdl/sdl-graphics.cpp:418
+#: gui/editgamedialog.cpp:207 gui/options.cpp:1869 gui/options.cpp:2041
+#: backends/graphics/sdl/sdl-graphics.cpp:423
 msgid "Graphics"
 msgstr "Графіка"
 
-#: gui/editgamedialog.cpp:207 gui/options.cpp:1782 gui/options.cpp:1952
+#: gui/editgamedialog.cpp:207 gui/options.cpp:1869 gui/options.cpp:2041
 msgid "GFX"
 msgstr "Грф"
 
@@ -345,7 +363,7 @@ msgctxt "lowres"
 msgid "Override global graphic settings"
 msgstr "Перекрити глобальні налаштування графіки"
 
-#: gui/editgamedialog.cpp:225 gui/options.cpp:1963
+#: gui/editgamedialog.cpp:225 gui/options.cpp:2052
 msgid "Shader"
 msgstr "Шейдер"
 
@@ -358,11 +376,11 @@ msgctxt "lowres"
 msgid "Override global shader settings"
 msgstr "Перекрити глобальні налаштування шейдерів"
 
-#: gui/editgamedialog.cpp:244 gui/options.cpp:1995 engines/dialogs.cpp:318
+#: gui/editgamedialog.cpp:244 gui/options.cpp:2084 engines/dialogs.cpp:320
 msgid "Keymaps"
 msgstr "Мапа клавіш"
 
-#: gui/editgamedialog.cpp:251 gui/options.cpp:2002 engines/dialogs.cpp:325
+#: gui/editgamedialog.cpp:251 gui/options.cpp:2091 engines/dialogs.cpp:327
 msgid "Backend"
 msgstr "Бекенд"
 
@@ -375,7 +393,7 @@ msgctxt "lowres"
 msgid "Override global backend settings"
 msgstr "Перекрити глобальні налаштування бекенду"
 
-#: gui/editgamedialog.cpp:270 gui/options.cpp:2016 engines/dialogs.cpp:293
+#: gui/editgamedialog.cpp:270 gui/options.cpp:2105 engines/dialogs.cpp:295
 msgid "Audio"
 msgstr "Аудіо"
 
@@ -388,11 +406,11 @@ msgctxt "lowres"
 msgid "Override global audio settings"
 msgstr "Перекрити глобальні налаштування аудіо"
 
-#: gui/editgamedialog.cpp:284 gui/options.cpp:2021
+#: gui/editgamedialog.cpp:284 gui/options.cpp:2110
 msgid "Volume"
 msgstr "Гучність"
 
-#: gui/editgamedialog.cpp:286 gui/options.cpp:2023
+#: gui/editgamedialog.cpp:286 gui/options.cpp:2112
 msgctxt "lowres"
 msgid "Volume"
 msgstr "Гучн"
@@ -406,7 +424,7 @@ msgctxt "lowres"
 msgid "Override global volume settings"
 msgstr "Перекрити глобальні налаштування гучності"
 
-#: gui/editgamedialog.cpp:302 gui/options.cpp:2031
+#: gui/editgamedialog.cpp:302 gui/options.cpp:2120
 msgid "MIDI"
 msgstr "MIDI"
 
@@ -419,7 +437,7 @@ msgctxt "lowres"
 msgid "Override global MIDI settings"
 msgstr "Перекрити глобальні налаштування MIDI"
 
-#: gui/editgamedialog.cpp:317 gui/options.cpp:2037
+#: gui/editgamedialog.cpp:317 gui/options.cpp:2126
 msgid "MT-32"
 msgstr "MT-32"
 
@@ -432,11 +450,11 @@ msgctxt "lowres"
 msgid "Override global MT-32 settings"
 msgstr "Перекрити глобальні налаштування MT-32"
 
-#: gui/editgamedialog.cpp:331 gui/options.cpp:2044
+#: gui/editgamedialog.cpp:331 gui/options.cpp:2133
 msgid "Paths"
 msgstr "Шляхи"
 
-#: gui/editgamedialog.cpp:333 gui/options.cpp:2046
+#: gui/editgamedialog.cpp:333 gui/options.cpp:2135
 msgctxt "lowres"
 msgid "Paths"
 msgstr "Шляхи"
@@ -450,7 +468,7 @@ msgctxt "lowres"
 msgid "Game Path:"
 msgstr "Шлях до гри:"
 
-#: gui/editgamedialog.cpp:347 gui/options.cpp:2235
+#: gui/editgamedialog.cpp:347 gui/options.cpp:2312
 msgid "Extra Path:"
 msgstr "Додатк. шлях:"
 
@@ -459,54 +477,52 @@ msgstr "Додатк. шлях:"
 msgid "Specifies path to additional data used by the game"
 msgstr "Вказує шлях до додаткових файлів даних для гри"
 
-#: gui/editgamedialog.cpp:349 gui/options.cpp:2237
+#: gui/editgamedialog.cpp:349 gui/options.cpp:2314
 msgctxt "lowres"
 msgid "Extra Path:"
 msgstr "Дод. шлях:"
 
-#: gui/editgamedialog.cpp:356 gui/options.cpp:2211
+#: gui/editgamedialog.cpp:356 gui/options.cpp:2288
 msgid "Save Path:"
 msgstr "Шлях збер.:"
 
 #: gui/editgamedialog.cpp:356 gui/editgamedialog.cpp:358
-#: gui/editgamedialog.cpp:359 gui/options.cpp:2211 gui/options.cpp:2213
-#: gui/options.cpp:2214
+#: gui/editgamedialog.cpp:359 gui/options.cpp:2288 gui/options.cpp:2290
 msgid "Specifies where your saved games are put"
 msgstr "Вказує шлях до збережених ігор"
 
-#: gui/editgamedialog.cpp:358 gui/options.cpp:2213
+#: gui/editgamedialog.cpp:358 gui/options.cpp:2290
 msgctxt "lowres"
 msgid "Save Path:"
 msgstr "Шлях збер.:"
 
-#: gui/editgamedialog.cpp:370 engines/dialogs.cpp:340
+#: gui/editgamedialog.cpp:370 engines/dialogs.cpp:342
 msgid "Achievements"
 msgstr "Досягнення"
 
-#: gui/editgamedialog.cpp:374 engines/dialogs.cpp:344
+#: gui/editgamedialog.cpp:374 engines/dialogs.cpp:346
 msgid "Statistics"
 msgstr "Статистика"
 
 #: gui/editgamedialog.cpp:398 gui/editgamedialog.cpp:504
-#: gui/editgamedialog.cpp:570 gui/editgamedialog.cpp:637 gui/options.cpp:2128
-#: gui/options.cpp:2134 gui/options.cpp:2140 gui/options.cpp:2148
-#: gui/options.cpp:2179 gui/options.cpp:2222 gui/options.cpp:2230
-#: gui/options.cpp:2238 gui/options.cpp:2247 gui/options.cpp:2624
-#: gui/options.cpp:2630 gui/options.cpp:2636 gui/options.cpp:2643
-#: gui/options.cpp:2652 gui/options.cpp:2932 gui/options.cpp:2935
-#: gui/options.cpp:2938 gui/options.cpp:2945 gui/options.cpp:2957
-#: gui/options.cpp:2968
+#: gui/editgamedialog.cpp:570 gui/editgamedialog.cpp:637 gui/options.cpp:2218
+#: gui/options.cpp:2220 gui/options.cpp:2225 gui/options.cpp:2256
+#: gui/options.cpp:2299 gui/options.cpp:2315 gui/options.cpp:2324
+#: gui/options.cpp:2711 gui/options.cpp:2713 gui/options.cpp:2717
+#: gui/options.cpp:2726 gui/options.cpp:3001 gui/options.cpp:3007
+#: gui/options.cpp:3014 gui/options.cpp:3026 gui/options.cpp:3037
 msgctxt "path"
 msgid "None"
 msgstr "Не завдано"
 
 #: gui/editgamedialog.cpp:403 gui/editgamedialog.cpp:510
-#: gui/editgamedialog.cpp:641 gui/options.cpp:2122 gui/options.cpp:2618
-#: gui/options.cpp:2941 backends/platform/wii/options.cpp:55
+#: gui/editgamedialog.cpp:641 gui/options.cpp:2217 gui/options.cpp:2219
+#: gui/options.cpp:2710 gui/options.cpp:2712 gui/options.cpp:3004
+#: gui/options.cpp:3010 backends/platform/wii/options.cpp:55
 msgid "Default"
 msgstr "За умовчанням"
 
-#: gui/editgamedialog.cpp:563 gui/options.cpp:2962
+#: gui/editgamedialog.cpp:563 gui/options.cpp:3031
 msgid "Select SoundFont"
 msgstr "Виберіть SoundFont"
 
@@ -514,11 +530,11 @@ msgstr "Виберіть SoundFont"
 msgid "Select additional game directory"
 msgstr "Виберіть додаткову папку гри"
 
-#: gui/editgamedialog.cpp:615 gui/options.cpp:2843
+#: gui/editgamedialog.cpp:615 gui/options.cpp:2917
 msgid "Select directory for saved games"
 msgstr "Виберіть папку для збережених ігор"
 
-#: gui/editgamedialog.cpp:622 gui/options.cpp:2850
+#: gui/editgamedialog.cpp:622 gui/options.cpp:2924
 msgid "The chosen directory cannot be written to. Please select another one."
 msgstr "Не можу писати у вибрану папку. Будь ласка, вкажіть іншу."
 
@@ -608,7 +624,7 @@ msgstr "Синусоїда"
 msgid "Triangle"
 msgstr "Трикутник"
 
-#: gui/fluidsynth-dialog.cpp:138 gui/options.cpp:2053
+#: gui/fluidsynth-dialog.cpp:138 gui/options.cpp:2142
 msgid "Misc"
 msgstr "Різне"
 
@@ -648,18 +664,18 @@ msgstr ""
 "Ви дійсно хочете скинути всі налаштування FluidSynth до їх значень за "
 "замовченням?"
 
-#: gui/gui-manager.cpp:212
+#: gui/gui-manager.cpp:217
 msgid "GUI"
 msgstr "GUI"
 
-#: gui/gui-manager.cpp:216 engines/mohawk/myst.cpp:573
+#: gui/gui-manager.cpp:221 engines/mohawk/myst.cpp:573
 #: engines/mohawk/riven.cpp:837
 msgid "Interact"
 msgstr "Взаємодія"
 
-#: gui/gui-manager.cpp:227 engines/metaengine.cpp:109
+#: gui/gui-manager.cpp:232 engines/metaengine.cpp:115
 #: engines/dragons/metaengine.cpp:160 engines/griffon/metaengine.cpp:95
-#: engines/grim/grim.cpp:455 engines/grim/grim.cpp:536
+#: engines/grim/grim.cpp:453 engines/grim/grim.cpp:534
 #: engines/twine/metaengine.cpp:329 engines/twine/metaengine.cpp:396
 #: engines/wintermute/keymapper_tables.h:1262
 #: engines/wintermute/keymapper_tables.h:1372
@@ -668,9 +684,9 @@ msgstr "Взаємодія"
 msgid "Up"
 msgstr "Догори"
 
-#: gui/gui-manager.cpp:232 engines/metaengine.cpp:114
+#: gui/gui-manager.cpp:237 engines/metaengine.cpp:121
 #: engines/dragons/metaengine.cpp:166 engines/griffon/metaengine.cpp:101
-#: engines/grim/grim.cpp:460 engines/grim/grim.cpp:541
+#: engines/grim/grim.cpp:458 engines/grim/grim.cpp:539
 #: engines/twine/metaengine.cpp:336 engines/twine/metaengine.cpp:404
 #: engines/wintermute/keymapper_tables.h:1268
 #: engines/wintermute/keymapper_tables.h:1379
@@ -679,9 +695,9 @@ msgstr "Догори"
 msgid "Down"
 msgstr "Донизу"
 
-#: gui/gui-manager.cpp:237 engines/metaengine.cpp:119
+#: gui/gui-manager.cpp:242 engines/metaengine.cpp:127
 #: engines/dragons/metaengine.cpp:172 engines/griffon/metaengine.cpp:107
-#: engines/grim/grim.cpp:465 engines/grim/grim.cpp:546
+#: engines/grim/grim.cpp:463 engines/grim/grim.cpp:544
 #: engines/twine/metaengine.cpp:351 engines/twine/metaengine.cpp:419
 #: engines/wintermute/keymapper_tables.h:320
 #: engines/wintermute/keymapper_tables.h:1274
@@ -691,9 +707,9 @@ msgstr "Донизу"
 msgid "Left"
 msgstr "Наліво"
 
-#: gui/gui-manager.cpp:242 engines/metaengine.cpp:124
+#: gui/gui-manager.cpp:247 engines/metaengine.cpp:133
 #: engines/dragons/metaengine.cpp:178 engines/griffon/metaengine.cpp:113
-#: engines/grim/grim.cpp:470 engines/grim/grim.cpp:551
+#: engines/grim/grim.cpp:468 engines/grim/grim.cpp:549
 #: engines/twine/metaengine.cpp:343 engines/twine/metaengine.cpp:412
 #: engines/wintermute/keymapper_tables.h:326
 #: engines/wintermute/keymapper_tables.h:1280
@@ -703,7 +719,7 @@ msgstr "Наліво"
 msgid "Right"
 msgstr "Направо"
 
-#: gui/gui-manager.cpp:247 engines/pegasus/pegasus.cpp:2814
+#: gui/gui-manager.cpp:252 engines/pegasus/pegasus.cpp:2814
 #: engines/wintermute/keymapper_tables.h:305
 #: engines/wintermute/keymapper_tables.h:346
 #: engines/wintermute/keymapper_tables.h:381
@@ -767,43 +783,43 @@ msgctxt "group"
 msgid "Platform"
 msgstr "Платформа"
 
-#: gui/launcher.cpp:210
+#: gui/launcher.cpp:213
 msgid "Select Group by"
 msgstr "Выбрать сортировку по группам"
 
-#: gui/launcher.cpp:215
+#: gui/launcher.cpp:218
 msgid "Group by: "
 msgstr "Групувати по: "
 
-#: gui/launcher.cpp:217
+#: gui/launcher.cpp:220
 msgid "Select a criteria to group the entries"
 msgstr "Оберіть критерій для групування"
 
-#: gui/launcher.cpp:240 engines/dialogs.cpp:94
+#: gui/launcher.cpp:243 engines/dialogs.cpp:96
 msgid "~Q~uit"
 msgstr "~В~ихід"
 
-#: gui/launcher.cpp:240 backends/platform/sdl/macosx/appmenu_osx.mm:229
+#: gui/launcher.cpp:243 backends/platform/sdl/macosx/appmenu_osx.mm:229
 msgid "Quit ScummVM"
 msgstr "Вихід зі ScummVM"
 
-#: gui/launcher.cpp:241
+#: gui/launcher.cpp:245
 msgid "A~b~out"
 msgstr "Про п~р~ограму"
 
-#: gui/launcher.cpp:241 backends/platform/sdl/macosx/appmenu_osx.mm:223
+#: gui/launcher.cpp:245 backends/platform/sdl/macosx/appmenu_osx.mm:223
 msgid "About ScummVM"
 msgstr "Про ScummVM"
 
-#: gui/launcher.cpp:243
+#: gui/launcher.cpp:246
 msgid "Global ~O~ptions..."
 msgstr "~Н~алаштування..."
 
-#: gui/launcher.cpp:243 gui/launcher.cpp:245
+#: gui/launcher.cpp:246
 msgid "Change global ScummVM options"
 msgstr "Змінити глобальні налаштування ScummVM"
 
-#: gui/launcher.cpp:245
+#: gui/launcher.cpp:246
 msgctxt "lowres"
 msgid "Global ~O~pts..."
 msgstr "~Н~алашт..."
@@ -812,66 +828,65 @@ msgstr "~Н~алашт..."
 msgid "~A~dd Game..."
 msgstr "~Д~одати гру..."
 
-#: gui/launcher.cpp:250 gui/launcher.cpp:258
+#: gui/launcher.cpp:250
 msgid "Add games to the list"
 msgstr "Додати гри до списку"
 
-#: gui/launcher.cpp:251
-msgid "Mass Add..."
-msgstr "Дод. багато..."
-
-#: gui/launcher.cpp:255
-msgid "~R~emove Game"
-msgstr "~В~идалити гру"
-
-#: gui/launcher.cpp:255 gui/launcher.cpp:263
-msgid "Remove game from the list. The game data files stay intact"
-msgstr "Видалити гру зі списку. Не видаляє гру з жорсткого диску"
-
-#: gui/launcher.cpp:258
+#: gui/launcher.cpp:250
 msgctxt "lowres"
 msgid "~A~dd Game..."
 msgstr "~Д~одати гру..."
 
-#: gui/launcher.cpp:259
-msgctxt "lowres"
-msgid "Mass Add..."
-msgstr "Дод. багато..."
+#: gui/launcher.cpp:253
+msgid "~R~emove Game"
+msgstr "~В~идалити гру"
 
-#: gui/launcher.cpp:263
+#: gui/launcher.cpp:253
+msgid "Remove game from the list. The game data files stay intact"
+msgstr "Видалити гру зі списку. Не видаляє гру з жорсткого диску"
+
+#: gui/launcher.cpp:253
 msgctxt "lowres"
 msgid "~R~emove Game"
 msgstr "~В~идалити гру"
 
-#: gui/launcher.cpp:271
+#: gui/launcher.cpp:255
+msgid "Mass Add..."
+msgstr "Дод. багато..."
+
+#: gui/launcher.cpp:257
+msgctxt "lowres"
+msgid "Mass Add..."
+msgstr "Дод. багато..."
+
+#: gui/launcher.cpp:265
 msgid "Search in game list"
 msgstr "Пошук у списку ігор"
 
-#: gui/launcher.cpp:275 gui/launcher.cpp:783
+#: gui/launcher.cpp:269 gui/launcher.cpp:782
 msgid "Search:"
 msgstr "Пошук:"
 
-#: gui/launcher.cpp:286 engines/dialogs.cpp:97 engines/engine.cpp:864
+#: gui/launcher.cpp:280 engines/dialogs.cpp:99 engines/engine.cpp:863
 #: engines/pegasus/pegasus.cpp:383 engines/trecision/saveload.cpp:253
 #: engines/tsage/scenes.cpp:630 engines/wage/saveload.cpp:741
 #: engines/xeen/saves.cpp:255
 msgid "Load game:"
 msgstr "Завантажити гру:"
 
-#: gui/launcher.cpp:286 engines/dialogs.cpp:97 engines/engine.cpp:864
+#: gui/launcher.cpp:280 engines/dialogs.cpp:99 engines/engine.cpp:863
 #: engines/parallaction/metaengine.cpp:127
 #: engines/parallaction/saveload.cpp:193 engines/pegasus/pegasus.cpp:383
-#: engines/scumm/dialogs.cpp:176 engines/trecision/saveload.cpp:253
-#: engines/tsage/scenes.cpp:630 engines/wage/saveload.cpp:741
-#: engines/xeen/saves.cpp:255
+#: engines/trecision/saveload.cpp:253 engines/tsage/scenes.cpp:630
+#: engines/wage/saveload.cpp:741 engines/xeen/saves.cpp:255
 msgid "Load"
 msgstr "Завантажити"
 
-#: gui/launcher.cpp:395
+#: gui/launcher.cpp:389
 msgid "This directory cannot be used yet, it is being downloaded into!"
 msgstr "Цю папку ще не можна використовувати, в неї іде завантаження!"
 
-#: gui/launcher.cpp:406
+#: gui/launcher.cpp:400
 msgid ""
 "Do you really want to run the mass game detector? This could potentially add "
 "a huge number of games."
@@ -879,138 +894,142 @@ msgstr ""
 "Чи ви дійсно хочете запустити пошук усіх ігор? Це потенційно може додати "
 "велику кількість ігор."
 
-#: gui/launcher.cpp:436
+#: gui/launcher.cpp:430
 msgid "Do you really want to remove this game configuration?"
 msgstr "Ви дійсно хочете видалити налаштування для цієї гри?"
 
-#: gui/launcher.cpp:478
+#: gui/launcher.cpp:472
 msgid "Do you want to load saved game?"
 msgstr "Ви хочете завантажити збережений стан гри?"
 
-#: gui/launcher.cpp:535
+#: gui/launcher.cpp:529
 msgid "This game does not support loading games from the launcher."
 msgstr "Ця гра не підтримує завантаження збережених ігор через головне меню."
 
-#: gui/launcher.cpp:539
+#: gui/launcher.cpp:533
 msgid "ScummVM could not find any engine capable of running the selected game!"
 msgstr "ScummVM не може знайти движок для запуску вибраної гри!"
 
-#: gui/launcher.cpp:595
+#: gui/launcher.cpp:594
 msgid "ScummVM could not find any game in the specified directory!"
 msgstr "ScummVM не може знайти гру у вказаній папці!"
 
 #. I18N: Unknown game variant
-#: gui/launcher.cpp:611
+#: gui/launcher.cpp:610
 msgid "Unknown variant"
 msgstr "Невідомий варіант"
 
-#: gui/launcher.cpp:617
+#: gui/launcher.cpp:616
 msgid "Pick the game:"
 msgstr "Виберіть гру:"
 
-#: gui/launcher.cpp:792
+#: gui/launcher.cpp:791
 msgid "Group by:"
 msgstr "Групувати по:"
 
-#: gui/launcher.cpp:832 gui/saveload-dialog.cpp:367
+#: gui/launcher.cpp:831 gui/saveload-dialog.cpp:381
 msgid "List view"
 msgstr "Вигляд списку"
 
-#: gui/launcher.cpp:833 gui/saveload-dialog.cpp:368
+#: gui/launcher.cpp:832 gui/saveload-dialog.cpp:382
 msgid "Grid view"
 msgstr "Вигляд сітки"
 
-#: gui/launcher.cpp:987
+#: gui/launcher.cpp:1006
 msgid "~S~tart"
 msgstr "З~а~пуск"
 
-#: gui/launcher.cpp:987
+#: gui/launcher.cpp:1006
 msgid "Start selected game"
 msgstr "Запустити вибрану гру"
 
-#: gui/launcher.cpp:990
+#: gui/launcher.cpp:1009
 msgid "~L~oad..."
 msgstr "~З~авантажити..."
 
-#: gui/launcher.cpp:990
+#: gui/launcher.cpp:1009
 msgid "Load saved game for selected game"
 msgstr "Завантажити збережений стан для вибраної гри"
 
-#: gui/launcher.cpp:992
+#: gui/launcher.cpp:1011
 msgid "Record..."
 msgstr "Запис..."
 
-#: gui/launcher.cpp:999
+#: gui/launcher.cpp:1017
 msgid "~G~ame Options..."
 msgstr "Налашт. ~г~ри..."
 
-#: gui/launcher.cpp:999 gui/launcher.cpp:1002
+#: gui/launcher.cpp:1017
 msgid "Change game options"
 msgstr "Змінити налаштування гри"
 
-#: gui/launcher.cpp:1002
+#: gui/launcher.cpp:1017
 msgctxt "lowres"
 msgid "~G~ame Opts..."
 msgstr "Нал. ~г~ри..."
 
 #. I18N: List grouping when no engine is specified
 #. I18N: List grouping when no enginr is specified
-#: gui/launcher.cpp:1124 gui/launcher.cpp:1319
+#: gui/launcher.cpp:1138 gui/launcher.cpp:1333
 msgid "Unknown Engine"
 msgstr "Невідомий движок"
 
 #. I18N: List grouping when no pubisher is specified
 #. I18N: List group when no publisher is specified
-#: gui/launcher.cpp:1142 gui/launcher.cpp:1351
+#: gui/launcher.cpp:1156 gui/launcher.cpp:1365
 msgid "Unknown Publisher"
 msgstr "Невідомий видавник"
 
 #. I18N: List group when no game series is specified
 #. I18N: List grouping when no game series is specified
-#: gui/launcher.cpp:1160 gui/launcher.cpp:1337
+#: gui/launcher.cpp:1174 gui/launcher.cpp:1351
 msgid "No Series"
 msgstr "Без серії"
 
 #. I18N: List group when no languageis specified
 #. I18N: List group when no language is specified
-#: gui/launcher.cpp:1175 gui/launcher.cpp:1370
+#: gui/launcher.cpp:1189 gui/launcher.cpp:1384
 msgid "Language not detected"
 msgstr "Мова не визначена"
 
 #. I18N: List group when no platform is specified
-#: gui/launcher.cpp:1190 gui/launcher.cpp:1385
+#: gui/launcher.cpp:1204 gui/launcher.cpp:1399
 msgid "Platform not detected"
 msgstr "Платформа не визначена"
 
 #. I18N: Group for All items
-#: gui/launcher.cpp:1396 gui/widgets/groupedlist.cpp:122
+#: gui/launcher.cpp:1410 gui/widgets/groupedlist.cpp:80
 msgid "All"
 msgstr "Усі"
 
-#: gui/massadd.cpp:75 gui/massadd.cpp:78
+#: gui/launcher.cpp:1603
+msgid "Icons per row:"
+msgstr "Іконок на рядок:"
+
+#: gui/massadd.cpp:77 gui/massadd.cpp:80
 msgid "... progress ..."
 msgstr "... пошук ..."
 
-#: gui/massadd.cpp:256
+#: gui/massadd.cpp:258
 msgid "Scan complete!"
 msgstr "Пошук закінчено!"
 
-#: gui/massadd.cpp:259
+#: gui/massadd.cpp:261
 #, c-format
 msgid "Discovered %d new games, ignored %d previously added games."
 msgstr "Знайдено %d нових ігор, пропущено %d попередньо доданих ігор."
 
-#: gui/massadd.cpp:263
+#: gui/massadd.cpp:265
 #, c-format
 msgid "Scanned %d directories ..."
 msgstr "Проглянуто %d папок ..."
 
-#: gui/massadd.cpp:266
+#: gui/massadd.cpp:268
 #, c-format
 msgid "Discovered %d new games, ignored %d previously added games ..."
 msgstr "Знайдено %d нових ігор, пропущено %d попередньо доданих ігор ..."
 
-#: gui/message.cpp:173 gui/message.cpp:177 gui/options.cpp:2446
+#: gui/message.cpp:173 gui/message.cpp:177 gui/options.cpp:2527
 msgid "Open URL"
 msgstr "Відкрити URL"
 
@@ -1070,122 +1089,122 @@ msgstr "Середній"
 msgid "Small"
 msgstr "Мале"
 
-#: gui/options.cpp:456 gui/options.cpp:863 gui/options.cpp:1004
-#: gui/options.cpp:1139 gui/options.cpp:1566
+#: gui/options.cpp:465 gui/options.cpp:911 gui/options.cpp:1072
+#: gui/options.cpp:1207 gui/options.cpp:1642
 msgctxt "soundfont"
 msgid "None"
 msgstr "Не заданий"
 
-#: gui/options.cpp:732
+#: gui/options.cpp:768
 msgid "Failed to apply some of the graphic options changes:"
 msgstr "Не вдалося застосувати деякі зі змін графічних налаштувань:"
 
-#: gui/options.cpp:744
+#: gui/options.cpp:780
 msgid "the video mode could not be changed"
 msgstr "відеорежим не може бути змінено"
 
-#: gui/options.cpp:757
+#: gui/options.cpp:793
 msgid "the stretch mode could not be changed"
 msgstr "режим \"розтягування\" не може бути змінено"
 
-#: gui/options.cpp:763
+#: gui/options.cpp:799
 msgid "the aspect ratio setting could not be changed"
 msgstr "не вдалося змінити режим корекції співвідношення сторін"
 
-#: gui/options.cpp:769
+#: gui/options.cpp:805
 msgid "the fullscreen setting could not be changed"
 msgstr "не вдалося змінити режим повного екрану"
 
-#: gui/options.cpp:775
+#: gui/options.cpp:811
 msgid "the filtering setting could not be changed"
 msgstr "не вдалося змінити режим фільтрування"
 
-#: gui/options.cpp:1219 backends/platform/android/options.cpp:72
+#: gui/options.cpp:1287
 msgid "Touchpad mouse mode"
 msgstr "Режим тачпаду"
 
-#: gui/options.cpp:1224
+#: gui/options.cpp:1292
 msgid "Pointer Speed:"
 msgstr "Швидкість вказівника:"
 
-#: gui/options.cpp:1224 gui/options.cpp:1226 gui/options.cpp:1227
+#: gui/options.cpp:1292 gui/options.cpp:1294 gui/options.cpp:1295
 msgid "Speed for keyboard/joystick mouse pointer control"
 msgstr "Управління швидкістю вказівника миші/джойстика"
 
-#: gui/options.cpp:1226
+#: gui/options.cpp:1294
 msgctxt "lowres"
 msgid "Pointer Speed:"
 msgstr "Швидкість вказівника:"
 
-#: gui/options.cpp:1237
+#: gui/options.cpp:1305
 msgid "Joy Deadzone:"
 msgstr "Мертва зона джойстика:"
 
-#: gui/options.cpp:1237 gui/options.cpp:1239 gui/options.cpp:1240
+#: gui/options.cpp:1305 gui/options.cpp:1307 gui/options.cpp:1308
 msgid "Analog joystick Deadzone"
 msgstr "Мертва зона аналогового джойстика"
 
-#: gui/options.cpp:1239
+#: gui/options.cpp:1307
 msgctxt "lowres"
 msgid "Joy Deadzone:"
 msgstr "Мертва зона джойстика:"
 
-#: gui/options.cpp:1311
+#: gui/options.cpp:1379
 #, c-format
 msgid "%d hidden achievements remaining"
 msgstr "Залишилося %d невідкритих досягнень"
 
-#: gui/options.cpp:1316
+#: gui/options.cpp:1384
 #, c-format
 msgid "Achievements unlocked: %d/%d"
 msgstr "Відкритих досягнень: %d/%d"
 
-#: gui/options.cpp:1362
+#: gui/options.cpp:1430
 msgid "HW Shader:"
 msgstr "Апаратний шейдер:"
 
-#: gui/options.cpp:1362 gui/options.cpp:1364
+#: gui/options.cpp:1430 gui/options.cpp:1432
 msgid "Different hardware shaders give different visual effects"
 msgstr "Різні апаратні шейдери дають різні візуальні ефекти"
 
-#: gui/options.cpp:1364
+#: gui/options.cpp:1432
 msgctxt "lowres"
 msgid "HW Shader:"
 msgstr "Апаратний шейдер:"
 
-#: gui/options.cpp:1365
+#: gui/options.cpp:1433
 msgid "Different shaders give different visual effects"
 msgstr "Різні шейдери дають різні візуальні ефекти"
 
-#: gui/options.cpp:1385
+#: gui/options.cpp:1453
 msgid "Graphics mode:"
 msgstr "Графічн. режим:"
 
-#: gui/options.cpp:1399
+#: gui/options.cpp:1469
 msgid "Render mode:"
 msgstr "Режим раструв.:"
 
-#: gui/options.cpp:1399 gui/options.cpp:1400
+#: gui/options.cpp:1469 gui/options.cpp:1472
 msgid "Special dithering modes supported by some games"
 msgstr "Спеціальні режими растрування, які підтримують деякі ігри"
 
-#: gui/options.cpp:1412
+#: gui/options.cpp:1484
 msgid "Stretch mode:"
 msgstr "Розтягування:"
 
-#: gui/options.cpp:1424
+#: gui/options.cpp:1498
 msgid "Scaler:"
 msgstr "Масштаб:"
 
-#: gui/options.cpp:1437 backends/graphics/sdl/sdl-graphics.cpp:409
+#: gui/options.cpp:1511 backends/graphics/sdl/sdl-graphics.cpp:414
 msgid "Fullscreen mode"
 msgstr "Повноекранний режим"
 
-#: gui/options.cpp:1439
+#: gui/options.cpp:1513
 msgid "V-Sync"
 msgstr "В-Синхр"
 
-#: gui/options.cpp:1439
+#: gui/options.cpp:1513
 msgid ""
 "Wait for the vertical sync to refresh the screen in order to prevent tearing "
 "artifacts"
@@ -1193,130 +1212,130 @@ msgstr ""
 "Чекати на вертикальну синхронізацію під час перемальовування екрану щоби "
 "запобігти смикання картинки"
 
-#: gui/options.cpp:1442
+#: gui/options.cpp:1516
 msgid "Game 3D Renderer:"
 msgstr "3D рендерер ігор:"
 
-#: gui/options.cpp:1444
+#: gui/options.cpp:1518
 msgctxt "lowres"
 msgid "Game 3D Renderer:"
 msgstr "3D рендерер гри:"
 
-#: gui/options.cpp:1459
+#: gui/options.cpp:1533
 msgid "3D Anti-aliasing:"
 msgstr "ЗD згладжування:"
 
-#: gui/options.cpp:1463 engines/mohawk/dialogs.cpp:365
+#: gui/options.cpp:1537 engines/mohawk/dialogs.cpp:365
 msgid "Disabled"
 msgstr "Вимкнено"
 
-#: gui/options.cpp:1475
+#: gui/options.cpp:1549
 msgid "Filter graphics"
 msgstr "Фільтрування графіки"
 
-#: gui/options.cpp:1475
+#: gui/options.cpp:1549
 msgid "Use linear filtering when scaling graphics"
 msgstr "Використовувати лінійну фільтрацію для збільшення графіки"
 
-#: gui/options.cpp:1478
+#: gui/options.cpp:1552
 msgid "Aspect ratio correction"
 msgstr "Корекція співвідношення сторін"
 
-#: gui/options.cpp:1478
+#: gui/options.cpp:1552
 msgid "Correct aspect ratio for games"
 msgstr "Коригувати співвідношення сторін для ігор"
 
-#: gui/options.cpp:1486
+#: gui/options.cpp:1560
 msgid "Preferred device:"
 msgstr "Уподобаний пристрій:"
 
-#: gui/options.cpp:1486
+#: gui/options.cpp:1560
 msgid "Music device:"
 msgstr "Музич. пристрій:"
 
-#: gui/options.cpp:1486 gui/options.cpp:1488
+#: gui/options.cpp:1560 gui/options.cpp:1562
 msgid "Specifies preferred sound device or sound card emulator"
 msgstr "Вказує уподобаний звуковий пристрій або емулятор звукової карти"
 
-#: gui/options.cpp:1486 gui/options.cpp:1488 gui/options.cpp:1489
+#: gui/options.cpp:1560 gui/options.cpp:1562 gui/options.cpp:1563
 msgid "Specifies output sound device or sound card emulator"
 msgstr "Вказує вихідний звуковий пристрій або емулятор звукової карти"
 
-#: gui/options.cpp:1488
+#: gui/options.cpp:1562
 msgctxt "lowres"
 msgid "Preferred dev.:"
 msgstr "Уподоб. пристрій:"
 
-#: gui/options.cpp:1488
+#: gui/options.cpp:1562
 msgctxt "lowres"
 msgid "Music device:"
 msgstr "Музич. пристрій:"
 
-#: gui/options.cpp:1515
+#: gui/options.cpp:1589
 msgid "AdLib emulator:"
 msgstr "Емулятор AdLib:"
 
-#: gui/options.cpp:1515 gui/options.cpp:1516
+#: gui/options.cpp:1589 gui/options.cpp:1592
 msgid "AdLib is used for music in many games"
 msgstr "Звукова карта AdLib використовується багатьма іграми для музики"
 
-#: gui/options.cpp:1529
+#: gui/options.cpp:1605
 msgid "GM device:"
 msgstr "Пристрій GM:"
 
-#: gui/options.cpp:1529
+#: gui/options.cpp:1605
 msgid "Specifies default sound device for General MIDI output"
 msgstr "Вказує вихідний звуковий пристрій для General MIDI"
 
-#: gui/options.cpp:1540
+#: gui/options.cpp:1616
 msgid "Don't use General MIDI music"
 msgstr "Не використовувати музику General MIDI"
 
-#: gui/options.cpp:1551 gui/options.cpp:1613
+#: gui/options.cpp:1627 gui/options.cpp:1689
 msgid "Use first available device"
 msgstr "Використовувати перший наявний пристрій"
 
-#: gui/options.cpp:1563
+#: gui/options.cpp:1639
 msgid "SoundFont:"
 msgstr "SoundFont:"
 
-#: gui/options.cpp:1563 gui/options.cpp:1565 gui/options.cpp:1566
+#: gui/options.cpp:1639 gui/options.cpp:1641 gui/options.cpp:1642
 msgid "SoundFont is supported by some audio cards, FluidSynth and Timidity"
 msgstr ""
 "SoundFont підтримується деякими звуковими картами, FluidSynth та Timidity"
 
-#: gui/options.cpp:1565
+#: gui/options.cpp:1641
 msgctxt "lowres"
 msgid "SoundFont:"
 msgstr "SoundFont:"
 
-#: gui/options.cpp:1571
+#: gui/options.cpp:1647
 msgid "Mixed AdLib/MIDI mode"
 msgstr "Змішаний режим AdLib/MIDI"
 
-#: gui/options.cpp:1571
+#: gui/options.cpp:1647
 msgid "Use both MIDI and AdLib sound generation"
 msgstr "Використовувати і MIDI і AdLib для генерації звуку"
 
-#: gui/options.cpp:1574
+#: gui/options.cpp:1650
 msgid "MIDI gain:"
 msgstr "Посилення MIDI:"
 
-#: gui/options.cpp:1584
+#: gui/options.cpp:1660
 msgid "MT-32 Device:"
 msgstr "Пристрій MT-32:"
 
-#: gui/options.cpp:1584
+#: gui/options.cpp:1660
 msgid "Specifies default sound device for Roland MT-32/LAPC1/CM32l/CM64 output"
 msgstr ""
 "Вказує звуковий пристрій за замовченням для виводу на Roland MT-32/LAPC1/"
 "CM32l/CM64"
 
-#: gui/options.cpp:1589
+#: gui/options.cpp:1665
 msgid "True Roland MT-32 (disable GM emulation)"
 msgstr "Справжній Roland MT-32 (вимкнути емуляцию GM)"
 
-#: gui/options.cpp:1589 gui/options.cpp:1591
+#: gui/options.cpp:1665 gui/options.cpp:1667
 msgid ""
 "Check if you want to use your real hardware Roland-compatible sound device "
 "connected to your computer"
@@ -1324,16 +1343,16 @@ msgstr ""
 "Відмітьте, якщо у вас підключено Roland-сумісний звуковий пристрій і ви "
 "хочете його використовувати"
 
-#: gui/options.cpp:1591
+#: gui/options.cpp:1667
 msgctxt "lowres"
 msgid "True Roland MT-32 (no GM emulation)"
 msgstr "Справжній Roland MT-32 (вимкнути емуляцию GM)"
 
-#: gui/options.cpp:1594
+#: gui/options.cpp:1670
 msgid "Roland GS device (enable MT-32 mappings)"
 msgstr "Режим Roland GS (ввімкнути маплення MT-32)"
 
-#: gui/options.cpp:1594
+#: gui/options.cpp:1670
 msgid ""
 "Check if you want to enable patch mappings to emulate an MT-32 on a Roland "
 "GS device"
@@ -1341,236 +1360,249 @@ msgstr ""
 "Відмітьте, якщо хочете ввімкнути латки для інструментів для емуляції MT-32 "
 "на Roland"
 
-#: gui/options.cpp:1603
+#: gui/options.cpp:1679
 msgid "Don't use Roland MT-32 music"
 msgstr "Не використовувати музику для Roland MT-32"
 
-#: gui/options.cpp:1630
+#: gui/options.cpp:1706
 msgid "Text and speech:"
 msgstr "Текст і озвучка:"
 
-#: gui/options.cpp:1634 gui/options.cpp:1644
+#: gui/options.cpp:1710 gui/options.cpp:1720
 msgid "Speech"
 msgstr "Озвучка"
 
-#: gui/options.cpp:1635 gui/options.cpp:1645
+#: gui/options.cpp:1711 gui/options.cpp:1721
 msgid "Subtitles"
 msgstr "Субтитри"
 
-#: gui/options.cpp:1636
+#: gui/options.cpp:1712
 msgid "Both"
 msgstr "Все"
 
-#: gui/options.cpp:1638
+#: gui/options.cpp:1714
 msgid "Subtitle speed:"
 msgstr "Швид. субтитрів:"
 
-#: gui/options.cpp:1640
+#: gui/options.cpp:1716
 msgctxt "lowres"
 msgid "Text and speech:"
 msgstr "Текст і озвучка:"
 
-#: gui/options.cpp:1644
+#: gui/options.cpp:1720
 msgid "Spch"
 msgstr "Озв"
 
-#: gui/options.cpp:1645
+#: gui/options.cpp:1721
 msgid "Subs"
 msgstr "Суб"
 
-#: gui/options.cpp:1646
+#: gui/options.cpp:1722
 msgctxt "lowres"
 msgid "Both"
 msgstr "Все"
 
-#: gui/options.cpp:1646
+#: gui/options.cpp:1722
 msgid "Show subtitles and play speech"
 msgstr "Показувати субтитри і відтворювати мову"
 
-#: gui/options.cpp:1648
+#: gui/options.cpp:1724
 msgctxt "lowres"
 msgid "Subtitle speed:"
 msgstr "Швид. субтитрів:"
 
-#: gui/options.cpp:1665
+#: gui/options.cpp:1746
 msgid "Music volume:"
 msgstr "Гучність музики:"
 
-#: gui/options.cpp:1667
+#: gui/options.cpp:1748
 msgctxt "lowres"
 msgid "Music volume:"
 msgstr "Гучність музики:"
 
-#: gui/options.cpp:1674
+#: gui/options.cpp:1757
 msgid "Mute all"
 msgstr "Вимкнути все"
 
-#: gui/options.cpp:1677
+#: gui/options.cpp:1760
 msgid "SFX volume:"
 msgstr "Гучність ефектів:"
 
-#: gui/options.cpp:1677 gui/options.cpp:1679 gui/options.cpp:1680
+#: gui/options.cpp:1760 gui/options.cpp:1762 gui/options.cpp:1765
 msgid "Special sound effects volume"
 msgstr "Гучність спеціальних звукових ефектів"
 
-#: gui/options.cpp:1679
+#: gui/options.cpp:1762
 msgctxt "lowres"
 msgid "SFX volume:"
 msgstr "Гучн. ефектів:"
 
-#: gui/options.cpp:1687
+#: gui/options.cpp:1772
 msgid "Speech volume:"
 msgstr "Гучність озвучки:"
 
-#: gui/options.cpp:1689
+#: gui/options.cpp:1774
 msgctxt "lowres"
 msgid "Speech volume:"
 msgstr "Гучн. озвучки:"
 
-#: gui/options.cpp:1973
+#: gui/options.cpp:2062
 msgid "Control"
 msgstr "Керування"
 
-#: gui/options.cpp:2055
+#: gui/options.cpp:2144
 msgctxt "lowres"
 msgid "Misc"
 msgstr "Різне"
 
-#: gui/options.cpp:2067
+#: gui/options.cpp:2156
 msgid "Cloud"
 msgstr "Хмара"
 
-#: gui/options.cpp:2069
+#: gui/options.cpp:2158
 msgctxt "lowres"
 msgid "Cloud"
 msgstr "Хмара"
 
-#: gui/options.cpp:2083
+#: gui/options.cpp:2172
 msgid "LAN"
 msgstr "LAN"
 
-#: gui/options.cpp:2085
+#: gui/options.cpp:2174
 msgctxt "lowres"
 msgid "LAN"
 msgstr "LAN"
 
-#: gui/options.cpp:2093
+#: gui/options.cpp:2182
 msgid "Accessibility"
 msgstr "Доступність"
 
-#: gui/options.cpp:2095
+#: gui/options.cpp:2184
 msgctxt "lowres"
 msgid "Accessibility"
 msgstr "Доступність"
 
-#: gui/options.cpp:2104
+#: gui/options.cpp:2193
 msgid "Discard changes and close the dialog"
 msgstr "Ігнорувати зміни та закрити діалог"
 
-#: gui/options.cpp:2105
+#: gui/options.cpp:2194
 msgid "Apply"
 msgstr "Застосувати"
 
-#: gui/options.cpp:2105
+#: gui/options.cpp:2194
 msgid "Apply changes without closing the dialog"
 msgstr "Застосувати зміни без закривання діалогу"
 
-#: gui/options.cpp:2106
+#: gui/options.cpp:2195
 msgid "Apply changes and close the dialog"
 msgstr "Застосувати зміни та закрити діалог"
 
-#: gui/options.cpp:2200
+#: gui/options.cpp:2277
 msgid "FluidSynth Settings"
 msgstr "Налаштування FluidSynth"
 
-#: gui/options.cpp:2219
+#: gui/options.cpp:2291
+msgid ""
+"Specifies where your saved games are put. A red coloring indicates the value "
+"is temporary and will not get saved"
+msgstr ""
+"Вказує на шлях, де будуть знаходитися збереження гри. Червоний колір "
+"показує, що шлях є тимчасовим та не буде збережено"
+
+#: gui/options.cpp:2296
 msgid "Theme Path:"
 msgstr "Шлях до тем:"
 
-#: gui/options.cpp:2221
+#: gui/options.cpp:2298
 msgctxt "lowres"
 msgid "Theme Path:"
 msgstr "Шлях до тем:"
 
-#: gui/options.cpp:2227
+#: gui/options.cpp:2304
 msgid "Icon Path:"
 msgstr "Шлях до іконок:"
 
-#: gui/options.cpp:2229
+#: gui/options.cpp:2306
 msgctxt "lowres"
 msgid "Icon Path:"
 msgstr "Шлях до іконок:"
 
-#: gui/options.cpp:2235 gui/options.cpp:2237 gui/options.cpp:2238
+#: gui/options.cpp:2307
+msgctxt "path"
+msgid "Default"
+msgstr "За умовчанням"
+
+#: gui/options.cpp:2312 gui/options.cpp:2314 gui/options.cpp:2315
 msgid "Specifies path to additional data used by all games or ScummVM"
 msgstr ""
 "Вказує шлях до додаткових файлів даних, які використовуються усіма іграми "
 "або ScummVM"
 
-#: gui/options.cpp:2244
+#: gui/options.cpp:2321
 msgid "Plugins Path:"
 msgstr "Шлях до втулків:"
 
-#: gui/options.cpp:2246
+#: gui/options.cpp:2323
 msgctxt "lowres"
 msgid "Plugins Path:"
 msgstr "Шлях до втулків:"
 
-#: gui/options.cpp:2256
+#: gui/options.cpp:2333
 msgid "ScummVM config path: "
 msgstr "Файл налаштувань ScummVM: "
 
 #. I18N: Referring to the last path memorized when adding a game
-#: gui/options.cpp:2263 gui/options.cpp:2951
+#: gui/options.cpp:2343 gui/options.cpp:3020
 msgid "Last browser path: "
 msgstr "Останній шлях у переглядачі: "
 
-#: gui/options.cpp:2268
+#: gui/options.cpp:2348
 msgid "Theme:"
 msgstr "Тема:"
 
-#: gui/options.cpp:2272
+#: gui/options.cpp:2353
 msgid "GUI scale:"
 msgstr "Масштабування GUI:"
 
-#: gui/options.cpp:2279
+#: gui/options.cpp:2360
 msgid "GUI renderer:"
 msgstr "Растер. GUI:"
 
-#: gui/options.cpp:2291
+#: gui/options.cpp:2372
 msgid "Autosave:"
 msgstr "Автозбереження:"
 
-#: gui/options.cpp:2293
+#: gui/options.cpp:2374
 msgctxt "lowres"
 msgid "Autosave:"
 msgstr "Автозбереж.:"
 
-#: gui/options.cpp:2302
+#: gui/options.cpp:2383
 msgid "Always return to the launcher when leaving a game"
 msgstr "Завжди повертатися до головного меню після виходу з гри"
 
-#: gui/options.cpp:2303
+#: gui/options.cpp:2384
 msgid ""
 "Always return to the launcher when leaving a game instead of closing ScummVM."
 msgstr ""
 "Завжди повертатися до головного меню після виходу з гри замість того, щоб "
 "закривати ScummVM."
 
-#: gui/options.cpp:2310
+#: gui/options.cpp:2391
 msgid "Ask for confirmation on exit"
 msgstr "Запитувати підтвердження виходу"
 
-#: gui/options.cpp:2311
+#: gui/options.cpp:2392
 msgid "Ask for permission when closing ScummVM or leaving a game."
 msgstr ""
 "Запитувати підтвердження виходу під час закриття ScummVM або виходу з гри."
 
-#: gui/options.cpp:2318
+#: gui/options.cpp:2399
 msgid "Enable Discord integration"
 msgstr "Ввімкнути інтеграцію з Discord"
 
-#: gui/options.cpp:2319
+#: gui/options.cpp:2400
 msgid ""
 "Show information about the games you are playing on Discord if the Discord "
 "client is running."
@@ -1578,19 +1610,19 @@ msgstr ""
 "Показувати інформацію стосовно поточної гри, якщо у вас запущено клієнт "
 "Discord."
 
-#: gui/options.cpp:2328
+#: gui/options.cpp:2409
 msgid "GUI language:"
 msgstr "Мова інтерф.:"
 
-#: gui/options.cpp:2328
+#: gui/options.cpp:2409
 msgid "Language of ScummVM GUI"
 msgstr "Мова графічного інтерфейсу ScummVM"
 
-#: gui/options.cpp:2354
+#: gui/options.cpp:2435
 msgid "Switch the ScummVM GUI language to the game language"
 msgstr "Перемкнути мову ScummVM інтерфейсу на мову гри"
 
-#: gui/options.cpp:2355
+#: gui/options.cpp:2436
 msgid ""
 "When starting a game, change the ScummVM GUI language to the game language. "
 "That way, if a game uses the ScummVM save and load dialogs, they are in the "
@@ -1600,42 +1632,42 @@ msgstr ""
 "Таким чином, якщо гра використовує діалогові вікна збереження та "
 "завантаження ScummVM, вони є тією ж мовою, що і гра."
 
-#: gui/options.cpp:2367
+#: gui/options.cpp:2448
 msgid "Use native system file browser"
 msgstr "Використовувати переглядач файлів від системи"
 
-#: gui/options.cpp:2368
+#: gui/options.cpp:2449
 msgid ""
 "Use the native system file browser instead of the ScummVM one to select a "
 "file or directory."
 msgstr ""
 "Використовувати переглядач файлів від системи замість того, що в ScummVM."
 
-#: gui/options.cpp:2376 gui/updates-dialog.cpp:85
+#: gui/options.cpp:2457 gui/updates-dialog.cpp:85
 msgid "Update check:"
 msgstr "Перевіряти оновлення:"
 
-#: gui/options.cpp:2376
+#: gui/options.cpp:2457
 msgid "How often to check ScummVM updates"
 msgstr "Як часто перевіряти оновлення ScummVM"
 
-#: gui/options.cpp:2387
+#: gui/options.cpp:2468
 msgid "Check now"
 msgstr "Перевірити зараз"
 
-#: gui/options.cpp:2393
+#: gui/options.cpp:2474
 msgid "Update Icons"
 msgstr "Поновити іконки"
 
-#: gui/options.cpp:2401
+#: gui/options.cpp:2482
 msgid "Active storage:"
 msgstr "Активне хмарне середовище:"
 
-#: gui/options.cpp:2401
+#: gui/options.cpp:2482
 msgid "Active cloud storage"
 msgstr "Активне хмарне середовище"
 
-#: gui/options.cpp:2410
+#: gui/options.cpp:2491
 msgctxt "lowres"
 msgid ""
 "4. Storage is not yet enabled. Verify that username is correct and enable it:"
@@ -1643,230 +1675,230 @@ msgstr ""
 "4. Середовище ще не увімкнено. Перевірте, що ім'я користувача правильне, та "
 "ввімкніть його:"
 
-#: gui/options.cpp:2412
+#: gui/options.cpp:2493
 msgid ""
 "4. Storage is not yet enabled. Verify that username is correct and enable it:"
 msgstr ""
 "4. Середовище ще не увімкнено. Перевірте, що ім'я користувача правильне, та "
 "ввімкніть його:"
 
-#: gui/options.cpp:2413
+#: gui/options.cpp:2494
 msgid "Enable storage"
 msgstr "Ввімкнути середовище"
 
-#: gui/options.cpp:2413
+#: gui/options.cpp:2494
 msgid "Confirm you want to use this account for this storage"
 msgstr ""
 "Підтвердіть, що хочете використовувати цей обліковий запис для цього схову"
 
-#: gui/options.cpp:2415 backends/platform/wii/options.cpp:113
+#: gui/options.cpp:2496 backends/platform/wii/options.cpp:113
 msgid "Username:"
 msgstr "Користувач:"
 
-#: gui/options.cpp:2415
+#: gui/options.cpp:2496
 msgid "Username used by this storage"
 msgstr "Обліковий запис для цього середовища"
 
-#: gui/options.cpp:2416
+#: gui/options.cpp:2497
 msgid "<none>"
 msgstr "<немає>"
 
-#: gui/options.cpp:2418
+#: gui/options.cpp:2499
 msgid "Used space:"
 msgstr "Використаний об'єм:"
 
-#: gui/options.cpp:2418
+#: gui/options.cpp:2499
 msgid "Space used by ScummVM's saved games on this storage"
 msgstr ""
 "Об'єм, використаний для збережених станів ігор ScummVM на цьому хмарному "
 "середовищі"
 
-#: gui/options.cpp:2421
+#: gui/options.cpp:2502
 msgid "Last sync:"
 msgstr "Остання синхронизація:"
 
-#: gui/options.cpp:2421
+#: gui/options.cpp:2502
 msgid "When was the last time saved games were synced with this storage"
 msgstr ""
 "Час, коли було зроблено останню синхронизацію збережених ігор з цим сховом"
 
-#: gui/options.cpp:2422 gui/options.cpp:3306
+#: gui/options.cpp:2503 gui/options.cpp:3378
 msgid "<never>"
 msgstr "<ніколи>"
 
-#: gui/options.cpp:2424
+#: gui/options.cpp:2505
 msgctxt "lowres"
 msgid "Saved games sync automatically on launch, after saving and on loading."
 msgstr ""
 "Збережені ігри автоматично синхронізуються при запуску, після збереження та "
 "завантаження."
 
-#: gui/options.cpp:2426
+#: gui/options.cpp:2507
 msgid "Saved games sync automatically on launch, after saving and on loading."
 msgstr ""
 "Збережені ігри автоматично синхронізуються при запуску, після збереження та "
 "завантаження."
 
-#: gui/options.cpp:2427
+#: gui/options.cpp:2508
 msgid "Sync now"
 msgstr "Синхронізуйте зараз"
 
-#: gui/options.cpp:2427
+#: gui/options.cpp:2508
 msgid "Start saved games sync"
 msgstr "Розпочати синхронізацію"
 
-#: gui/options.cpp:2430
+#: gui/options.cpp:2511
 msgctxt "lowres"
 msgid "You can download game files from your cloud ScummVM folder:"
 msgstr "Ви можете завантажити ігрові файли зі своєї хмарної папки ScummVM:"
 
-#: gui/options.cpp:2432
+#: gui/options.cpp:2513
 msgid "You can download game files from your cloud ScummVM folder:"
 msgstr "Ви можете завантажити ігрові файли зі своєї хмарної папки ScummVM:"
 
-#: gui/options.cpp:2433
+#: gui/options.cpp:2514
 msgid "Download game files"
 msgstr "Завантажити файли гри"
 
-#: gui/options.cpp:2433
+#: gui/options.cpp:2514
 msgid "Open downloads manager dialog"
 msgstr "Відкрити керування завантаженнями"
 
-#: gui/options.cpp:2436
+#: gui/options.cpp:2517
 msgctxt "lowres"
 msgid "To change account for this storage, disconnect and connect again:"
 msgstr ""
 "Щоб змінити обліковий запис цього сховища, відключіться та підключіться ще "
 "раз:"
 
-#: gui/options.cpp:2438
+#: gui/options.cpp:2519
 msgid "To change account for this storage, disconnect and connect again:"
 msgstr ""
 "Щоб змінити обліковий запис цього сховища, відключіться та підключіться ще "
 "раз:"
 
-#: gui/options.cpp:2439
+#: gui/options.cpp:2520
 msgid "Disconnect"
 msgstr "Від'єднатись"
 
-#: gui/options.cpp:2439
+#: gui/options.cpp:2520
 msgid "Stop using this storage on this device"
 msgstr "Перестаньте використовувати цей накопичувач на цьому пристрої"
 
-#: gui/options.cpp:2442
+#: gui/options.cpp:2523
 msgctxt "lowres"
 msgid "This storage is not connected yet! To connect,"
 msgstr "Цей сховище ще не підключено! З'єднати,"
 
-#: gui/options.cpp:2444
+#: gui/options.cpp:2525
 msgid "This storage is not connected yet! To connect,"
 msgstr "Цей сховище ще не підключено! З'єднати,"
 
-#: gui/options.cpp:2445
+#: gui/options.cpp:2526
 msgid "1. Open this link:"
 msgstr "1. Відкрийте це посилання:"
 
-#: gui/options.cpp:2448
+#: gui/options.cpp:2529
 msgctxt "lowres"
 msgid "2. Get the code and enter it here:"
 msgstr "2. Отримайте код і введіть його тут:"
 
-#: gui/options.cpp:2450
+#: gui/options.cpp:2531
 msgid "2. Get the code and enter it here:"
 msgstr "2. Отримайте код і введіть його тут:"
 
-#: gui/options.cpp:2452
+#: gui/options.cpp:2533
 msgid "Paste"
 msgstr "Вставити"
 
-#: gui/options.cpp:2452
+#: gui/options.cpp:2533
 msgid "Paste code from clipboard"
 msgstr "Вставити код з буфера обміну"
 
-#: gui/options.cpp:2453
+#: gui/options.cpp:2534
 msgid "3. Connect"
 msgstr "3. Залучитись"
 
-#: gui/options.cpp:2453
+#: gui/options.cpp:2534
 msgid "Connect your cloud storage account"
 msgstr "Залучитись до вашого облікового запису на хмарному середовищі"
 
-#: gui/options.cpp:2462
+#: gui/options.cpp:2543
 msgid "Run server"
 msgstr "Запустити сервер"
 
-#: gui/options.cpp:2462
+#: gui/options.cpp:2543
 msgid "Run local webserver"
 msgstr "Запускає локальний веб-сервер"
 
-#: gui/options.cpp:2463 gui/options.cpp:3421
+#: gui/options.cpp:2544 gui/options.cpp:3493
 msgid "Not running"
 msgstr "Вимкнено"
 
-#: gui/options.cpp:2467
+#: gui/options.cpp:2548
 msgctxt "lowres"
 msgid "/root/ Path:"
 msgstr "Корінний шлях:"
 
-#: gui/options.cpp:2467 gui/options.cpp:2469 gui/options.cpp:2470
+#: gui/options.cpp:2548 gui/options.cpp:2550 gui/options.cpp:2551
 msgid "Select which directory will be shown as /root/ in the Files Manager"
 msgstr "Вкажіть шлях, який буде показано як /root/ у Керуванні файлами"
 
-#: gui/options.cpp:2469
+#: gui/options.cpp:2550
 msgid "/root/ Path:"
 msgstr "Шлях /root/:"
 
-#: gui/options.cpp:2475
+#: gui/options.cpp:2556
 msgid "Server's port:"
 msgstr "Порт сервера:"
 
-#: gui/options.cpp:2475
+#: gui/options.cpp:2556
 msgid "Port for server to use"
 msgstr "Порт для використання сервера"
 
-#: gui/options.cpp:2480
+#: gui/options.cpp:2561
 msgctxt "lowres"
 msgid "Run server to manage files with browser (in the same network)."
 msgstr ""
 "Запустіть сервер для управління файлами за допомогою браузера (в одній "
 "мережі)."
 
-#: gui/options.cpp:2481
+#: gui/options.cpp:2562
 msgctxt "lowres"
 msgid "Closing options dialog will stop the server."
 msgstr "Діалогове вікно параметрів закриття зупинить сервер."
 
-#: gui/options.cpp:2483
+#: gui/options.cpp:2564
 msgid "Run server to manage files with browser (in the same network)."
 msgstr ""
 "Запустіть сервер для управління файлами за допомогою браузера (в одній "
 "мережі)."
 
-#: gui/options.cpp:2484
+#: gui/options.cpp:2565
 msgid "Closing options dialog will stop the server."
 msgstr "Діалогове вікно параметрів закриття зупинить сервер."
 
-#: gui/options.cpp:2496
+#: gui/options.cpp:2577
 msgid "Use Text to speech"
 msgstr "Використовувати генератор мови"
 
-#: gui/options.cpp:2496
+#: gui/options.cpp:2577
 msgid "Will read text in gui on mouse over."
 msgstr "Буде читати текст вголос при наведенні миші."
 
-#: gui/options.cpp:2509
+#: gui/options.cpp:2590
 msgid "None"
 msgstr "Не завдано"
 
-#: gui/options.cpp:2570
+#: gui/options.cpp:2651
 msgid "Ignore"
 msgstr "Ігнорувати"
 
-#: gui/options.cpp:2571
+#: gui/options.cpp:2652
 msgid "Disable autosave"
 msgstr "Заборонити автозбереження"
 
-#: gui/options.cpp:2572
+#: gui/options.cpp:2653
 msgid ""
 "WARNING: Autosave was enabled. Some of your games have existing saved games "
 "on the autosave slot. You can either move the existing saves to new slots, "
@@ -1881,7 +1913,7 @@ msgstr ""
 "збереження).\n"
 "Список ігор:\n"
 
-#: gui/options.cpp:2581
+#: gui/options.cpp:2662
 msgid ""
 "\n"
 "And more..."
@@ -1889,31 +1921,31 @@ msgstr ""
 "\n"
 "Далі..."
 
-#: gui/options.cpp:2582 engines/engine.cpp:579
+#: gui/options.cpp:2663 engines/engine.cpp:558
 msgid "Move"
 msgstr "Перенести"
 
-#: gui/options.cpp:2595
+#: gui/options.cpp:2676
 msgid "ERROR: Failed to move the following saved games:\n"
 msgstr "ПОМИЛКА: Не вдалося перенести наступні збереження ігор:\n"
 
-#: gui/options.cpp:2688
+#: gui/options.cpp:2762
 msgid "Failed to change cloud storage!"
 msgstr "Не вдалося змінити хмарне середовище!"
 
-#: gui/options.cpp:2691
+#: gui/options.cpp:2765
 msgid "Another cloud storage is already active."
 msgstr "Інше хмарне середовище вже активне."
 
-#: gui/options.cpp:2781
+#: gui/options.cpp:2855
 msgid "Theme does not support selected language!"
 msgstr "Тема не підтримує обраної мови!"
 
-#: gui/options.cpp:2784
+#: gui/options.cpp:2858
 msgid "Theme cannot be loaded!"
 msgstr "Тему не було завантажено!"
 
-#: gui/options.cpp:2787
+#: gui/options.cpp:2861
 msgid ""
 "\n"
 "Misc settings will be restored."
@@ -1921,27 +1953,27 @@ msgstr ""
 "\n"
 "Різні налаштування буде поновлено."
 
-#: gui/options.cpp:2859
+#: gui/options.cpp:2933
 msgid "Select directory for GUI themes"
 msgstr "Виберіть папку для тем GUI"
 
-#: gui/options.cpp:2869
+#: gui/options.cpp:2943
 msgid "Select directory for GUI launcher thumbnails"
 msgstr "Виберіть папку для іконок для GUI"
 
-#: gui/options.cpp:2879
+#: gui/options.cpp:2953
 msgid "Select directory for extra files"
 msgstr "Виберіть папку з додатковими файлами"
 
-#: gui/options.cpp:2890
+#: gui/options.cpp:2964
 msgid "Select directory for plugins"
 msgstr "Виберіть папку зі втулками"
 
-#: gui/options.cpp:2903
+#: gui/options.cpp:2977
 msgid "Select directory for Files Manager /root/"
 msgstr "Виберіть папку /root/ для Керування файлами"
 
-#: gui/options.cpp:3038
+#: gui/options.cpp:3108
 msgid ""
 "Failed to open URL!\n"
 "Please navigate to this page manually."
@@ -1949,47 +1981,47 @@ msgstr ""
 "Не вдалося відкрити URL!\n"
 "Будь-ласка, перейдіть вручну на вказану сторінку."
 
-#: gui/options.cpp:3063
+#: gui/options.cpp:3133
 msgid "Another Storage is working now. Do you want to interrupt it?"
 msgstr "Інше хмарне середовище вже є активним. Чи ви хочете припинити процес?"
 
-#: gui/options.cpp:3072 gui/options.cpp:3110
+#: gui/options.cpp:3142 gui/options.cpp:3180
 msgid "Wait until current Storage finishes up and try again."
 msgstr "Заждіть, поки поточне середовище закінчить роботу, і спробуйте знов."
 
-#: gui/options.cpp:3085
+#: gui/options.cpp:3155
 msgid "Connecting..."
 msgstr "Залучитись..."
 
-#: gui/options.cpp:3101
+#: gui/options.cpp:3171
 msgid "This Storage is working now. Do you want to interrupt it?"
 msgstr "Це хмарне середовище вже є активним. Чи ви хочете припинити процес?"
 
-#: gui/options.cpp:3304 backends/cloud/cloudmanager.cpp:156
+#: gui/options.cpp:3376 backends/cloud/cloudmanager.cpp:156
 msgid "<right now>"
 msgstr "<зараз>"
 
-#: gui/options.cpp:3413
+#: gui/options.cpp:3485
 msgid "Stop server"
 msgstr "Вимкнути сервер"
 
-#: gui/options.cpp:3414
+#: gui/options.cpp:3486
 msgid "Stop local webserver"
 msgstr "Вимкнути локальний веб-сервер"
 
-#: gui/options.cpp:3466
+#: gui/options.cpp:3538
 msgid "Storage connected."
 msgstr "Хмарне середовище підключено."
 
-#: gui/options.cpp:3468
+#: gui/options.cpp:3540
 msgid "Failed to connect storage."
 msgstr "Не вдалося залучитися до хмарного середовища."
 
-#: gui/options.cpp:3470
+#: gui/options.cpp:3542
 msgid "Failed to connect storage: "
 msgstr "Не вдалося залучитися до хмарного середовища: "
 
-#: gui/options.cpp:3490
+#: gui/options.cpp:3562
 msgid ""
 "Request failed.\n"
 "Check your Internet connection."
@@ -2033,42 +2065,42 @@ msgstr "*  Цфр"
 msgid "*  Abc"
 msgstr "*  Abc"
 
-#: gui/recorderdialog.cpp:61
+#: gui/recorderdialog.cpp:67
 msgid "Recorder or Playback Gameplay"
 msgstr "Записувати або відтворювати процес гри"
 
-#: gui/recorderdialog.cpp:66 gui/recorderdialog.cpp:154
-#: gui/saveload-dialog.cpp:422 gui/saveload-dialog.cpp:489
+#: gui/recorderdialog.cpp:72 gui/recorderdialog.cpp:213
+#: gui/saveload-dialog.cpp:461 gui/saveload-dialog.cpp:528
 msgid "Delete"
 msgstr "Видалити"
 
-#: gui/recorderdialog.cpp:68
+#: gui/recorderdialog.cpp:74
 msgid "Record"
 msgstr "Записати"
 
-#: gui/recorderdialog.cpp:69
+#: gui/recorderdialog.cpp:75
 msgid "Playback"
 msgstr "Відтворити"
 
-#: gui/recorderdialog.cpp:71 gui/widgets/grid.cpp:224
+#: gui/recorderdialog.cpp:77 gui/widgets/grid.cpp:231
 msgid "Edit"
 msgstr "Редагувати"
 
-#: gui/recorderdialog.cpp:83 gui/recorderdialog.cpp:240
-#: gui/recorderdialog.cpp:250
+#: gui/recorderdialog.cpp:143 gui/recorderdialog.cpp:302
+#: gui/recorderdialog.cpp:309
 msgid "Author: "
 msgstr "Автор: "
 
-#: gui/recorderdialog.cpp:84 gui/recorderdialog.cpp:241
-#: gui/recorderdialog.cpp:251
+#: gui/recorderdialog.cpp:145 gui/recorderdialog.cpp:303
+#: gui/recorderdialog.cpp:310
 msgid "Notes: "
 msgstr "Примітки: "
 
-#: gui/recorderdialog.cpp:153
+#: gui/recorderdialog.cpp:212
 msgid "Do you really want to delete this record?"
 msgstr "Ви дійсно хочете видалити цей запис?"
 
-#: gui/recorderdialog.cpp:170
+#: gui/recorderdialog.cpp:229
 msgid "Unknown Author"
 msgstr "Невідомий автор"
 
@@ -2076,75 +2108,72 @@ msgstr "Невідомий автор"
 msgid "ScummVM could not access the directory!"
 msgstr "ScummVM не має доступу до вказаної папки!"
 
-#: gui/saveload-dialog.cpp:54
+#: gui/saveload-dialog.cpp:56
 msgid "Downloading saves..."
 msgstr "Завантажую збереження гри..."
 
-#: gui/saveload-dialog.cpp:63
+#: gui/saveload-dialog.cpp:65
 msgid "Run in background"
 msgstr "Працювати у фоні"
 
-#: gui/saveload-dialog.cpp:342
-msgid ""
-"WARNING: Existing save has longer gameplay duration than the current state. "
-"Are you sure you want to overwrite it?"
-msgstr ""
-"УВАГА: У збереженні гри, яке буде перезаписано, ви грали довший час, ніж у "
-"поточному. Чи ви справді хочете його перезаписати?"
+#: gui/saveload-dialog.cpp:126
+#, c-format
+msgid "%s (%s %S / %s %S, %s / %s files)"
+msgstr "%s (%s%S / %s%S, %s / %s файлів)"
 
-#: gui/saveload-dialog.cpp:413 gui/saveload-dialog.cpp:593
+#: gui/saveload-dialog.cpp:452 gui/saveload-dialog.cpp:632
 msgid "No date saved"
 msgstr "Дату не записано"
 
-#: gui/saveload-dialog.cpp:414 gui/saveload-dialog.cpp:594
+#: gui/saveload-dialog.cpp:453 gui/saveload-dialog.cpp:633
 msgid "No time saved"
 msgstr "Час не записано"
 
-#: gui/saveload-dialog.cpp:415 gui/saveload-dialog.cpp:595
+#: gui/saveload-dialog.cpp:454 gui/saveload-dialog.cpp:634
 msgid "No playtime saved"
 msgstr "Час гри не записано"
 
-#: gui/saveload-dialog.cpp:488
+#: gui/saveload-dialog.cpp:527
 msgid "Do you really want to delete this saved game?"
 msgstr "Ви дійсно хочете видалити цю збережену гру?"
 
-#: gui/saveload-dialog.cpp:620 gui/saveload-dialog.cpp:1137
+#: gui/saveload-dialog.cpp:659 gui/saveload-dialog.cpp:1174
 msgid "Date: "
 msgstr "Дата: "
 
-#: gui/saveload-dialog.cpp:624 gui/saveload-dialog.cpp:1143
+#: gui/saveload-dialog.cpp:663 gui/saveload-dialog.cpp:1180
 msgid "Time: "
 msgstr "Час: "
 
-#: gui/saveload-dialog.cpp:630 gui/saveload-dialog.cpp:1151
+#: gui/saveload-dialog.cpp:669 gui/saveload-dialog.cpp:1188
 msgid "Playtime: "
 msgstr "Час гри: "
 
-#: gui/saveload-dialog.cpp:643 gui/saveload-dialog.cpp:731
+#: gui/saveload-dialog.cpp:682 gui/saveload-dialog.cpp:768
 msgid "Untitled saved game"
 msgstr "Збережена гра без імені"
 
-#: gui/saveload-dialog.cpp:794
+#: gui/saveload-dialog.cpp:831
 msgid "Next"
 msgstr "Наступний"
 
-#: gui/saveload-dialog.cpp:797
+#: gui/saveload-dialog.cpp:834
 msgid "Prev"
 msgstr "Попередній"
 
-#: gui/saveload-dialog.cpp:998
+#: gui/saveload-dialog.cpp:1035
 msgid "New Save"
 msgstr "Новий стан"
 
-#: gui/saveload-dialog.cpp:998
+#: gui/saveload-dialog.cpp:1035
 msgid "Create a new saved game"
 msgstr "Створити новий запис гри"
 
-#: gui/saveload-dialog.cpp:1130
+#: gui/saveload-dialog.cpp:1167
 msgid "Name: "
 msgstr "Назва: "
 
-#: gui/saveload-dialog.cpp:1206
+#: gui/saveload-dialog.cpp:1243
 #, c-format
 msgid "Enter a description for slot %d:"
 msgstr "Введіть опис для слоту %d:"
@@ -2166,7 +2195,7 @@ msgstr "Без графіки"
 msgid "Standard renderer"
 msgstr "Стандартний растеризатор"
 
-#: gui/ThemeEngine.cpp:277 engines/scumm/dialogs.cpp:675
+#: gui/ThemeEngine.cpp:277 engines/scumm/dialogs.cpp:887
 msgid "Standard"
 msgstr "Стандартний"
 
@@ -2230,27 +2259,23 @@ msgstr ""
 "Ви можете змінити цей параметр пізніше на вкладці Різне\n"
 "у діалоговому вікні \"Параметри\"."
 
-#: gui/updates-dialog.cpp:115
-msgid "Proceed"
-msgstr "Продовжити"
-
-#: gui/widget.cpp:407 gui/widget.cpp:409 gui/widget.cpp:415 gui/widget.cpp:417
+#: gui/widget.cpp:440 gui/widget.cpp:442 gui/widget.cpp:448 gui/widget.cpp:450
 msgid "Clear value"
 msgstr "Очистити значення"
 
-#: gui/widgets/grid.cpp:218 engines/scumm/dialogs.cpp:177
+#: gui/widgets/grid.cpp:225
 msgid "Play"
 msgstr "Грати"
 
-#: gui/widgets/grid.cpp:221
+#: gui/widgets/grid.cpp:228
 msgid "Saves"
 msgstr "Зберігання"
 
-#: base/main.cpp:650
+#: base/main.cpp:643
 msgid "Error running game:"
 msgstr "Помилка запуску гри:"
 
-#: base/main.cpp:697
+#: base/main.cpp:690
 msgid "Could not find any engine capable of running the selected game"
 msgstr "Не можу знайти движок для запуску вибраної гри"
 
@@ -2335,25 +2360,25 @@ msgstr "Hercules зелений"
 msgid "Hercules Amber"
 msgstr "Hercules бурштинний"
 
-#: common/rendermode.cpp:41
+#: common/rendermode.cpp:44
 msgid "PC-9821 (256 Colors)"
 msgstr "PC-9821 (256 кольорів)"
 
-#: common/rendermode.cpp:42
+#: common/rendermode.cpp:45
 msgid "PC-9801 (16 Colors)"
 msgstr "PC-9801 (16 кольорів)"
 
 #. I18N: Macintosh black-and-white
-#: common/rendermode.cpp:47
+#: common/rendermode.cpp:50
 msgid "Macintosh b/w"
 msgstr "Macintosh (ч/б)"
 
-#: common/rendermode.cpp:75
+#: common/rendermode.cpp:80
 msgctxt "lowres"
 msgid "Hercules Green"
 msgstr "Hercules зелений"
 
-#: common/rendermode.cpp:76
+#: common/rendermode.cpp:81
 msgctxt "lowres"
 msgid "Hercules Amber"
 msgstr "Hercules бурштинний"
@@ -2376,7 +2401,7 @@ msgstr "<Невірне значення>"
 
 #. I18N: Abbreviation for 'bytes' as data size
 #: common/util.cpp:183 backends/platform/3ds/osystem-events.cpp:48
-#: backends/platform/ds/osystem_ds.cpp:145
+#: backends/platform/ds/osystem_ds.cpp:166
 #: backends/platform/sdl/switch/switch.cpp:37
 msgid "B"
 msgstr "B"
@@ -2470,63 +2495,64 @@ msgstr "~Н~алаштування"
 msgid "~H~elp"
 msgstr "~Д~опомога"
 
-#: engines/dialogs.cpp:85
+#: engines/dialogs.cpp:87
 msgid "~A~bout"
 msgstr "Про про~г~раму"
 
-#: engines/dialogs.cpp:88 engines/dialogs.cpp:164
+#: engines/dialogs.cpp:90 engines/dialogs.cpp:166
 msgid "~R~eturn to Launcher"
 msgstr "~П~овер. в головне меню"
 
-#: engines/dialogs.cpp:90 engines/dialogs.cpp:166
+#: engines/dialogs.cpp:92 engines/dialogs.cpp:168
 msgctxt "lowres"
 msgid "~R~eturn to Launcher"
 msgstr "~П~овер.в головне меню"
 
-#: engines/dialogs.cpp:98 engines/engine.cpp:893 engines/agi/saveload.cpp:766
+#: engines/dialogs.cpp:100 engines/engine.cpp:892 engines/agi/saveload.cpp:766
 #: engines/avalanche/parser.cpp:1918 engines/cine/various.cpp:349
 #: engines/dm/loadsave.cpp:199 engines/drascula/saveload.cpp:382
 #: engines/dreamweb/saveload.cpp:261 engines/glk/streams.cpp:1432
-#: engines/gnap/menu.cpp:465 engines/groovie/script.cpp:846
-#: engines/groovie/script.cpp:2194 engines/groovie/script.cpp:2235
+#: engines/gnap/menu.cpp:465 engines/groovie/script.cpp:844
+#: engines/groovie/script.cpp:2192 engines/groovie/script.cpp:2233
 #: engines/hugo/file.cpp:297 engines/illusions/menusystem.cpp:702
 #: engines/kingdom/kingdom.cpp:736 engines/lab/savegame.cpp:242
 #: engines/mads/nebular/dialogs_nebular.cpp:349
-#: engines/neverhood/menumodule.cpp:889 engines/pegasus/pegasus.cpp:402
-#: engines/prince/saveload.cpp:54 engines/sci/engine/guest_additions.cpp:742
-#: engines/sci/engine/kfile.cpp:1079 engines/sherlock/scalpel/scalpel.cpp:1249
+#: engines/mtropolis/saveload.cpp:76 engines/neverhood/menumodule.cpp:889
+#: engines/pegasus/pegasus.cpp:402 engines/prince/saveload.cpp:54
+#: engines/sci/engine/guest_additions.cpp:742 engines/sci/engine/kfile.cpp:1079
+#: engines/sherlock/scalpel/scalpel.cpp:1249
 #: engines/sherlock/tattoo/widget_files.cpp:74 engines/startrek/saveload.cpp:42
-#: engines/toltecs/menu.cpp:302 engines/toon/toon.cpp:3405
+#: engines/toltecs/menu.cpp:302 engines/toon/toon.cpp:3765
 #: engines/trecision/saveload.cpp:67 engines/tsage/scenes.cpp:628
 #: engines/wage/saveload.cpp:751 engines/xeen/saves.cpp:276
 #: engines/zvision/file/save_manager.cpp:48
 msgid "Save game:"
 msgstr "Зберегти гру:"
 
-#: engines/dialogs.cpp:98 engines/engine.cpp:893 engines/agi/saveload.cpp:766
+#: engines/dialogs.cpp:100 engines/engine.cpp:892 engines/agi/saveload.cpp:766
 #: engines/avalanche/parser.cpp:1918 engines/cine/various.cpp:349
 #: engines/dm/loadsave.cpp:199 engines/drascula/saveload.cpp:382
 #: engines/dreamweb/saveload.cpp:261 engines/glk/streams.cpp:1432
-#: engines/gnap/menu.cpp:465 engines/groovie/script.cpp:841
-#: engines/groovie/script.cpp:846 engines/groovie/script.cpp:2194
-#: engines/groovie/script.cpp:2235 engines/hugo/file.cpp:297
+#: engines/gnap/menu.cpp:465 engines/groovie/script.cpp:839
+#: engines/groovie/script.cpp:844 engines/groovie/script.cpp:2192
+#: engines/groovie/script.cpp:2233 engines/hugo/file.cpp:297
 #: engines/illusions/menusystem.cpp:702 engines/kingdom/kingdom.cpp:736
 #: engines/lab/savegame.cpp:237 engines/lab/savegame.cpp:242
 #: engines/mads/nebular/dialogs_nebular.cpp:349
-#: engines/neverhood/menumodule.cpp:889 engines/parallaction/metaengine.cpp:133
+#: engines/mtropolis/saveload.cpp:76 engines/neverhood/menumodule.cpp:889
+#: engines/parallaction/metaengine.cpp:133
 #: engines/parallaction/saveload.cpp:208 engines/pegasus/pegasus.cpp:402
 #: engines/prince/saveload.cpp:54 engines/sci/engine/guest_additions.cpp:743
-#: engines/sci/engine/kfile.cpp:1079 engines/scumm/dialogs.cpp:175
-#: engines/sherlock/scalpel/scalpel.cpp:1249
+#: engines/sci/engine/kfile.cpp:1079 engines/sherlock/scalpel/scalpel.cpp:1249
 #: engines/sherlock/tattoo/widget_files.cpp:74 engines/startrek/saveload.cpp:42
-#: engines/toltecs/menu.cpp:302 engines/toon/toon.cpp:3405
+#: engines/toltecs/menu.cpp:302 engines/toon/toon.cpp:3765
 #: engines/trecision/saveload.cpp:67 engines/tsage/scenes.cpp:628
 #: engines/wage/saveload.cpp:751 engines/xeen/saves.cpp:276
 #: engines/zvision/file/save_manager.cpp:48 engines/zvision/metaengine.cpp:193
 msgid "Save"
 msgstr "Записати"
 
-#: engines/dialogs.cpp:128
+#: engines/dialogs.cpp:130
 msgid ""
 "Sorry, this engine does not currently provide in-game help. Please consult "
 "the README for basic information, and for instructions on how to obtain "
@@ -2536,7 +2562,7 @@ msgstr ""
 "README для основної інформації, а також інструкцій, як отримати подальшу "
 "допомогу."
 
-#: engines/dialogs.cpp:212 engines/pegasus/pegasus.cpp:413
+#: engines/dialogs.cpp:214 engines/pegasus/pegasus.cpp:413
 #, c-format
 msgid ""
 "Failed to save game (%s)! Please consult the README for basic information, "
@@ -2545,50 +2571,50 @@ msgstr ""
 "Не вдалося зберегти гру (%s)!. Будь-ласка, дивіться файл README для основної "
 "інформації, а також інструкцій, як отримати подальшу допомогу."
 
-#: engines/dialogs.cpp:355
+#: engines/dialogs.cpp:357
 msgid "~O~K"
 msgstr "~O~K"
 
-#: engines/dialogs.cpp:356
+#: engines/dialogs.cpp:358
 msgid "~C~ancel"
 msgstr "Ві~д~міна"
 
-#: engines/engine.cpp:342
+#: engines/engine.cpp:336
 #, c-format
 msgid "Could not switch to resolution '%dx%d'."
 msgstr "Не вдалося переключитися до відеорежиму '%dx%d'."
 
-#: engines/engine.cpp:351
+#: engines/engine.cpp:345
 msgid "Could not initialize color format."
 msgstr "Не можу налаштувати формат кольору."
 
-#: engines/engine.cpp:360
+#: engines/engine.cpp:354
 #, c-format
 msgid "Could not switch to video mode '%s'."
 msgstr "Не вдалося переключитися до відеорежиму '%s'."
 
-#: engines/engine.cpp:368
+#: engines/engine.cpp:362
 #, c-format
 msgid "Could not switch to stretch mode '%s'."
 msgstr "Не вдалося переключитися до відеорежиму з розтягуванням '%s'."
 
-#: engines/engine.cpp:375
+#: engines/engine.cpp:369
 msgid "Could not apply aspect ratio setting."
 msgstr "Не вдалося застосувати корекцію співвідношення сторін."
 
-#: engines/engine.cpp:380
+#: engines/engine.cpp:374
 msgid "Could not apply fullscreen setting."
 msgstr "Не вдалося застосувати повноекранний режим."
 
-#: engines/engine.cpp:385
+#: engines/engine.cpp:379
 msgid "Could not apply filtering setting."
 msgstr "Не вдалося застосувати режим фільтрування."
 
-#: engines/engine.cpp:443
+#: engines/engine.cpp:438
 msgid "Error"
 msgstr "Помилка"
 
-#: engines/engine.cpp:521
+#: engines/engine.cpp:501
 msgid ""
 "You appear to be playing this game directly\n"
 "from the CD. This is known to cause problems,\n"
@@ -2602,7 +2628,7 @@ msgstr ""
 "файли даних на жорсткий диск.\n"
 "Детальніше див. у документації (аудіо CD)."
 
-#: engines/engine.cpp:545
+#: engines/engine.cpp:524
 msgid ""
 "This game has audio tracks on its CD. These\n"
 "tracks need to be ripped from the CD using\n"
@@ -2616,15 +2642,15 @@ msgstr ""
 "щоби у грі була музика.\n"
 "Детальніше див. у документації (CD-аудіо)."
 
-#: engines/engine.cpp:572
+#: engines/engine.cpp:551
 msgid "Overwrite"
 msgstr "Перетерти"
 
-#: engines/engine.cpp:573
+#: engines/engine.cpp:552
 msgid "Cancel autosave"
 msgstr "Відмінити автозбереження"
 
-#: engines/engine.cpp:575
+#: engines/engine.cpp:554
 #, c-format
 msgid ""
 "WARNING: The autosave slot has a saved game named %S. You can either move "
@@ -2635,21 +2661,21 @@ msgstr ""
 "перенести поточне збереження у новий слот, Перетерти поточне збереження, або "
 "відмінити автозбереження (до перезапуску ScummVM)"
 
-#: engines/engine.cpp:583
+#: engines/engine.cpp:562
 msgid "ERROR: Could not copy the savegame to a new slot"
 msgstr "ПОМИЛКА: Не вдалося скопіювати збереження ігри у новий слот"
 
-#: engines/engine.cpp:609 engines/metaengine.cpp:370 engines/savestate.cpp:98
-#: backends/platform/ios7/ios7_osys_main.cpp:249 engines/sky/metaengine.cpp:185
+#: engines/engine.cpp:588 engines/metaengine.cpp:380 engines/savestate.cpp:98
+#: backends/platform/ios7/ios7_osys_main.cpp:255 engines/sky/metaengine.cpp:185
 #: engines/xeen/saves.cpp:289
 msgid "Autosave"
 msgstr "Автозбереження"
 
-#: engines/engine.cpp:617
+#: engines/engine.cpp:596
 msgid "Error occurred making autosave"
 msgstr "Помилка створення автозбереження"
 
-#: engines/engine.cpp:692
+#: engines/engine.cpp:671
 #, c-format
 msgid ""
 "Failed to load saved game (%s)! Please consult the README for basic "
@@ -2658,15 +2684,15 @@ msgstr ""
 "Не вдалося завантажити гру (%s)! . Будь-ласка, дивіться файл README для "
 "основної інформації, а також інструкцій, як отримати подальшу допомогу."
 
-#: engines/engine.cpp:710
+#: engines/engine.cpp:695
 msgid "WARNING: "
 msgstr "ПОПЕРЕДЖЕННЯ: "
 
-#: engines/engine.cpp:710
+#: engines/engine.cpp:695
 msgid " Shall we still run the game?"
 msgstr " Чи ви хочете таки запустити гру?"
 
-#: engines/engine.cpp:711
+#: engines/engine.cpp:696
 msgid ""
 "WARNING: The game you are about to start is not yet fully supported by "
 "ScummVM. As such, it is likely to be unstable, and any saved game you make "
@@ -2676,15 +2702,15 @@ msgstr ""
 "ScummVM. Скорше за все вона не буде працювати стабільно, і збережені ігри, "
 "які ви зробите, можуть не працювати у подальших версіях ScummVM."
 
-#: engines/engine.cpp:714 engines/wintermute/wintermute.cpp:182
+#: engines/engine.cpp:699 engines/wintermute/wintermute.cpp:182
 msgid "Start anyway"
 msgstr "Все одно запустити"
 
-#: engines/engine.cpp:721
+#: engines/engine.cpp:717
 msgid "This game is not supported."
 msgstr "Ця гра не підтримується."
 
-#: engines/engine.cpp:721
+#: engines/engine.cpp:717
 msgid ""
 "This game is not supported for the following reason:\n"
 "\n"
@@ -2692,11 +2718,11 @@ msgstr ""
 "Ця гра не підтримується через наступні причини:\n"
 "\n"
 
-#: engines/engine.cpp:860
+#: engines/engine.cpp:859
 msgid "Loading game is currently unavailable"
 msgstr "Заватнаження гри наразі неможливе"
 
-#: engines/engine.cpp:889
+#: engines/engine.cpp:888
 msgid "Saving game is currently unavailable"
 msgstr "Збереження гри наразі неможливе"
 
@@ -2723,7 +2749,8 @@ msgid "Default game keymap"
 msgstr "Мапа клавіш за замовчунням"
 
 #: engines/metaengine.cpp:60 backends/platform/maemo/maemo.cpp:161
-#: engines/hdb/metaengine.cpp:187 engines/parallaction/metaengine.cpp:114
+#: engines/asylum/metaengine.cpp:157 engines/hdb/metaengine.cpp:187
+#: engines/parallaction/metaengine.cpp:114
 #: engines/wintermute/keymapper_tables.h:42 engines/zvision/metaengine.cpp:114
 msgid "Left Click"
 msgstr "Лівий клік"
@@ -2736,24 +2763,24 @@ msgid "Middle Click"
 msgstr "Середній клік"
 
 #: engines/metaengine.cpp:71 backends/platform/maemo/maemo.cpp:169
-#: engines/parallaction/metaengine.cpp:120
+#: engines/asylum/metaengine.cpp:163 engines/parallaction/metaengine.cpp:120
 #: engines/wintermute/keymapper_tables.h:48 engines/zvision/metaengine.cpp:120
 msgid "Right Click"
 msgstr "Правий клік"
 
-#: engines/metaengine.cpp:77 engines/grim/grim.cpp:523
+#: engines/metaengine.cpp:77 engines/grim/grim.cpp:521
 #: engines/hdb/metaengine.cpp:238 engines/mohawk/myst.cpp:596
 #: engines/mohawk/riven.cpp:860 engines/sky/metaengine.cpp:122
 #: engines/twine/metaengine.cpp:99 engines/wintermute/keymapper_tables.h:1531
 msgid "Pause"
 msgstr "Пауза"
 
-#: engines/metaengine.cpp:82 engines/parallaction/metaengine.cpp:139
+#: engines/metaengine.cpp:83 engines/parallaction/metaengine.cpp:139
 msgid "Game menu"
 msgstr "Меню гри"
 
-#: engines/metaengine.cpp:88 engines/grim/grim.cpp:506
-#: engines/grim/grim.cpp:602 engines/mohawk/myst.cpp:567
+#: engines/metaengine.cpp:90 engines/grim/grim.cpp:504
+#: engines/grim/grim.cpp:600 engines/mohawk/myst.cpp:567
 #: engines/mohawk/riven.cpp:831 engines/wintermute/keymapper_tables.h:220
 #: engines/wintermute/keymapper_tables.h:1092
 #: engines/wintermute/keymapper_tables.h:1248
@@ -2763,25 +2790,25 @@ msgstr "Меню гри"
 msgid "Skip"
 msgstr "Пропустити"
 
-#: engines/metaengine.cpp:94 engines/sky/metaengine.cpp:117
+#: engines/metaengine.cpp:97 engines/sky/metaengine.cpp:117
 msgid "Skip line"
 msgstr "Пропустити рядок"
 
-#: engines/metaengine.cpp:100
+#: engines/metaengine.cpp:104
 msgid "Predictive input dialog"
 msgstr "Діалог предиктивного вводу"
 
 #. I18N: This keymap works within the KIA Save Game screen
 #. and allows confirming popup dialogue prompts (eg. for save game deletion or overwriting)
 #. and also submitting a new save game name, or choosing an existing save game for overwriting.
-#: engines/metaengine.cpp:104 engines/bladerunner/metaengine.cpp:181
-#: engines/griffon/metaengine.cpp:89 engines/grim/grim.cpp:512
-#: engines/grim/grim.cpp:608 engines/sky/metaengine.cpp:97
+#: engines/metaengine.cpp:109 engines/bladerunner/metaengine.cpp:183
+#: engines/griffon/metaengine.cpp:89 engines/grim/grim.cpp:510
+#: engines/grim/grim.cpp:606 engines/sky/metaengine.cpp:97
 #: engines/wintermute/keymapper_tables.h:54
 msgid "Confirm"
 msgstr "Підтвердити"
 
-#: graphics/renderer.cpp:33 backends/graphics/opengl/opengl-graphics.cpp:174
+#: graphics/renderer.cpp:33 backends/graphics/opengl/opengl-graphics.cpp:175
 msgid "OpenGL"
 msgstr "OpenGL"
 
@@ -2794,7 +2821,7 @@ msgctxt "lowres"
 msgid "OpenGL with shaders"
 msgstr "OpenGL з шейдерами"
 
-#: audio/adlib.cpp:2294
+#: audio/adlib.cpp:2303
 msgid "AdLib emulator"
 msgstr "Емулятор AdLib"
 
@@ -2883,7 +2910,7 @@ msgstr "Без музики"
 msgid "Apple II GS emulator (NOT IMPLEMENTED)"
 msgstr "Apple II GS Емулятор (НЕ РЕАЛІЗОВАНО)"
 
-#: audio/softsynth/cms.cpp:350
+#: audio/softsynth/cms.cpp:354
 msgid "Creative Music System emulator"
 msgstr "Емулятор Creative Music System"
 
@@ -2936,11 +2963,11 @@ msgstr "C64 Аудіо Емулятор"
 msgid "<syncing...>"
 msgstr "<синхронізація ...>"
 
-#: backends/cloud/storage.cpp:241
+#: backends/cloud/storage.cpp:242
 msgid "Saved games sync was cancelled."
 msgstr "Синхронизацію збережених ігор припинено."
 
-#: backends/cloud/storage.cpp:243
+#: backends/cloud/storage.cpp:244
 msgid ""
 "Saved games sync failed.\n"
 "Check your Internet connection."
@@ -2948,7 +2975,7 @@ msgstr ""
 "Помилка синхронизації збережених ігор.\n"
 "Перевірте ваше з'єднання з інтернет."
 
-#: backends/cloud/storage.cpp:347
+#: backends/cloud/storage.cpp:348
 #, c-format
 msgid ""
 "Download complete.\n"
@@ -2957,15 +2984,15 @@ msgstr ""
 "Завантаження закінчено.\n"
 "Не вдалося завантажити %u файлів."
 
-#: backends/cloud/storage.cpp:349
+#: backends/cloud/storage.cpp:350
 msgid "Download complete."
 msgstr "Завантаження закінчено."
 
-#: backends/cloud/storage.cpp:359
+#: backends/cloud/storage.cpp:360
 msgid "Download failed."
 msgstr "Помилка завантаження."
 
-#: backends/events/default/default-events.cpp:194
+#: backends/events/default/default-events.cpp:193
 msgid ""
 "Do you really want to return to the Launcher?\n"
 "Any unsaved progress will be lost."
@@ -2973,7 +3000,7 @@ msgstr ""
 "Ви впевнені, що хочете повернутися до головного меню?\n"
 "Весь незбережений прогрес буде втрачено."
 
-#: backends/events/default/default-events.cpp:218
+#: backends/events/default/default-events.cpp:217
 msgid ""
 "Do you really want to quit?\n"
 "Any unsaved progress will be lost."
@@ -2981,34 +3008,34 @@ msgstr ""
 "Ви впевнені, що хочете вийти?\n"
 "Незбережений прогрес у грі буде втрачено."
 
-#: backends/events/default/default-events.cpp:218
-#: backends/events/default/default-events.cpp:359
+#: backends/events/default/default-events.cpp:217
+#: backends/events/default/default-events.cpp:358
 #: engines/adl/metaengine.cpp:260 engines/hdb/metaengine.cpp:255
 #: engines/mohawk/myst_stacks/menu.cpp:317
-#: engines/mohawk/riven_stacks/aspit.cpp:454 engines/scumm/dialogs.cpp:179
-#: engines/scumm/help.cpp:81 engines/scumm/help.cpp:83
-#: engines/zvision/metaengine.cpp:203 engines/zvision/metaengine.cpp:221
+#: engines/mohawk/riven_stacks/aspit.cpp:454 engines/scumm/help.cpp:81
+#: engines/scumm/help.cpp:83 engines/zvision/metaengine.cpp:203
+#: engines/zvision/metaengine.cpp:221
 msgid "Quit"
 msgstr "Вихід"
 
-#: backends/events/default/default-events.cpp:333
+#: backends/events/default/default-events.cpp:332
 msgid "Global"
 msgstr "Глобальна"
 
-#: backends/events/default/default-events.cpp:336
+#: backends/events/default/default-events.cpp:335
 #: engines/twine/metaengine.cpp:218
 msgid "Global Main Menu"
 msgstr "Глобальне меню"
 
-#: backends/events/default/default-events.cpp:346
+#: backends/events/default/default-events.cpp:345
 msgid "Display keyboard"
 msgstr "Показати клавіатуру"
 
-#: backends/events/default/default-events.cpp:353
+#: backends/events/default/default-events.cpp:352
 msgid "Toggle mute"
 msgstr "Перемкнути звук"
 
-#: backends/events/default/default-events.cpp:381
+#: backends/events/default/default-events.cpp:380
 msgid "Open Debugger"
 msgstr "Відкрити відладчик"
 
@@ -3058,62 +3085,68 @@ msgstr "Кліки вимкнено"
 msgid "Touchscreen 'Tap Mode' - Hover (DPad Clicks)"
 msgstr "Режим дотику у тачскріні - Проліт (клік DPad)"
 
-#: backends/graphics/opengl/opengl-graphics.cpp:253
+#: backends/graphics/opengl/opengl-graphics.cpp:254
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:72
+#: backends/graphics3d/openglsdl/openglsdl-graphics3d.cpp:235
 #: engines/twine/metaengine.cpp:228
 msgid "Center"
 msgstr "По центру"
 
-#: backends/graphics/opengl/opengl-graphics.cpp:254
+#: backends/graphics/opengl/opengl-graphics.cpp:255
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:73
+#: backends/graphics3d/openglsdl/openglsdl-graphics3d.cpp:236
 msgid "Pixel-perfect scaling"
 msgstr "Піксельне ідеальне масштабування"
 
-#: backends/graphics/opengl/opengl-graphics.cpp:255
+#: backends/graphics/opengl/opengl-graphics.cpp:256
+#: backends/graphics3d/openglsdl/openglsdl-graphics3d.cpp:237
 msgid "Even pixels scaling"
 msgstr "Піксельне рівномірне масштабування"
 
-#: backends/graphics/opengl/opengl-graphics.cpp:256
+#: backends/graphics/opengl/opengl-graphics.cpp:257
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:74
+#: backends/graphics3d/openglsdl/openglsdl-graphics3d.cpp:238
 msgid "Fit to window"
 msgstr "В розміри вікна"
 
-#: backends/graphics/opengl/opengl-graphics.cpp:257
+#: backends/graphics/opengl/opengl-graphics.cpp:258
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:75
+#: backends/graphics3d/openglsdl/openglsdl-graphics3d.cpp:239
 msgid "Stretch to window"
 msgstr "Розтягнути до вікна"
 
-#: backends/graphics/opengl/opengl-graphics.cpp:258
+#: backends/graphics/opengl/opengl-graphics.cpp:259
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:76
+#: backends/graphics3d/openglsdl/openglsdl-graphics3d.cpp:240
 msgid "Fit to window (4:3)"
 msgstr "До розмірів вікна (4: 3)"
 
-#: backends/graphics/openglsdl/openglsdl-graphics.cpp:717
+#: backends/graphics/openglsdl/openglsdl-graphics.cpp:708
 #, c-format
 msgid "Resolution: %dx%d"
 msgstr "Розгалуження %dx%d"
 
-#: backends/graphics/openglsdl/openglsdl-graphics.cpp:740
+#: backends/graphics/openglsdl/openglsdl-graphics.cpp:731
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:2450
 msgid "Enabled aspect ratio correction"
 msgstr "Корекцію співвідношення сторін увімкнено"
 
-#: backends/graphics/openglsdl/openglsdl-graphics.cpp:742
+#: backends/graphics/openglsdl/openglsdl-graphics.cpp:733
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:2456
 msgid "Disabled aspect ratio correction"
 msgstr "Корекцію співвідношення сторін вимкнено"
 
-#: backends/graphics/openglsdl/openglsdl-graphics.cpp:763
+#: backends/graphics/openglsdl/openglsdl-graphics.cpp:754
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:2472
 msgid "Filtering enabled"
 msgstr "Фільтрування увімкнено"
 
-#: backends/graphics/openglsdl/openglsdl-graphics.cpp:765
+#: backends/graphics/openglsdl/openglsdl-graphics.cpp:756
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:2474
 msgid "Filtering disabled"
 msgstr "Фільтрування вимкнено"
 
-#: backends/graphics/openglsdl/openglsdl-graphics.cpp:794
+#: backends/graphics/openglsdl/openglsdl-graphics.cpp:785
 #: backends/graphics/surfacesdl/surfacesdl-graphics.cpp:2501
 msgid "Stretch mode"
 msgstr "Стретч-режим"
@@ -3126,29 +3159,29 @@ msgstr "Поверхня SDL"
 msgid "Active graphics filter:"
 msgstr "Поточний графічний фільтр:"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:355
+#: backends/graphics/sdl/sdl-graphics.cpp:360
 #, c-format
 msgid "Saved screenshot '%s'"
 msgstr "Збережено екран '%s'"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:364
+#: backends/graphics/sdl/sdl-graphics.cpp:369
 msgid "Could not save screenshot"
 msgstr "Не вдалося зберегти екран"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:411
+#: backends/graphics/sdl/sdl-graphics.cpp:416
 msgid "Windowed mode"
 msgstr "Віконний режим"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:422 engines/scumm/help.cpp:85
+#: backends/graphics/sdl/sdl-graphics.cpp:427 engines/scumm/help.cpp:85
 msgid "Toggle fullscreen"
 msgstr "Перемикання повноекранного режиму"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:429 engines/scumm/help.cpp:98
+#: backends/graphics/sdl/sdl-graphics.cpp:434 engines/scumm/help.cpp:98
 #: engines/wintermute/keymapper_tables.h:960
 msgid "Toggle mouse capture"
 msgstr "Перемикання захоплення миші"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:434
+#: backends/graphics/sdl/sdl-graphics.cpp:439
 #: engines/wintermute/keymapper_tables.h:646
 #: engines/wintermute/keymapper_tables.h:695
 #: engines/wintermute/keymapper_tables.h:1098
@@ -3161,31 +3194,31 @@ msgstr "Перемикання захоплення миші"
 msgid "Save screenshot"
 msgstr "Зберегти екран"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:440
+#: backends/graphics/sdl/sdl-graphics.cpp:445
 msgid "Toggle aspect ratio correction"
 msgstr "Перемикання корекції співвідношення сторін"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:447
+#: backends/graphics/sdl/sdl-graphics.cpp:452
 msgid "Toggle linear filtered scaling"
 msgstr "Перемикання фільтра лінийний"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:454
+#: backends/graphics/sdl/sdl-graphics.cpp:459
 msgid "Cycle through stretch modes"
 msgstr "Перемикання між режимів розтягування"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:460
+#: backends/graphics/sdl/sdl-graphics.cpp:465
 msgid "Increase the scale factor"
 msgstr "Збільшити масштаб"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:466
+#: backends/graphics/sdl/sdl-graphics.cpp:471
 msgid "Decrease the scale factor"
 msgstr "Зменшити масштаб"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:472
+#: backends/graphics/sdl/sdl-graphics.cpp:477
 msgid "Switch to the next scaler"
 msgstr "Перемикання до наступного фільтру"
 
-#: backends/graphics/sdl/sdl-graphics.cpp:477
+#: backends/graphics/sdl/sdl-graphics.cpp:482
 msgid "Switch to the previous scaler"
 msgstr "Перемикання до попереднього фільтру"
 
@@ -3263,7 +3296,7 @@ msgstr "Правий курок"
 
 #: backends/keymapper/hardware-input.cpp:266
 #: backends/platform/3ds/osystem-events.cpp:57
-#: backends/platform/ds/osystem_ds.cpp:152 backends/platform/sdl/ps3/ps3.cpp:51
+#: backends/platform/ds/osystem_ds.cpp:173 backends/platform/sdl/ps3/ps3.cpp:51
 #: backends/platform/sdl/psp2/psp2.cpp:51
 #: backends/platform/sdl/switch/switch.cpp:48
 msgid "D-pad Up"
@@ -3271,7 +3304,7 @@ msgstr "Стрілка уверх"
 
 #: backends/keymapper/hardware-input.cpp:267
 #: backends/platform/3ds/osystem-events.cpp:58
-#: backends/platform/ds/osystem_ds.cpp:153 backends/platform/sdl/ps3/ps3.cpp:52
+#: backends/platform/ds/osystem_ds.cpp:174 backends/platform/sdl/ps3/ps3.cpp:52
 #: backends/platform/sdl/psp2/psp2.cpp:52
 #: backends/platform/sdl/switch/switch.cpp:49
 msgid "D-pad Down"
@@ -3279,7 +3312,7 @@ msgstr "Стрілка донизу"
 
 #: backends/keymapper/hardware-input.cpp:268
 #: backends/platform/3ds/osystem-events.cpp:59
-#: backends/platform/ds/osystem_ds.cpp:154 backends/platform/sdl/ps3/ps3.cpp:53
+#: backends/platform/ds/osystem_ds.cpp:175 backends/platform/sdl/ps3/ps3.cpp:53
 #: backends/platform/sdl/psp2/psp2.cpp:53
 #: backends/platform/sdl/switch/switch.cpp:50
 msgid "D-pad Left"
@@ -3287,7 +3320,7 @@ msgstr "Стрілка вліво"
 
 #: backends/keymapper/hardware-input.cpp:269
 #: backends/platform/3ds/osystem-events.cpp:60
-#: backends/platform/ds/osystem_ds.cpp:155 backends/platform/sdl/ps3/ps3.cpp:54
+#: backends/platform/ds/osystem_ds.cpp:176 backends/platform/sdl/ps3/ps3.cpp:54
 #: backends/platform/sdl/psp2/psp2.cpp:54
 #: backends/platform/sdl/switch/switch.cpp:51
 msgid "D-pad Right"
@@ -3530,7 +3563,7 @@ msgstr "Жодного файлу не передано!"
 msgid "Uploaded successfully!"
 msgstr "Завантажено успішно!"
 
-#: backends/platform/3ds/options-dialog.cpp:44 engines/scumm/dialogs.cpp:278
+#: backends/platform/3ds/options-dialog.cpp:44 engines/scumm/dialogs.cpp:276
 msgid "~C~lose"
 msgstr "~З~акрити"
 
@@ -3566,31 +3599,31 @@ msgid "Both"
 msgstr "Обидва"
 
 #: backends/platform/3ds/osystem-events.cpp:47
-#: backends/platform/ds/osystem_ds.cpp:144
+#: backends/platform/ds/osystem_ds.cpp:165
 #: backends/platform/sdl/switch/switch.cpp:38
 msgid "A"
 msgstr "A"
 
 #: backends/platform/3ds/osystem-events.cpp:49
-#: backends/platform/ds/osystem_ds.cpp:146
+#: backends/platform/ds/osystem_ds.cpp:167
 #: backends/platform/sdl/switch/switch.cpp:40
 msgid "X"
 msgstr "X"
 
 #: backends/platform/3ds/osystem-events.cpp:50
-#: backends/platform/ds/osystem_ds.cpp:147
+#: backends/platform/ds/osystem_ds.cpp:168
 #: backends/platform/sdl/switch/switch.cpp:39
 msgid "Y"
 msgstr "Y"
 
 #: backends/platform/3ds/osystem-events.cpp:51
-#: backends/platform/ds/osystem_ds.cpp:148 backends/platform/sdl/ps3/ps3.cpp:44
+#: backends/platform/ds/osystem_ds.cpp:169 backends/platform/sdl/ps3/ps3.cpp:44
 #: backends/platform/sdl/psp2/psp2.cpp:47
 msgid "Select"
 msgstr "Вибір"
 
 #: backends/platform/3ds/osystem-events.cpp:52
-#: backends/platform/ds/osystem_ds.cpp:149 backends/platform/sdl/ps3/ps3.cpp:46
+#: backends/platform/ds/osystem_ds.cpp:170 backends/platform/sdl/ps3/ps3.cpp:46
 #: backends/platform/sdl/psp2/psp2.cpp:48
 msgid "Start"
 msgstr "Старт"
@@ -3606,14 +3639,14 @@ msgid "ZR"
 msgstr "ZR"
 
 #: backends/platform/3ds/osystem-events.cpp:55
-#: backends/platform/ds/osystem_ds.cpp:150
+#: backends/platform/ds/osystem_ds.cpp:171
 #: backends/platform/sdl/psp2/psp2.cpp:49
 #: backends/platform/sdl/switch/switch.cpp:46
 msgid "L"
 msgstr "L"
 
 #: backends/platform/3ds/osystem-events.cpp:56
-#: backends/platform/ds/osystem_ds.cpp:151
+#: backends/platform/ds/osystem_ds.cpp:172
 #: backends/platform/sdl/psp2/psp2.cpp:50
 #: backends/platform/sdl/switch/switch.cpp:47
 msgid "R"
@@ -3628,7 +3661,7 @@ msgid "C-Pad Y"
 msgstr "Пад Y"
 
 #: backends/platform/3ds/osystem-events.cpp:71
-#: backends/platform/ds/osystem_ds.cpp:164
+#: backends/platform/ds/osystem_ds.cpp:185
 msgid "Touch"
 msgstr "Касання"
 
@@ -3701,47 +3734,81 @@ msgstr "Режим збільшення вимкнено. Вмикаю режи�
 msgid "Magnify Mode Off"
 msgstr "Режим збільшення вимкнено"
 
-#: backends/platform/android/options.cpp:71
+#: backends/platform/android/options.cpp:93
 msgid "Show On-screen control"
 msgstr "Показувати екранне керування"
 
+#: backends/platform/android/options.cpp:94
+msgid "Choose the preferred touch mode:"
+msgstr "Оберіть уподобаний режим дотику:"
+
+#: backends/platform/android/options.cpp:96
+msgid "In menus"
+msgstr "В меню"
+
+#: backends/platform/android/options.cpp:98
+#: backends/platform/android/options.cpp:116
+#: backends/platform/android/options.cpp:117
+msgid "Touchpad emulation"
+msgstr "Емуляція тачпаду"
+
+#: backends/platform/android/options.cpp:99
+#: backends/platform/android/options.cpp:119
+#: backends/platform/android/options.cpp:120
+msgid "Direct mouse"
+msgstr "Віртуальна миша"
+
+#: backends/platform/android/options.cpp:100
+#: backends/platform/android/options.cpp:122
+#: backends/platform/android/options.cpp:123
+msgid "Gamepad emulation"
+msgstr "Емуляція геймпаду"
+
+#: backends/platform/android/options.cpp:106
+msgid "In 2D games"
+msgstr "У 2D іграх"
+
+#: backends/platform/android/options.cpp:108
+msgid "In 3D games"
+msgstr "У 3D іграх"
+
 #. I18N: Show a button to revoke Storage Access Framework permissions for Android
-#: backends/platform/android/options.cpp:76
+#: backends/platform/android/options.cpp:128
 msgid "Show SAF revoke permissions overlay button"
 msgstr "Показати кнопку SAF (доступу до картки пам'яті)"
 
-#: backends/platform/ds/ds-graphics.cpp:256
+#: backends/platform/ds/ds-graphics.cpp:253
 msgid "Unscaled"
 msgstr "Без масштабування"
 
-#: backends/platform/ds/ds-graphics.cpp:257
+#: backends/platform/ds/ds-graphics.cpp:254
 msgid "Hardware scale (fast, but low quality)"
 msgstr "Хардварне масштабування (швидко, але низької якості)"
 
-#: backends/platform/ds/ds-graphics.cpp:258
+#: backends/platform/ds/ds-graphics.cpp:255
 msgid "Software scale (good quality, but slower)"
 msgstr "Програмне масштабування (хороша якість, але повільніше)"
 
-#: backends/platform/ios7/ios7_osys_events.cpp:326
-#: backends/platform/ios7/ios7_osys_events.cpp:457
+#: backends/platform/ios7/ios7_osys_events.cpp:347
+#: backends/platform/ios7/ios7_osys_events.cpp:478
 #: backends/platform/iphone/osys_events.cpp:299
 msgid "Mouse-click-and-drag mode enabled."
 msgstr "Режим миші клікнути-та-тягнути увімкнено."
 
-#: backends/platform/ios7/ios7_osys_events.cpp:328
-#: backends/platform/ios7/ios7_osys_events.cpp:459
+#: backends/platform/ios7/ios7_osys_events.cpp:349
+#: backends/platform/ios7/ios7_osys_events.cpp:480
 #: backends/platform/iphone/osys_events.cpp:301
 msgid "Mouse-click-and-drag mode disabled."
 msgstr "Режим миші клікнути-та-тягнути вимкнено."
 
-#: backends/platform/ios7/ios7_osys_events.cpp:339
-#: backends/platform/ios7/ios7_osys_events.cpp:478
+#: backends/platform/ios7/ios7_osys_events.cpp:360
+#: backends/platform/ios7/ios7_osys_events.cpp:499
 #: backends/platform/iphone/osys_events.cpp:312
 msgid "Touchpad mode enabled."
 msgstr "Режим тачпаду увімкнено."
 
-#: backends/platform/ios7/ios7_osys_events.cpp:341
-#: backends/platform/ios7/ios7_osys_events.cpp:480
+#: backends/platform/ios7/ios7_osys_events.cpp:362
+#: backends/platform/ios7/ios7_osys_events.cpp:501
 #: backends/platform/iphone/osys_events.cpp:314
 msgid "Touchpad mode disabled."
 msgstr "Режим тачпаду вимкнено."
@@ -3775,7 +3842,7 @@ msgstr "Мінімізувати"
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. ONLINE HELP
 #: backends/platform/sdl/macosx/appmenu_osx.mm:237
-#: engines/bladerunner/metaengine.cpp:221 engines/zvision/metaengine.cpp:157
+#: engines/bladerunner/metaengine.cpp:231 engines/zvision/metaengine.cpp:157
 msgid "Help"
 msgstr "Довідка"
 
@@ -4004,9 +4071,9 @@ msgstr "Перевірити оновлення..."
 
 #: engines/access/resources.cpp:43 engines/drascula/drascula.cpp:933
 #: engines/hugo/hugo.cpp:424 engines/lure/lure.cpp:57
-#: engines/mortevielle/mortevielle.cpp:301 engines/sky/compact.cpp:130
+#: engines/mortevielle/mortevielle.cpp:301 engines/sky/compact.cpp:129
 #: engines/supernova/supernova.cpp:464 engines/teenagent/resources.cpp:97
-#: engines/tony/tony.cpp:187 engines/toon/toon.cpp:4999
+#: engines/tony/tony.cpp:187 engines/toon/toon.cpp:5359
 #, c-format
 msgid "Unable to locate the '%s' engine data file."
 msgstr "Не вдалося знайти файл даних движка %s."
@@ -4014,7 +4081,7 @@ msgstr "Не вдалося знайти файл даних движка %s."
 #: engines/access/resources.cpp:51 engines/drascula/drascula.cpp:949
 #: engines/hugo/hugo.cpp:436 engines/lure/lure.cpp:66
 #: engines/mortevielle/mortevielle.cpp:309 engines/supernova/supernova.cpp:469
-#: engines/tony/tony.cpp:200 engines/toon/toon.cpp:5012
+#: engines/tony/tony.cpp:200 engines/toon/toon.cpp:5372
 #, c-format
 msgid "The '%s' engine data file is corrupt."
 msgstr "Файл движка %s пошкоджено."
@@ -4022,7 +4089,7 @@ msgstr "Файл движка %s пошкоджено."
 #: engines/access/resources.cpp:60 engines/drascula/drascula.cpp:960
 #: engines/hugo/hugo.cpp:446 engines/lure/lure.cpp:69
 #: engines/mortevielle/mortevielle.cpp:319 engines/tony/tony.cpp:211
-#: engines/toon/toon.cpp:5023
+#: engines/toon/toon.cpp:5383
 #, c-format
 msgid ""
 "Incorrect version of the '%s' engine data file found. Expected %d.%d but got "
@@ -4063,22 +4130,20 @@ msgid "Do not emulate NTSC artifacts for text"
 msgstr "Не емулюйте артефакти NTSC для тексту"
 
 #: engines/agi/detection.cpp:86 engines/cine/detection.cpp:51
-#: engines/drascula/detection.cpp:298 engines/dreamweb/detection.cpp:54
-#: engines/groovie/detection.cpp:287 engines/neverhood/detection.cpp:134
+#: engines/drascula/detection.cpp:303 engines/dreamweb/detection.cpp:54
+#: engines/groovie/detection.cpp:295 engines/neverhood/detection.cpp:139
 #: engines/sci/detection_options.h:105 engines/sherlock/detection.cpp:58
-#: engines/toltecs/detection.cpp:212 engines/trecision/detection.cpp:219
-#: engines/ultima/detection.cpp:55 engines/ultima/detection.cpp:120
-#: engines/zvision/detection_tables.h:50
+#: engines/toltecs/detection.cpp:228 engines/trecision/detection.cpp:219
+#: engines/ultima/detection.cpp:55 engines/zvision/detection_tables.h:50
 msgid "Use original save/load screens"
 msgstr "Використовувати ориг. екрани збереження/завантаження"
 
 #: engines/agi/detection.cpp:87 engines/cine/detection.cpp:52
-#: engines/drascula/detection.cpp:299 engines/dreamweb/detection.cpp:55
-#: engines/groovie/detection.cpp:288 engines/neverhood/detection.cpp:135
+#: engines/drascula/detection.cpp:304 engines/dreamweb/detection.cpp:55
+#: engines/groovie/detection.cpp:296 engines/neverhood/detection.cpp:140
 #: engines/sci/detection_options.h:106 engines/sherlock/detection.cpp:59
-#: engines/toltecs/detection.cpp:213 engines/trecision/detection.cpp:220
-#: engines/ultima/detection.cpp:56 engines/ultima/detection.cpp:121
-#: engines/zvision/detection_tables.h:51
+#: engines/toltecs/detection.cpp:229 engines/trecision/detection.cpp:220
+#: engines/ultima/detection.cpp:56 engines/zvision/detection_tables.h:51
 msgid "Use the original save/load screens instead of the ScummVM ones"
 msgstr ""
 "Використовувати оригінальні екрани збереження/завантаження замість ScummVM"
@@ -4150,16 +4215,16 @@ msgstr ""
 #: engines/cine/various.cpp:360 engines/dm/dm.cpp:273
 #: engines/dm/loadsave.cpp:187 engines/drascula/saveload.cpp:395
 #: engines/dreamweb/saveload.cpp:169 engines/glk/streams.cpp:1441
-#: engines/gnap/menu.cpp:474 engines/groovie/script.cpp:823
-#: engines/groovie/script.cpp:858 engines/groovie/script.cpp:2181
-#: engines/groovie/script.cpp:2251 engines/hugo/file.cpp:399
+#: engines/gnap/menu.cpp:474 engines/groovie/script.cpp:821
+#: engines/groovie/script.cpp:856 engines/groovie/script.cpp:2179
+#: engines/groovie/script.cpp:2249 engines/hugo/file.cpp:399
 #: engines/illusions/menusystem.cpp:679 engines/kingdom/kingdom.cpp:746
 #: engines/lab/savegame.cpp:257 engines/mads/nebular/dialogs_nebular.cpp:376
-#: engines/neverhood/menumodule.cpp:902 engines/prince/saveload.cpp:63
-#: engines/sci/engine/guest_additions.cpp:745 engines/sci/engine/kfile.cpp:1206
-#: engines/sherlock/scalpel/scalpel.cpp:1262
+#: engines/mtropolis/saveload.cpp:110 engines/neverhood/menumodule.cpp:902
+#: engines/prince/saveload.cpp:63 engines/sci/engine/guest_additions.cpp:745
+#: engines/sci/engine/kfile.cpp:1206 engines/sherlock/scalpel/scalpel.cpp:1262
 #: engines/sherlock/tattoo/widget_files.cpp:93 engines/startrek/saveload.cpp:67
-#: engines/toltecs/menu.cpp:272 engines/toon/toon.cpp:3499
+#: engines/toltecs/menu.cpp:272 engines/toon/toon.cpp:3859
 #: engines/zvision/file/save_manager.cpp:61
 msgid "Restore game:"
 msgstr "Відновити гру:"
@@ -4168,17 +4233,17 @@ msgstr "Відновити гру:"
 #: engines/cine/various.cpp:360 engines/dm/dm.cpp:273
 #: engines/dm/loadsave.cpp:187 engines/drascula/saveload.cpp:395
 #: engines/dreamweb/saveload.cpp:169 engines/glk/streams.cpp:1441
-#: engines/gnap/menu.cpp:474 engines/groovie/script.cpp:823
-#: engines/groovie/script.cpp:841 engines/groovie/script.cpp:858
-#: engines/groovie/script.cpp:2181 engines/groovie/script.cpp:2251
+#: engines/gnap/menu.cpp:474 engines/groovie/script.cpp:821
+#: engines/groovie/script.cpp:839 engines/groovie/script.cpp:856
+#: engines/groovie/script.cpp:2179 engines/groovie/script.cpp:2249
 #: engines/hugo/file.cpp:399 engines/illusions/menusystem.cpp:679
 #: engines/kingdom/kingdom.cpp:746 engines/lab/savegame.cpp:237
 #: engines/lab/savegame.cpp:257 engines/mads/nebular/dialogs_nebular.cpp:376
-#: engines/neverhood/menumodule.cpp:902 engines/prince/saveload.cpp:63
-#: engines/sci/engine/guest_additions.cpp:746 engines/sci/engine/kfile.cpp:1206
-#: engines/sherlock/scalpel/scalpel.cpp:1262
+#: engines/mtropolis/saveload.cpp:110 engines/neverhood/menumodule.cpp:902
+#: engines/prince/saveload.cpp:63 engines/sci/engine/guest_additions.cpp:746
+#: engines/sci/engine/kfile.cpp:1206 engines/sherlock/scalpel/scalpel.cpp:1262
 #: engines/sherlock/tattoo/widget_files.cpp:93 engines/startrek/saveload.cpp:67
-#: engines/toltecs/menu.cpp:272 engines/toon/toon.cpp:3499
+#: engines/toltecs/menu.cpp:272 engines/toon/toon.cpp:3859
 #: engines/zvision/file/save_manager.cpp:61 engines/zvision/metaengine.cpp:198
 msgid "Restore"
 msgstr "Відновити"
@@ -4187,7 +4252,7 @@ msgstr "Відновити"
 msgid "Quick load or save game isn't supported in this location"
 msgstr "Швидке завантаження або збереження не підтримується в цій локації"
 
-#: engines/agos/saveload.cpp:161 engines/scumm/scumm.cpp:2783
+#: engines/agos/saveload.cpp:161 engines/scumm/scumm.cpp:2677
 #, c-format
 msgid ""
 "Failed to load saved game from file:\n"
@@ -4198,7 +4263,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: engines/agos/saveload.cpp:196 engines/scumm/scumm.cpp:2773
+#: engines/agos/saveload.cpp:196 engines/scumm/scumm.cpp:2664
 #, c-format
 msgid ""
 "Failed to save game to file:\n"
@@ -4209,7 +4274,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: engines/agos/saveload.cpp:204 engines/scumm/scumm.cpp:2796
+#: engines/agos/saveload.cpp:204 engines/scumm/scumm.cpp:2693
 #, c-format
 msgid ""
 "Successfully saved game in file:\n"
@@ -4229,7 +4294,7 @@ msgstr "Файл ролику '%s' не знайдено!"
 msgid "AGOS 2 support is not compiled in"
 msgstr "Підтримку для AGOS 2 не скомпільовано"
 
-#: engines/agos/midi.cpp:157 engines/kyra/sound/sound_pc_midi.cpp:75
+#: engines/agos/midi.cpp:184 engines/kyra/sound/sound_pc_midi.cpp:75
 msgid ""
 "You appear to be using a General MIDI device,\n"
 "but your game only supports Roland MT32 MIDI.\n"
@@ -4242,6 +4307,49 @@ msgstr ""
 "MIDI. Ми спробуємо замапити інструменти Roland\n"
 "MT32 на General MIDI. Але в результаті може\n"
 "статися, що деякі треки будуть грати неправильно."
+
+#: engines/agos/detection.cpp:82
+msgid "AdLib OPL3 mode"
+msgstr "Режим AdLib OPL3"
+
+#: engines/agos/detection.cpp:83
+msgid ""
+"When AdLib is selected, OPL3 features will be used. Depending on the game, "
+"this will prevent cut-off notes, add extra notes or instruments and/or add "
+"stereo."
+msgstr ""
+"Коли обрано AdLib, будуть використовуватися функції від OPL3. Залежно від "
+"гри, це буде запобігати скороченню нот, додасть ноти чи інструменти та/або "
+"додасть стерео."
+
+#: engines/agos/detection.cpp:93 engines/agos/detection.cpp:104
+msgid "Use DOS version music tempos"
+msgstr "Використовувати темп музики для DOS-версії"
+
+#: engines/agos/detection.cpp:94 engines/agos/detection.cpp:105
+msgid ""
+"Selecting this option will play the music using the tempos used by the DOS "
+"version of the game. Otherwise, the faster tempos of the Windows version "
+"will be used."
+msgstr ""
+"Обрання цієї опції буде програвати музику с темпом від DOS-версії гри. "
+"Інакше буде використовуватися швидший темп Windows-версії."
+
+#: engines/agos/detection.cpp:115 engines/sci/detection_options.h:93
+msgid "Prefer digital sound effects"
+msgstr "Надавати перевагу цифровим звуковим ефектам"
+
+#: engines/agos/detection.cpp:116 engines/sci/detection_options.h:94
+msgid "Prefer digital sound effects instead of synthesized ones"
+msgstr "Віддавати перевагу цифровим звуковим ефектам, а не синтезованим"
+
+#: engines/agos/detection.cpp:126
+msgid "Disable fade-out effects"
+msgstr "Заборонити ефекти затемнення"
+
+#: engines/agos/detection.cpp:127
+msgid "Don't fade every screen to black when leaving a room."
+msgstr "Не затемнювати екран під час кожного переходу між кімнатами."
 
 #: engines/ags/dialogs.cpp:58
 msgid "Game language:"
@@ -4260,13 +4368,13 @@ msgid "Use antialiasing to draw text even if the game does not ask for it"
 msgstr ""
 "Використовувати шрифти зі згладжуванням, навіть коли гра цього не запитувала"
 
-#: engines/ags/ags.cpp:125
+#: engines/ags/ags.cpp:131
 msgid ""
 "The selected game uses a pre-2.5 version of the AGS engine, which is not "
 "supported."
 msgstr "Ця гра потребує AGS-движок версії раніше 2.5, яка не підтримується."
 
-#: engines/ags/ags.cpp:133
+#: engines/ags/ags.cpp:139
 msgid ""
 "The selected game has a data file greater than 2Gb, which isn't supported by "
 "your version of ScummVM yet."
@@ -4274,29 +4382,37 @@ msgstr ""
 "Вибрана гра має файл даних завбільшки 2Гб і ще не підтримується цією версією "
 "ScummVM."
 
-#: engines/asylum/metaengine.cpp:114
+#: engines/asylum/metaengine.cpp:115
 msgid "Show version"
 msgstr "Показувати версію"
 
-#: engines/asylum/metaengine.cpp:119 engines/wintermute/keymapper_tables.h:950
+#: engines/asylum/metaengine.cpp:120 engines/wintermute/keymapper_tables.h:950
 msgid "Quick load"
 msgstr "Швидке завантаження"
 
-#: engines/asylum/metaengine.cpp:124 engines/wintermute/keymapper_tables.h:930
+#: engines/asylum/metaengine.cpp:125 engines/wintermute/keymapper_tables.h:930
 msgid "Quick save"
 msgstr "Швидке збереження"
 
-#: engines/asylum/metaengine.cpp:129
+#: engines/asylum/metaengine.cpp:130
 msgid "Switch to Sarah"
 msgstr "Переключитися на Сару"
 
-#: engines/asylum/metaengine.cpp:134
+#: engines/asylum/metaengine.cpp:135
 msgid "Switch to Grimwall"
 msgstr "Переключитися на Грімвела"
 
-#: engines/asylum/metaengine.cpp:139
+#: engines/asylum/metaengine.cpp:140
 msgid "Switch to Olmec"
 msgstr "Переключитися на Ольмека"
+
+#: engines/asylum/metaengine.cpp:145
+msgid "Bring up the In-Game Menu"
+msgstr "Показати меню гри"
+
+#: engines/asylum/metaengine.cpp:151
+msgid "Open character inventory"
+msgstr "Відкрити інвентар героя"
 
 #. I18N: Warn user about loading potentially incompatible saved game
 #: engines/asylum/asylum.cpp:200
@@ -4312,15 +4428,15 @@ msgstr ""
 msgid "Load anyway"
 msgstr "Все одно зчитати"
 
-#: engines/bladerunner/bladerunner.cpp:370
+#: engines/bladerunner/bladerunner.cpp:397
 msgid "Failed to initialize resources"
 msgstr "Не вдалося ініціалізувати ресурси"
 
-#: engines/bladerunner/bladerunner.cpp:1086
+#: engines/bladerunner/bladerunner.cpp:1161
 msgid "A required game resource was not found"
 msgstr "Потрібний ігровий ресурс не знайдено"
 
-#: engines/bladerunner/bladerunner.cpp:2599
+#: engines/bladerunner/bladerunner.cpp:2743
 msgid ""
 "WARNING: This game was saved in Restored Cut Content mode, but you are "
 "playing in Original Content mode. The mode will be adjusted to Restored Cut "
@@ -4330,7 +4446,7 @@ msgstr ""
 "ви граєте в режимі оригінального вмісту. Режим буде налаштовано на "
 "Відновлений вміст для цього сеансу до повного виходу з гри."
 
-#: engines/bladerunner/bladerunner.cpp:2601
+#: engines/bladerunner/bladerunner.cpp:2745
 msgid ""
 "WARNING: This game was saved in Original Content mode, but you are playing "
 "in Restored Cut Content mode. The mode will be adjusted to Original Content "
@@ -4340,31 +4456,31 @@ msgstr ""
 "у режимі відновленого вирізаного вмісту. Для цього сеансу буде налаштовано "
 "режим оригінального вмісту до повного виходу з гри."
 
-#: engines/bladerunner/bladerunner.cpp:2603
+#: engines/bladerunner/bladerunner.cpp:2747
 msgid "Continue"
 msgstr "Продовжуйте"
 
-#: engines/bladerunner/detection.cpp:52
+#: engines/bladerunner/detection.cpp:53
 msgid "Sitcom mode"
 msgstr "Режим комедії"
 
-#: engines/bladerunner/detection.cpp:53
+#: engines/bladerunner/detection.cpp:54
 msgid "Game will add laughter after actor's line or narration"
 msgstr "Гра додасть сміху після акторської лінії чи розповіді"
 
-#: engines/bladerunner/detection.cpp:63
+#: engines/bladerunner/detection.cpp:64
 msgid "Shorty mode"
 msgstr "Режим ліліпутів"
 
-#: engines/bladerunner/detection.cpp:64
+#: engines/bladerunner/detection.cpp:65
 msgid "Game will shrink the actors and make their voices high pitched"
 msgstr "Гра скоротить акторів і зробить їхні голоси високими"
 
-#: engines/bladerunner/detection.cpp:74
+#: engines/bladerunner/detection.cpp:75
 msgid "Frame limiter high performance mode"
 msgstr "Режим високої продуктивності обмежувача кадру"
 
-#: engines/bladerunner/detection.cpp:75
+#: engines/bladerunner/detection.cpp:76
 msgid ""
 "This mode may result in high CPU usage! It avoids use of delayMillis() "
 "function."
@@ -4372,11 +4488,11 @@ msgstr ""
 "Цей режим може призвести до високого використання процесора! Це дозволяє "
 "уникнути використання функції delayMillis()."
 
-#: engines/bladerunner/detection.cpp:85
+#: engines/bladerunner/detection.cpp:86
 msgid "Max frames per second limit"
 msgstr "Ліміт кадрів на секунду"
 
-#: engines/bladerunner/detection.cpp:86
+#: engines/bladerunner/detection.cpp:87
 msgid ""
 "This mode targets a maximum of 120 fps. When disabled, the game targets 60 "
 "fps"
@@ -4384,11 +4500,11 @@ msgstr ""
 "Цей режим перемикає на максимум 120 кадрів/с. Коли вимкнений, гра видає 60 "
 "кадрів/с"
 
-#: engines/bladerunner/detection.cpp:96
+#: engines/bladerunner/detection.cpp:97
 msgid "Disable McCoy's quick stamina drain"
 msgstr "Вимкнути прискорене змучення МакКоя"
 
-#: engines/bladerunner/detection.cpp:97
+#: engines/bladerunner/detection.cpp:98
 msgid ""
 "When running, McCoy won't start slowing down as soon as the player stops "
 "clicking the mouse"
@@ -4396,48 +4512,68 @@ msgstr ""
 "Під час бігу МакКой не буде уповільнюватися коли гравець припиняє клікати "
 "мишею"
 
-#: engines/bladerunner/detection_tables.h:95
-#: engines/bladerunner/detection_tables.h:106
-#: engines/kyra/detection_tables.h:84
+#: engines/bladerunner/detection.cpp:108
+msgid "Show subtitles during text crawl"
+msgstr "Показувати субтитри під час прокручуванного тексту"
+
+#: engines/bladerunner/detection.cpp:109
+msgid "During the intro cutscene, show subtitles during the text crawl"
+msgstr ""
+"Показувати субтитри під час прокручуванного тексту у початковій заставці"
+
+#: engines/bladerunner/detection_tables.h:96
+#: engines/bladerunner/detection_tables.h:107
+#: engines/kyra/detection_tables.h:83
 msgid ""
 "The fan translator does not wish his translation to be incorporated into "
 "ScummVM."
 msgstr "Автор перекладу проти того, щоб його переклад був у ScummVM."
 
-#: engines/bladerunner/detection_tables.h:128 engines/cge/detection.cpp:56
+#: engines/bladerunner/detection_tables.h:129 engines/cge/detection.cpp:56
 #: engines/cge/detection.cpp:62 engines/cge/detection.cpp:68
-#: engines/groovie/detection.cpp:104 engines/kyra/detection_tables.h:303
+#: engines/groovie/detection.cpp:104 engines/kyra/detection_tables.h:302
 #: engines/lure/detection.cpp:251 engines/mohawk/detection_tables.h:988
 #: engines/mohawk/detection_tables.h:1094
-#: engines/mohawk/detection_tables.h:1109 engines/myst3/detection.cpp:142
-#: engines/neverhood/detection.cpp:120 engines/saga/detection_tables.h:186
+#: engines/mohawk/detection_tables.h:1109
+#: engines/mohawk/detection_tables.h:3175 engines/myst3/detection.cpp:142
+#: engines/neverhood/detection.cpp:124 engines/saga/detection_tables.h:186
 #: engines/saga/detection_tables.h:1241 engines/saga/detection_tables.h:1300
-#: engines/sci/detection_tables.h:5068 engines/sci/detection_tables.h:5076
+#: engines/sci/detection_tables.h:5141 engines/sci/detection_tables.h:5149
 #: engines/sherlock/detection_tables.h:223 engines/stark/detection.cpp:319
-#: engines/teenagent/detection.cpp:117 engines/trecision/detection.cpp:199
-#: engines/zvision/detection_tables.h:200
+#: engines/teenagent/detection.cpp:117 engines/toltecs/detection.cpp:212
+#: engines/trecision/detection.cpp:199 engines/zvision/detection_tables.h:200
 #: engines/zvision/detection_tables.h:220
 msgid "Missing game code"
 msgstr "Відсутній код для гри"
 
+#. I18N: Blade Runner Enhanced Edition is a trademark, so please keep the capitalization
+#. for Enhanced Edition as is.
+#: engines/bladerunner/detection_tables.h:143
+msgid ""
+"Enhanced Edition not supported. Please, use the original files which are "
+"part of the release."
+msgstr ""
+"Enhanced Edition не підтримується. Будь-ласка, викроистовуйте оригінальні "
+"файли, які також входять до релізу."
+
 #. I18N: These are keymaps that work in the main gameplay and also when KIA (Knowledge Integration Assistant) is open.
-#: engines/bladerunner/metaengine.cpp:107
+#: engines/bladerunner/metaengine.cpp:109
 msgid "common shortcuts"
 msgstr "загальні керування"
 
 #. I18N: These are keymaps which work only in the main gameplay and not within KIA's (Knowledge Integration Assistant) screens.
-#: engines/bladerunner/metaengine.cpp:109
+#: engines/bladerunner/metaengine.cpp:111
 msgid "main game shortcuts"
 msgstr "загальні опції керування гри"
 
 #. I18N: These are keymaps that work only within KIA's (Knowledge Integration Assistant) screens.
-#: engines/bladerunner/metaengine.cpp:111
+#: engines/bladerunner/metaengine.cpp:113
 msgid "KIA only shortcuts"
 msgstr "Опції керування для KIA"
 
 #. I18N: This keymap is the main way for the user interact with the game.
 #. It is used with the game's cursor to select, walk-to, run-to, look-at, talk-to, pick up, use, shoot (combat mode), open KIA (when clicking on McCoy).
-#: engines/bladerunner/metaengine.cpp:118
+#: engines/bladerunner/metaengine.cpp:120
 msgid "Walk / Look / Talk / Select / Shoot"
 msgstr "Ходити / Дивитись / Говорити / Вибирати / Стріляти"
 
@@ -4445,12 +4581,12 @@ msgstr "Ходити / Дивитись / Говорити / Вибирати / 
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. TOGGLE MCCOY'S COMBAT MODE
-#: engines/bladerunner/metaengine.cpp:128
+#: engines/bladerunner/metaengine.cpp:130
 msgid "Toggle Combat"
 msgstr "Перемкнути режим бою"
 
 #. I18N: This keymap allows skipping video cutscenes
-#: engines/bladerunner/metaengine.cpp:137 engines/scumm/help.cpp:76
+#: engines/bladerunner/metaengine.cpp:139 engines/scumm/help.cpp:76
 #: engines/zvision/metaengine.cpp:215
 msgid "Skip cutscene"
 msgstr "Пропустити ролік"
@@ -4459,7 +4595,7 @@ msgstr "Пропустити ролік"
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. SKIP PAST CURRENT LINE OF DIALOGUE
-#: engines/bladerunner/metaengine.cpp:150
+#: engines/bladerunner/metaengine.cpp:152
 msgid "Skip dialogue"
 msgstr "Пропустити діалог"
 
@@ -4467,7 +4603,7 @@ msgstr "Пропустити діалог"
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. GAME OPTIONS
-#: engines/bladerunner/metaengine.cpp:161
+#: engines/bladerunner/metaengine.cpp:163
 msgid "Game Options"
 msgstr "Налашт. гри"
 
@@ -4476,31 +4612,37 @@ msgstr "Налашт. гри"
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. ACTIVATE KIA CLUE DATABASE SYSTEM
-#: engines/bladerunner/metaengine.cpp:172
+#: engines/bladerunner/metaengine.cpp:174
 msgid "Open KIA Database"
 msgstr "Відкрити базу KIA"
 
 #. I18N: This keymap works within the KIA Save Game screen
 #. and allows submitting a selected existing save game for deletion.
-#: engines/bladerunner/metaengine.cpp:190
+#: engines/bladerunner/metaengine.cpp:192
 msgid "Delete Selected Saved Game"
 msgstr "Видалити обране збереження гри"
 
 #. I18N: This keymap allows scrolling texts and lists upwards
-#: engines/bladerunner/metaengine.cpp:204
+#: engines/bladerunner/metaengine.cpp:206
 msgid "Scroll Up"
 msgstr "Прокручення догори"
 
 #. I18N: This keymap allows scrolling texts and lists downwards
-#: engines/bladerunner/metaengine.cpp:211
+#: engines/bladerunner/metaengine.cpp:213
 msgid "Scroll Down"
 msgstr "Прокручення донизу"
+
+#. I18N: This keymap allows (in KIA only) for a clue to be set as private or public
+#. (only when the KIA is upgraded).
+#: engines/bladerunner/metaengine.cpp:221
+msgid "Toggle Clue Privacy"
+msgstr "Перемкнути приватність підказок"
 
 #. I18N: This keymap opens KIA's SAVE GAME tab.
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. SAVE GAME
-#: engines/bladerunner/metaengine.cpp:230 engines/pegasus/pegasus.cpp:2820
+#: engines/bladerunner/metaengine.cpp:240 engines/pegasus/pegasus.cpp:2820
 msgid "Save Game"
 msgstr "Зберегти гру"
 
@@ -4508,7 +4650,7 @@ msgstr "Зберегти гру"
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. LOAD GAME
-#: engines/bladerunner/metaengine.cpp:239 engines/pegasus/pegasus.cpp:2826
+#: engines/bladerunner/metaengine.cpp:249 engines/pegasus/pegasus.cpp:2826
 msgid "Load Game"
 msgstr "Завантажити збережену гру"
 
@@ -4516,7 +4658,7 @@ msgstr "Завантажити збережену гру"
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. CRIME SCENE DATABASE
-#: engines/bladerunner/metaengine.cpp:248
+#: engines/bladerunner/metaengine.cpp:258
 msgid "Crime Scene Database"
 msgstr "База даних злочинів"
 
@@ -4524,7 +4666,7 @@ msgstr "База даних злочинів"
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. SUSPECT DATABASE
-#: engines/bladerunner/metaengine.cpp:257
+#: engines/bladerunner/metaengine.cpp:267
 msgid "Suspect Database"
 msgstr "База даних підозрюваних"
 
@@ -4532,7 +4674,7 @@ msgstr "База даних підозрюваних"
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. CLUE DATABASE
-#: engines/bladerunner/metaengine.cpp:266
+#: engines/bladerunner/metaengine.cpp:276
 msgid "Clue Database"
 msgstr "База даних доказів"
 
@@ -4540,7 +4682,7 @@ msgstr "База даних доказів"
 #. In Blade Runner's official localizations, there is a description of this keymap
 #. on the KIA Help Page, under Keyboard Shortcuts. In the English version it is
 #. QUIT GAME
-#: engines/bladerunner/metaengine.cpp:275 engines/dragons/metaengine.cpp:225
+#: engines/bladerunner/metaengine.cpp:285 engines/dragons/metaengine.cpp:225
 msgid "Quit Game"
 msgstr "Вийти з ігри"
 
@@ -4570,7 +4712,7 @@ msgstr ""
 "Натисніть ОК, щоб перевести їх зараз, інакше це повідомлення з'явиться при "
 "наступному запуску гри.\n"
 
-#: engines/buried/saveload.cpp:165
+#: engines/buried/saveload.cpp:165 engines/mtropolis/saveload.cpp:139
 msgid "Saved game was created with a newer version of ScummVM. Unable to load."
 msgstr ""
 "Цей файл зі збереженою грою було створено у новішій версії ScummVM. Не зможу "
@@ -4582,7 +4724,7 @@ msgstr "Режим без кольору"
 
 #: engines/cge/detection.cpp:114
 msgid "Enable Color Blind Mode by default"
-msgstr "Вмикає режим для людей з погіршенним сприяттям кольору"
+msgstr "Ввімкнути режим для людей з погіршенним сприяттям кольору"
 
 #: engines/cge/detection.cpp:126 engines/glk/detection.cpp:238
 #: engines/sci/detection_options.h:221 engines/supernova/detection.cpp:53
@@ -4637,36 +4779,39 @@ msgid ""
 "anyway?"
 msgstr "Гра запобігає виходу у цей момент. Чи ви дійсно хочете вийти?"
 
-#: engines/dragons/dragons.cpp:1802
+#: engines/director/lingo/lingo-builtins.cpp:1124
+msgid "Ok"
+msgstr "Гаразд"
+
+#: engines/dragons/dragons.cpp:1803
 #, c-format
 msgid ""
 "Error: The file '%s' hasn't been extracted properly.\n"
 "Please refer to the wiki page\n"
-"https://wiki.scummvm.org/index.php?title=HOWTO-PlayStation_Videos for "
-"details on how to properly extract the DTSPEECH.XA and *.STR files from your "
-"game disc."
+"%s for details on how to properly extract the DTSPEECH.XA and *.STR files "
+"from your game disc."
 msgstr ""
 "Помилка: файл '%s' було переписано неправильно.\n"
 "Будь-ласка зверніться до наступної сторінки на Вікі\n"
-"https://wiki.scummvm.org/index.php?title=HOWTO-PlayStation_Videos за "
-"інформацією, як правильно переписати файли DTSPEECH.XA та *.STR з ваших "
-"дисків."
+"%s за інформацією, як правильно переписати файли DTSPEECH.XA та *.STR з "
+"ваших дисків."
 
-#: engines/dragons/metaengine.cpp:121
+#: engines/dragons/metaengine.cpp:122
+#, c-format
 msgid ""
 "Error: It appears that the game data files were extracted incorrectly.\n"
 "\n"
 "You should only extract STR and XA files using the special method. The rest "
 "should be copied normally from your game CD.\n"
 "\n"
-" See https://wiki.scummvm.org/index.php?title=Datafiles#Blazing_Dragons"
+" See %s"
 msgstr ""
 "Помилка: Виглядає, що файли гри було неправильно переписано з диску\n"
 "\n"
 "Вам потрібно переписувати спеціальним чином тільки файли STR та XA. Решта "
 "мусить бути скопійовано звичайним чином з вашого CD.\n"
 "\n"
-"Дивіться https://wiki.scummvm.org/index.php?title=Datafiles#Blazing_Dragons"
+"Дивіться %s"
 
 #: engines/dragons/metaengine.cpp:137
 msgid "Action"
@@ -4677,7 +4822,7 @@ msgid "Change Command"
 msgstr "Змінити команду"
 
 #: engines/dragons/metaengine.cpp:149 engines/griffon/metaengine.cpp:126
-#: engines/grim/grim.cpp:495 engines/grim/grim.cpp:591
+#: engines/grim/grim.cpp:493 engines/grim/grim.cpp:589
 #: engines/hdb/metaengine.cpp:231 engines/nancy/dialogs.cpp:145
 #: engines/scumm/help.cpp:224 engines/scumm/help.cpp:233
 #: engines/scumm/help.cpp:240 engines/scumm/help.cpp:248
@@ -4726,7 +4871,7 @@ msgstr "Ввімкнути генератор мови для об'єктів, �
 #: engines/dreamweb/detection.cpp:80 engines/lure/detection.cpp:45
 #: engines/mads/detection.cpp:124 engines/sci/detection_options.h:222
 #: engines/sherlock/detection.cpp:132 engines/supernova/detection.cpp:54
-#: engines/twine/detection.cpp:775
+#: engines/twine/detection.cpp:1138
 msgid "Use TTS to read the descriptions (if TTS is available)"
 msgstr "Використовувати автоматичний читач текста (якщо TTS доступне)"
 
@@ -4824,7 +4969,7 @@ msgstr "Цей файл Glulx є занадто новою версією для
 msgid "Could not start Quest game"
 msgstr "Не вдалося запустити гру Quest"
 
-#: engines/glk/scott/scott.cpp:662
+#: engines/glk/scott/scott.cpp:680
 msgid "Saved.\n"
 msgstr "Записано.\n"
 
@@ -4886,7 +5031,7 @@ msgstr "Показати лічильник кадрів"
 msgid "Show the current FPS-rate, while you play."
 msgstr "Показувати лічильник кадрів під час гри."
 
-#: engines/grim/grim.cpp:352
+#: engines/grim/grim.cpp:350
 #, c-format
 msgid ""
 "ScummVM found some problems with your game data files.\n"
@@ -4898,49 +5043,49 @@ msgstr ""
 "програми.\n"
 "Чи ви все ж таки хочете запустити %s?"
 
-#: engines/grim/grim.cpp:475 engines/grim/grim.cpp:566
+#: engines/grim/grim.cpp:473 engines/grim/grim.cpp:564
 msgid "Run"
 msgstr "Бігти"
 
-#: engines/grim/grim.cpp:480 engines/scumm/help.cpp:238
+#: engines/grim/grim.cpp:478 engines/scumm/help.cpp:238
 #: engines/scumm/help.cpp:246
 msgid "Examine"
 msgstr "Розглянути"
 
-#: engines/grim/grim.cpp:485 engines/grim/grim.cpp:581
+#: engines/grim/grim.cpp:483 engines/grim/grim.cpp:579
 msgid "Use/Talk"
 msgstr "Ужити/Говорити"
 
-#: engines/grim/grim.cpp:490 engines/grim/grim.cpp:586
+#: engines/grim/grim.cpp:488 engines/grim/grim.cpp:584
 msgid "Pick up/Put away"
 msgstr "Підібрати/Відкласти"
 
-#: engines/grim/grim.cpp:500 engines/grim/grim.cpp:596
+#: engines/grim/grim.cpp:498 engines/grim/grim.cpp:594
 msgid "Skip dialog lines"
 msgstr "Пропустити рядки діалогу"
 
-#: engines/grim/grim.cpp:518 engines/grim/grim.cpp:614
+#: engines/grim/grim.cpp:516 engines/grim/grim.cpp:612
 #: engines/hdb/metaengine.cpp:244
 msgid "Menu"
 msgstr "Меню"
 
-#: engines/grim/grim.cpp:556
+#: engines/grim/grim.cpp:554
 msgid "Cycle Objects Up"
 msgstr "Прокрутити об'єкти догори"
 
-#: engines/grim/grim.cpp:561
+#: engines/grim/grim.cpp:559
 msgid "Cycle Objects Down"
 msgstr "Прокрутити об'єкти донизу"
 
-#: engines/grim/grim.cpp:571
+#: engines/grim/grim.cpp:569
 msgid "Quick Room Exit"
 msgstr "Швидко вийти з кімнати"
 
-#: engines/grim/grim.cpp:576
+#: engines/grim/grim.cpp:574
 msgid "Examine/Look"
 msgstr "Розглянути/Дивитись"
 
-#: engines/grim/grim.cpp:1350
+#: engines/grim/grim.cpp:1347
 msgid "Error: the game could not be saved."
 msgstr "Помилка: гру не вдалося зберегти."
 
@@ -4963,18 +5108,16 @@ msgstr ""
 "(тобто, DVD або коробка):\n"
 "%s"
 
-#: engines/grim/md5check.cpp:565
+#: engines/grim/md5check.cpp:567
 #, c-format
 msgid ""
 "Could not open the file %s for checking.\n"
 "It may be missing or you may not have the rights to open it.\n"
-"Go to https://wiki.scummvm.org/index.php/Datafiles to see a list of the "
-"needed files."
+"Go to %s to see a list of the needed files."
 msgstr ""
 "Не вдалося відкрити файл %s для перевірки.\n"
 "Можливо він відсутній, або у вас немає прав досупу до нього.\n"
-"Перейдіть на https://wiki.scummvm.org/index.php/Datafiles, щоб побачити "
-"список файлів, необхідних для гри."
+"Перейдіть на %s, щоб побачити список файлів, необхідних для гри."
 
 #: engines/grim/md5checkdialog.cpp:41
 msgid ""
@@ -4992,34 +5135,35 @@ msgstr ""
 msgid "Escape from Monkey Island support is not compiled in"
 msgstr "Підтримку для Escape from Monkey Island не скомпільовано"
 
-#: engines/grim/resource.cpp:100
+#: engines/grim/resource.cpp:102
+#, c-format
 msgid ""
 "The original patch of Grim Fandango\n"
 "is missing. Please download it from\n"
-"https://downloads.scummvm.org/frs/extras/patches/gfupd101.exe\n"
+"%s\n"
 "and put it in the game data files directory"
 msgstr ""
 "Оригінальний патч гри Grim Fandango\n"
 "відсутній. Будь-ласка, завантажте його з\n"
-"https://downloads.scummvm.org/frs/extras/patches/gfupd101.exe\n"
+"%s\n"
 "і скопіюйте у папку з файлами гри"
 
-#: engines/grim/resource.cpp:105
+#: engines/grim/resource.cpp:107
+#, c-format
 msgid ""
 "The original patch of Escape from Monkey Island is missing. \n"
-"Please download it from https://downloads.scummvm.org/frs/extras/patches/\n"
+"Please download it from %s\n"
 "and put it in the game data files directory.\n"
 "Pay attention to download the correct version according to the game's "
-"language"
+"language!"
 msgstr ""
 "Оригінальний патч для Escape from Monkey Island відсутній.\n"
-"Будь-ласка, завантажте його з https://downloads.scummvm.org/frs/extras/"
-"patches/\n"
+"Будь-ласка, завантажте його з %s\n"
 "та покладіть у папку з грою.\n"
 "Зверніть увагу на те, щоб завантажити патч, відповідний до мови вашої копії "
-"гри"
+"гри!"
 
-#: engines/grim/emi/sound/emisound.cpp:653
+#: engines/grim/emi/sound/emisound.cpp:655
 msgid ""
 "ERROR: Not enough music tracks found!\n"
 "Escape from Monkey Island has two versions of FullMonkeyMap.imt,\n"
@@ -5040,27 +5184,27 @@ msgstr ""
 "Також, копії гри з Steam та GOG містить вже скомбіновану версію "
 "FullMonkeyMap.imt"
 
-#: engines/groovie/detection.cpp:275
+#: engines/groovie/detection.cpp:283
 msgid "Fast movie speed"
 msgstr "Режим швидкого відео"
 
-#: engines/groovie/detection.cpp:276
+#: engines/groovie/detection.cpp:284
 msgid "Play movies at an increased speed"
 msgstr "Програвати відео з підвищенною швидкістю"
 
-#: engines/groovie/detection.cpp:299
+#: engines/groovie/detection.cpp:307
 msgid "Easier AI"
 msgstr "Полегшений AI"
 
-#: engines/groovie/detection.cpp:300
+#: engines/groovie/detection.cpp:308
 msgid "Decrease the difficulty of AI puzzles"
 msgstr "Знижує складність AI-головоломок"
 
-#: engines/groovie/detection.cpp:311
+#: engines/groovie/detection.cpp:319
 msgid "Updated Credits Music"
 msgstr "Поновлена кінцева музика"
 
-#: engines/groovie/detection.cpp:312
+#: engines/groovie/detection.cpp:320
 msgid ""
 "Play the song The Final Hour during the credits instead of reusing MIDI songs"
 msgstr ""
@@ -5070,11 +5214,11 @@ msgstr ""
 msgid "GroovieV2 support is not compiled in"
 msgstr "Підтримку для версії GroovieV2 не скомпільовано"
 
-#: engines/groovie/script.cpp:652
+#: engines/groovie/script.cpp:650
 msgid "Failed to save game"
 msgstr "Не вдалося записати гру"
 
-#: engines/groovie/script.cpp:841 engines/lab/savegame.cpp:237
+#: engines/groovie/script.cpp:839 engines/lab/savegame.cpp:237
 msgid "Would you like to save or restore a game?"
 msgstr "Чи ви хочете зберегти або завантажити гру?"
 
@@ -5139,35 +5283,43 @@ msgstr "Режим з кров'ю"
 msgid "Enable Gore Mode when available"
 msgstr "Ввімкнути режим з кров'ю, якщо є доступний"
 
-#: engines/hypno/detection.cpp:244
+#: engines/hypno/detection.cpp:258
 msgid "Enable original cheats"
 msgstr "Ввімкнути ориґінальні чіти"
 
-#: engines/hypno/detection.cpp:245
+#: engines/hypno/detection.cpp:259
 msgid "Allow cheats using the C key."
 msgstr "Увімкніть чіт-коди за допомогою клавіші C."
 
-#: engines/hypno/detection.cpp:253
+#: engines/hypno/detection.cpp:269
 msgid "Enable infinite health cheat"
 msgstr "Ввімкнути нескінченне здоров'я"
 
-#: engines/hypno/detection.cpp:254
+#: engines/hypno/detection.cpp:270
 msgid "Player health will never decrease (except for game over scenes)."
 msgstr "Здоров'я гравця ніколи не зменшується (окрім екранів кінця гри)."
 
-#: engines/hypno/detection.cpp:262
+#: engines/hypno/detection.cpp:280
 msgid "Enable infinite ammo cheat"
 msgstr "Ввімкнути чіт нескінченних боєприпасів"
 
-#: engines/hypno/detection.cpp:263
+#: engines/hypno/detection.cpp:281
 msgid "Player ammo will never decrease."
 msgstr "Боєприпаси гравця ніколи не зменшуються."
 
-#: engines/hypno/detection.cpp:271
+#: engines/hypno/detection.cpp:291
+msgid "Unlock all levels"
+msgstr "Розблокувати всі рівні"
+
+#: engines/hypno/detection.cpp:292
+msgid "All levels will be available to play."
+msgstr "Всі рівні будуть доступні для гри."
+
+#: engines/hypno/detection.cpp:302
 msgid "Enable restored content"
 msgstr "Ввімкнути відновлений контент"
 
-#: engines/hypno/detection.cpp:272
+#: engines/hypno/detection.cpp:303
 msgid "Add additional content that is not enabled the original implementation."
 msgstr "Додатковий контент, який було вимкнуто в оригінальній грі."
 
@@ -5179,7 +5331,7 @@ msgstr "Аудіторія в студії"
 
 #: engines/kyra/detection.cpp:62
 msgid "Enable studio audience"
-msgstr "Додати аудіторію у студію"
+msgstr "Додати аудиторію у студію"
 
 #. I18N: This option allows the user to skip text and cutscenes.
 #: engines/kyra/detection.cpp:74
@@ -5248,11 +5400,11 @@ msgstr "Кнопка боротьби L / R Swap"
 msgid "Left button to attack, right button to pick up items"
 msgstr "Ліва кнопка для атаки, права кнопка для підбору предметів"
 
-#: engines/kyra/detection_tables.h:82
+#: engines/kyra/detection_tables.h:81
 msgid "Missing language specific game code and/or resources."
 msgstr "Відсутній специфічний для мови код гри та/або ресурси."
 
-#: engines/kyra/detection_tables.h:83
+#: engines/kyra/detection_tables.h:82
 msgid ""
 "Missing language specific game code and/or resources for this fan "
 "translation."
@@ -5260,16 +5412,16 @@ msgstr ""
 "Відсутній специфічний для мови код гри та/або ресурси для цього перекладу "
 "фанатів."
 
-#: engines/kyra/detection_tables.h:85
+#: engines/kyra/detection_tables.h:84
 msgid "Demo plays simple animations without using Westwood's Engine."
 msgstr "Демо грає прості анімації без використання движка Westwood."
 
-#: engines/kyra/detection_tables.h:1447
+#: engines/kyra/detection_tables.h:1361
 msgid "You added the game incorrectly. Please add the root folder of the game."
 msgstr "Ви додали гру неправильно. Будь ласка, додайте кореневу папку гри."
 
 #. I18N: The file in the game directory needs to be extracted
-#: engines/kyra/detection_tables.h:1463
+#: engines/kyra/detection_tables.h:1377
 msgid ""
 "You added the game incorrectly. The GAME.DAT file is an ISO image and you "
 "need to extract the game data files from it."
@@ -5277,11 +5429,11 @@ msgstr ""
 "Ви додали гру неправильно. Файл GAME.DAT - це образ ISO, і вам потрібно "
 "витягти з нього файли даних гри."
 
-#: engines/kyra/metaengine.cpp:116
+#: engines/kyra/metaengine.cpp:118
 msgid "Lands of Lore support is not compiled in"
 msgstr "Підтримку для Lands of Lore не скомпільовано"
 
-#: engines/kyra/metaengine.cpp:126
+#: engines/kyra/metaengine.cpp:128
 msgid ""
 "EOB II FM-TOWNS requires support of 16bit color modes which has not been "
 "activated in your ScummVM build"
@@ -5289,28 +5441,28 @@ msgstr ""
 "EOB II FM-TOWNS потребує підтримки режимів 16-бітних кольорів, які не було "
 "активовано у вашому білді ScummVM"
 
-#: engines/kyra/metaengine.cpp:132
+#: engines/kyra/metaengine.cpp:134
 msgid "Eye of Beholder support is not compiled in"
 msgstr "Підтримку для Eye of Beholder не скомпільовано"
 
-#: engines/kyra/engine/eobcommon.cpp:367 engines/kyra/engine/lol.cpp:453
+#: engines/kyra/engine/eobcommon.cpp:367 engines/kyra/engine/lol.cpp:458
 #: engines/ultima/ultima4/meta_engine.cpp:224
 #: engines/ultima/ultima8/meta_engine.cpp:142
 msgid "Interact via Left Click"
 msgstr "Взаємодія через лівий клік"
 
-#: engines/kyra/engine/eobcommon.cpp:368 engines/kyra/engine/lol.cpp:454
+#: engines/kyra/engine/eobcommon.cpp:368 engines/kyra/engine/lol.cpp:459
 #: engines/ultima/ultima4/meta_engine.cpp:230
 #: engines/ultima/ultima8/meta_engine.cpp:148
 msgid "Interact via Right Click"
 msgstr "Взаємодія через правий клік"
 
-#: engines/kyra/engine/eobcommon.cpp:369 engines/kyra/engine/lol.cpp:461
+#: engines/kyra/engine/eobcommon.cpp:369 engines/kyra/engine/lol.cpp:466
 #: engines/twine/metaengine.cpp:248
 msgid "Move Forward"
 msgstr "Рухатись уперед"
 
-#: engines/kyra/engine/eobcommon.cpp:370 engines/kyra/engine/lol.cpp:462
+#: engines/kyra/engine/eobcommon.cpp:370 engines/kyra/engine/lol.cpp:467
 msgid "Move Back"
 msgstr "Рухатись назад"
 
@@ -5322,13 +5474,13 @@ msgstr "Рухатись наліво"
 msgid "Move Right"
 msgstr "Рухатись направо"
 
-#: engines/kyra/engine/eobcommon.cpp:373 engines/kyra/engine/lol.cpp:465
+#: engines/kyra/engine/eobcommon.cpp:373 engines/kyra/engine/lol.cpp:470
 #: engines/pegasus/pegasus.cpp:2735 engines/twine/metaengine.cpp:269
 #: engines/zvision/metaengine.cpp:140
 msgid "Turn Left"
 msgstr "Повернутися наліво"
 
-#: engines/kyra/engine/eobcommon.cpp:374 engines/kyra/engine/lol.cpp:466
+#: engines/kyra/engine/eobcommon.cpp:374 engines/kyra/engine/lol.cpp:471
 #: engines/pegasus/pegasus.cpp:2742 engines/twine/metaengine.cpp:262
 #: engines/zvision/metaengine.cpp:146
 msgid "Turn Right"
@@ -5374,43 +5526,43 @@ msgstr "Закляття 5-го рівня"
 msgid "Spell Level 6"
 msgstr "Закляття 6-го рівня"
 
-#: engines/kyra/engine/lol.cpp:457
+#: engines/kyra/engine/lol.cpp:462
 msgid "Attack 1"
 msgstr "Атака 1"
 
-#: engines/kyra/engine/lol.cpp:458
+#: engines/kyra/engine/lol.cpp:463
 msgid "Attack 2"
 msgstr "Атака 2"
 
-#: engines/kyra/engine/lol.cpp:459
+#: engines/kyra/engine/lol.cpp:464
 msgid "Attack 3"
 msgstr "Атака 3"
 
-#: engines/kyra/engine/lol.cpp:460
+#: engines/kyra/engine/lol.cpp:465
 msgid "Show Map"
 msgstr "Показати мапу"
 
-#: engines/kyra/engine/lol.cpp:463
+#: engines/kyra/engine/lol.cpp:468
 msgid "Slide Left"
 msgstr "Ковзати наліво"
 
-#: engines/kyra/engine/lol.cpp:464
+#: engines/kyra/engine/lol.cpp:469
 msgid "Slide Right"
 msgstr "Ковзати направо"
 
-#: engines/kyra/engine/lol.cpp:467
+#: engines/kyra/engine/lol.cpp:472
 msgid "Rest"
 msgstr "Відпочити"
 
-#: engines/kyra/engine/lol.cpp:468
+#: engines/kyra/engine/lol.cpp:473
 msgid "Options"
 msgstr "Налаштування"
 
-#: engines/kyra/engine/lol.cpp:469
+#: engines/kyra/engine/lol.cpp:474
 msgid "Choose Spell"
 msgstr "Вибрати закляття"
 
-#: engines/kyra/gui/saveload_eob.cpp:595
+#: engines/kyra/gui/saveload_eob.cpp:597
 #, c-format
 msgid ""
 "The following original saved game file has been found in your game path:\n"
@@ -5428,7 +5580,7 @@ msgstr ""
 "Чи ви бажаєте використовувати цю збережену гру зі ScummVM?\n"
 "\n"
 
-#: engines/kyra/gui/saveload_eob.cpp:628
+#: engines/kyra/gui/saveload_eob.cpp:630
 #, c-format
 msgid ""
 "A saved game file was found in the specified slot %d. Overwrite?\n"
@@ -5437,7 +5589,7 @@ msgstr ""
 "Файл збереженої гри було знайдено у вказаній позиції %d. Перетерти?\n"
 "\n"
 
-#: engines/kyra/gui/saveload_eob.cpp:661
+#: engines/kyra/gui/saveload_eob.cpp:663
 #, c-format
 msgid ""
 "%d original saved games have been successfully imported into\n"
@@ -5536,15 +5688,15 @@ msgid "This puzzle is not available in the trial version of the game"
 msgstr "Ця головоломка недоступна у пробній версії гри"
 
 #: engines/lure/detection.cpp:44 engines/mads/detection.cpp:123
-#: engines/sherlock/detection.cpp:131 engines/twine/detection.cpp:774
+#: engines/sherlock/detection.cpp:131 engines/twine/detection.cpp:1137
 msgid "TTS Narrator"
 msgstr "Ведучий TTS"
 
-#: engines/made/detection.cpp:62
+#: engines/made/detection.cpp:45
 msgid "Play a digital soundtrack during the opening movie"
 msgstr "Програвати цифровий саундтрек під час початкового ролика"
 
-#: engines/made/detection.cpp:63
+#: engines/made/detection.cpp:46
 msgid ""
 "If selected, the game will use a digital soundtrack during the introduction. "
 "Otherwise, it will play MIDI music."
@@ -5552,7 +5704,7 @@ msgstr ""
 "Якщо вибрано, то гра буде використовувати цифрову музику під час вступу. "
 "Інакше буде програватись музика MIDI."
 
-#: engines/made/detection_tables.h:441 engines/made/detection_tables.h:458
+#: engines/made/detection_tables.h:443 engines/made/detection_tables.h:460
 msgid "The game is using unsupported engine"
 msgstr "Ця гра використовує двигун, який не підтримується"
 
@@ -5870,6 +6022,90 @@ msgstr ""
 "купити гру. ScummVM зараз це не вміє робити,\n"
 "окрім того, цей магазин більше не працює."
 
+#: engines/mtropolis/detection.cpp:44
+msgid "16:9 widescreen mod"
+msgstr "Мод для широкого екрану 16:9"
+
+#: engines/mtropolis/detection.cpp:45
+msgid ""
+"Removes letterboxing and moves some display elements, improving coverage on "
+"widescreen displays"
+msgstr ""
+"Забирає чорні полоски зверху та знизу екрану та переміщує деякі графічнчі "
+"елементи, задля покращення вигляду на широких екранах"
+
+#: engines/mtropolis/detection.cpp:55
+msgid "Improved music mixing"
+msgstr "Покращене міксування музики"
+
+#: engines/mtropolis/detection.cpp:56
+msgid ""
+"Enables dynamic MIDI mixer, improving quality, but behaving less like "
+"mTropolis Player."
+msgstr ""
+"Вмикає динамічний MIDI міксер, підвищуючи якість, але це відрізняється від "
+"оригінального mTropolis."
+
+#: engines/mtropolis/detection.cpp:66
+msgid "Autosave at progress points"
+msgstr "Автоматично зберігає гру в певних точках прогресу"
+
+#: engines/mtropolis/detection.cpp:67
+msgid "Automatically saves the game after completing puzzles and chapters."
+msgstr "Автоматично зберігає гру після розв'язання головоломок та розділів."
+
+#: engines/mtropolis/detection.cpp:77
+msgid "Enable short transitions"
+msgstr "Ввімкнути короткі переходи"
+
+#: engines/mtropolis/detection.cpp:78
+msgid ""
+"Enables transitions that are set to maximum rate instead of skipping them."
+msgstr "Вмикає переходи з найбільшою швидкістю замість просто пропускання."
+
+#: engines/mtropolis/detection.cpp:88
+msgid "Enable subtitles for important sound effects"
+msgstr "Ввімкнути субтитри для змістовних звукових ефектів"
+
+#: engines/mtropolis/detection.cpp:89
+msgid ""
+"Enables subtitles for important sound effects.  This may reduce the "
+"difficulty of sound recognition puzzles and minigames."
+msgstr ""
+"Вмикає субтитри для змістовних звукових ефектів.  Це полегшить складність "
+"деяких міні-ігор і головоломок шляхом показу змісту звуків."
+
+#: engines/mtropolis/detection.cpp:99
+msgid "Start with debugger"
+msgstr "Розпочинати з відладчика"
+
+#: engines/mtropolis/detection.cpp:100
+msgid "Starts with the debugger dashboard active."
+msgstr "Відразу запускати активну панель відладчика."
+
+#: engines/mtropolis/saveload.cpp:123
+msgid "Failed to read version information from save file"
+msgstr "Не вдалося завантажити інформацію про версію зі збереження гри"
+
+#: engines/mtropolis/saveload.cpp:131
+msgid ""
+"Failed to load save, the save file doesn't contain valid version information."
+msgstr ""
+"Не вдалося завантажити гру, у файлі збереження відсутня інформація про "
+"версію."
+
+#: engines/mtropolis/saveload.cpp:147
+msgid "Failed to load save, an error occurred when reading the save game data."
+msgstr "Не вдалося завантажити гру, виникла помилка під час читання даних."
+
+#: engines/mtropolis/saveload.cpp:199
+msgid "An internal error occurred while attempting to write save game data"
+msgstr "Виникла внутрішня помилка під час спроби запису даних гри"
+
+#: engines/mtropolis/saveload.cpp:207
+msgid "An error occurred while writing the save game"
+msgstr "Виникла помилка під час запису збереженої гри"
+
 #: engines/mutationofjb/util.cpp:32
 #, c-format
 msgid "Unable to locate the '%s' engine data file"
@@ -5887,20 +6123,21 @@ msgstr "Мод для широкого екрану"
 msgid "Enable widescreen rendering in fullscreen mode."
 msgstr "Ввімкнути режим широкого екрану у повноекранному режимі."
 
-#: engines/myst3/myst3.cpp:365
+#: engines/myst3/myst3.cpp:364
+#, c-format
 msgid ""
 "This version of Myst III has not been updated with the latest official "
 "patch.\n"
 "Please install the official update corresponding to your game's language.\n"
 "The updates can be downloaded from:\n"
-"https://www.scummvm.org/frs/extras/patches/"
+"%s"
 msgstr ""
 "Цю версію Myst III не було відновлено до останнього офіційного патча.\n"
 "Будь-ласка, встановіть офіційний патч, відповідне до мови вашої копії гри.\n"
 "Патчі можна завантажити з:\n"
-"https://www.scummvm.org/frs/extras/patches/"
+"%s"
 
-#: engines/myst3/myst3.cpp:1579 engines/pegasus/pegasus.cpp:744
+#: engines/myst3/myst3.cpp:1578 engines/pegasus/pegasus.cpp:744
 msgid "Invalid file name for saving"
 msgstr "Неправильне ім'я файлу для запису"
 
@@ -6001,7 +6238,7 @@ msgid ""
 "Enable the Second Chance feature, which automatically saves at specific "
 "scenes. Enabling this disables timed autosaves."
 msgstr ""
-"Вмикає режим другої спроби, коли в деяких сценах відбувається автоматичне "
+"Ввімкнути режим другої спроби, коли в деяких сценах відбувається автоматичне "
 "збереження. Якщо цей режим увімкнено, автоматичні збереження по таймери "
 "вимикаються."
 
@@ -6090,19 +6327,19 @@ msgstr "Секунд"
 msgid "Invalid Scene ID!"
 msgstr "Недійсний ID сцени!"
 
-#: engines/neverhood/detection.cpp:143
+#: engines/neverhood/detection.cpp:150
 msgid "Skip the Hall of Records storyboard scenes"
 msgstr "Перескакувати Залу Рекордів"
 
-#: engines/neverhood/detection.cpp:144
+#: engines/neverhood/detection.cpp:151
 msgid "Allows the player to skip past the Hall of Records storyboard scenes"
 msgstr "Дозволяє гравцеві перескакувати через сцени у Залі Рекордів"
 
-#: engines/neverhood/detection.cpp:152
+#: engines/neverhood/detection.cpp:161
 msgid "Scale the making of videos to full screen"
 msgstr "Розтягувати відео про створення ігри на весь екран"
 
-#: engines/neverhood/detection.cpp:153
+#: engines/neverhood/detection.cpp:162
 msgid "Scale the making of videos, so that they use the whole screen"
 msgstr "Розтягувати відео про створення ігри так, щоб воно займало весь екран"
 
@@ -6199,7 +6436,7 @@ msgstr "Показувати/Сховати меню паузи"
 msgid "Toggle Chatty AI"
 msgstr "Перемикання балакучого ШІ"
 
-#: engines/pink/gui.cpp:219
+#: engines/pink/gui.cpp:279
 msgid "This menu item is not yet implemented"
 msgstr "Цей пункт меню ще не реалізовано"
 
@@ -6297,14 +6534,6 @@ msgstr ""
 "Використовуйте спеціальний мультиплікаційний скалер для малювання спрайтів "
 "символів"
 
-#: engines/sci/detection_options.h:93
-msgid "Prefer digital sound effects"
-msgstr "Надавати перевагу цифровим звуковим ефектам"
-
-#: engines/sci/detection_options.h:94
-msgid "Prefer digital sound effects instead of synthesized ones"
-msgstr "Віддавати перевагу цифровим звуковим ефектам, а не синтезованим"
-
 #: engines/sci/detection_options.h:117
 msgid "Use CD audio"
 msgstr "Використовувати CD аудіо"
@@ -6339,7 +6568,7 @@ msgstr "Ввімкнути цензуру контенту"
 
 #: engines/sci/detection_options.h:157
 msgid "Enable the game's built-in optional content censoring"
-msgstr "Ввімкніть вбудовану додаткову цензуру вмісту гри"
+msgstr "Ввімкнути вбудовану додаткову цензуру вмісту гри"
 
 #: engines/sci/detection_options.h:169
 msgid "Upscale videos"
@@ -6372,7 +6601,8 @@ msgstr "Ввімкнути бородатих музикантів"
 
 #: engines/sci/detection_options.h:209
 msgid "Enable graphics that were disabled for legal reasons"
-msgstr "Вмикає графіку, яку було оригінально вимкнено через юридичні проблеми"
+msgstr ""
+"Ввімкнути графіку, яку було оригінально вимкнено через юридичні проблеми"
 
 #: engines/sci/detection_options.h:237
 msgid "MIDI mode:"
@@ -6398,11 +6628,11 @@ msgstr "Roland D-110 / D-10 / D-20"
 msgid "Yamaha FB-01"
 msgstr "Yamaha FB-01"
 
-#: engines/sci/detection_tables.h:4397
+#: engines/sci/detection_tables.h:4447
 msgid "Incomplete game detected. You have to copy data from all the CDs."
 msgstr "Неповна версія гри. Ви мусите скопіювати дані з усіх CD."
 
-#: engines/sci/engine/kfile.cpp:484 engines/sci/metaengine.cpp:366
+#: engines/sci/engine/kfile.cpp:484 engines/sci/metaengine.cpp:368
 msgid "(Autosave)"
 msgstr "(Автозбереження)"
 
@@ -6413,7 +6643,7 @@ msgstr ""
 "Будь-ласка, використовуйте іншу програму для переглядання файлу допомоги "
 "ігри: %s"
 
-#: engines/sci/engine/kmisc.cpp:857
+#: engines/sci/engine/kmisc.cpp:883
 msgid ""
 "The Poker logic is hardcoded in an external DLL, and is not implemented yet. "
 "There exists some dummy logic for now, where opponent actions are chosen "
@@ -6422,16 +6652,16 @@ msgstr ""
 "Логіка гри у покер зберігається у окремій DLL, яку ще не реалізовано. Зараз "
 "зроблено заглушку, в якій дії суперників обираються випадково"
 
-#: engines/sci/engine/savegame.cpp:1453
+#: engines/sci/engine/savegame.cpp:1467
 msgid "The format of this saved game is obsolete, unable to load it"
 msgstr "Формат цього файлу збереженої гри застарілий, не можу його прочитати"
 
-#: engines/sci/engine/savegame.cpp:1455
+#: engines/sci/engine/savegame.cpp:1469
 #, c-format
 msgid "Savegame version is %d, maximum supported is %0d"
 msgstr "Версія файлу збереження %d, але максимально підртимується %0d"
 
-#: engines/sci/engine/savegame.cpp:1466
+#: engines/sci/engine/savegame.cpp:1480
 msgid ""
 "This saved game was created with a different version of the game, unable to "
 "load it"
@@ -6445,7 +6675,7 @@ msgid ""
 "Cannot play back %dbpp video on a system with maximum color depth of 8bpp"
 msgstr "Не можу програти %dbpp відео на системі з кольоровою роздільністю 8bpp"
 
-#: engines/sci/metaengine.cpp:298
+#: engines/sci/metaengine.cpp:300
 msgid "SCI32 support not compiled in"
 msgstr "Підтримку для SCI32 не скомпільовано"
 
@@ -6459,7 +6689,7 @@ msgstr ""
 "працювати невірно. Будь-ласка, перевірте вікно з консоллю для подальшої "
 "інформації, а також пересвідчіться що файли гри було правильно скопійовано."
 
-#: engines/sci/sci.cpp:387
+#: engines/sci/sci.cpp:388
 msgid ""
 "Subtitles are enabled, but subtitling in King's Quest 7 was unfinished and "
 "disabled in the release version of the game. ScummVM allows the subtitles to "
@@ -6473,7 +6703,7 @@ msgstr ""
 "відображаються належним чином або відображають фактичну промову гри. Це не "
 "помилка ScummVM - це проблема з активами гри."
 
-#: engines/sci/sci.cpp:411
+#: engines/sci/sci.cpp:412
 msgid ""
 "You have selected General MIDI as a sound device. Sierra has provided after-"
 "market support for General MIDI for this game in their \"General MIDI Utility"
@@ -6495,7 +6725,7 @@ msgstr ""
 "Без цього виправлення музика General MIDI для цієї гри буде звучати погано "
 "спотворено."
 
-#: engines/sci/sci.cpp:430
+#: engines/sci/sci.cpp:431
 msgid ""
 "Your game is patched with a fan made script patch. Such patches have been "
 "reported to cause issues, as they modify game scripts extensively. The "
@@ -6509,11 +6739,11 @@ msgstr ""
 "виникають у ScummVM, тому вам рекомендується видалити цей патч із папки "
 "ігор, щоб уникнути виникнення несподіваних помилок та / або проблем пізніше."
 
-#: engines/sci/sci.cpp:509
+#: engines/sci/sci.cpp:510
 msgid "Download patch"
 msgstr "Завантажити патч"
 
-#: engines/sci/sci.cpp:510
+#: engines/sci/sci.cpp:511
 msgid ""
 "(or click 'Download patch' button. But note - it only downloads, you will "
 "have to continue from there)\n"
@@ -6521,7 +6751,7 @@ msgstr ""
 "(або натисніть кнопку \"Завантажити патч\". Але зауважте - вона просто "
 "завантажить, вам буде потрібно продовжити самостійно)\n"
 
-#: engines/sci/sci.cpp:517
+#: engines/sci/sci.cpp:518
 msgid ""
 "GK2 has a fan made subtitles, available thanks to the good persons at "
 "SierraHelp.\n"
@@ -6536,7 +6766,7 @@ msgstr ""
 "- завантажте http://www.sierrahelp.com/Files/Patches/GabrielKnight/"
 "GK2Subtitles.zip\n"
 
-#: engines/sci/sci.cpp:848
+#: engines/sci/sci.cpp:849
 msgid ""
 "Characters saved inside ScummVM are shown automatically. Character files "
 "saved in the original interpreter need to be put inside ScummVM's saved "
@@ -6647,17 +6877,41 @@ msgid ""
 msgstr ""
 "Вмикає менш плавну прокрутку під час швидкого переміщення камери у заставці."
 
-#: engines/scumm/detection.cpp:229 engines/scumm/dialogs.cpp:730
+#: engines/scumm/detection.cpp:229 engines/scumm/dialogs.cpp:921
 msgid "Enable game-specific enhancements"
 msgstr "Ввімкнути покращення для окремих ігор"
 
-#: engines/scumm/detection.cpp:230 engines/scumm/dialogs.cpp:730
+#: engines/scumm/detection.cpp:230 engines/scumm/dialogs.cpp:921
 msgid ""
 "Allow ScummVM to make small enhancements to the game, usually based on other "
 "versions of the same game."
 msgstr ""
 "ScummVM зробить деякі невеликі покращення для ігор, які зазвичай походять з "
 "інших версій тих самих ігор."
+
+#: engines/scumm/detection.cpp:238
+msgid "Load modded audio"
+msgstr "Завантажити модифіковане аудіо"
+
+#: engines/scumm/detection.cpp:239
+msgid ""
+"Replace music, sound effects, and speech clips with modded audio files, if "
+"available."
+msgstr ""
+"Замінити музику, звукові ефекти та озвучення з модифікованих файлів, якщо є "
+"доступне."
+
+#: engines/scumm/detection.cpp:247
+msgid "Enable the original GUI and Menu"
+msgstr "Ввімкнути оригінальні GUI та меню"
+
+#: engines/scumm/detection.cpp:248
+msgid ""
+"Allow the game to use the in-engine graphical interface and the original "
+"save/load menu."
+msgstr ""
+"Вмикає використання грою ориґінального графічного інтерфейсу та меню "
+"зберігання/завантаження."
 
 #: engines/scumm/detection_internal.h:358
 msgid ""
@@ -6675,129 +6929,100 @@ msgstr ""
 "або зверніться до онлайн-ресурсів, які допоможуть вам отримати ци файли з "
 "дампів KryoFlux, які також постачаються Limited Run Games."
 
-#: engines/scumm/dialogs.cpp:163
-#, c-format
-msgid "Insert Disk %c and Press Button to Continue."
-msgstr "Вставте диск %c та натисніть клавішу для продовження."
-
-#: engines/scumm/dialogs.cpp:164
-#, c-format
-msgid "Unable to Find %s, (%c%d) Press Button."
-msgstr "Не вдалося знайти %s, (%c%d) Натисніть клавішу."
-
-#: engines/scumm/dialogs.cpp:165
-#, c-format
-msgid "Error reading disk %c, (%c%d) Press Button."
-msgstr "Помилка читання диску %c, (%c%d) Натисніть клавішу."
-
-#: engines/scumm/dialogs.cpp:166
-msgid "Game Paused.  Press SPACE to Continue."
-msgstr "Ігру призупинено.  Натисніть пробіл для продовження."
-
-#. I18N: You may specify 'Yes' symbol at the end of the line, like this:
-#. "Moechten Sie wirklich neu starten?  (J/N)J"
-#. Will react to J as 'Yes'
-#: engines/scumm/dialogs.cpp:170
-msgid "Are you sure you want to restart?  (Y/N)Y"
-msgstr "Ви впевнені, що хочете розпочати спочатку?  (Y/N)Y"
-
-#. I18N: you may specify 'Yes' symbol at the end of the line. See previous comment
-#: engines/scumm/dialogs.cpp:172
-msgid "Are you sure you want to quit?  (Y/N)Y"
-msgstr "Ви впевнені, що хочете вийти?  (Y/N)Y"
-
-#: engines/scumm/dialogs.cpp:181
-msgid "Insert save/load game disk"
-msgstr "Вставте диск зі збереженими іграми"
-
-#: engines/scumm/dialogs.cpp:182
-msgid "You must enter a name"
-msgstr "Ви мусите ввести ім'я"
-
-#: engines/scumm/dialogs.cpp:183
-msgid "The game was NOT saved (disk full?)"
-msgstr "Гру НЕ БУЛО записано (повний диск?)"
-
-#: engines/scumm/dialogs.cpp:184
-msgid "The game was NOT loaded"
-msgstr "Гру НЕ БУЛО завантажено"
-
-#: engines/scumm/dialogs.cpp:185
-#, c-format
-msgid "Saving '%s'"
-msgstr "Записую '%s'"
-
-#: engines/scumm/dialogs.cpp:186
-#, c-format
-msgid "Loading '%s'"
-msgstr "Завантажую '%s'"
-
-#: engines/scumm/dialogs.cpp:187
-msgid "Name your SAVE game"
-msgstr "Назовіть цю збережену гру"
-
-#: engines/scumm/dialogs.cpp:188
-msgid "Select a game to LOAD"
-msgstr "Виберіть гру для завантаження"
-
-#: engines/scumm/dialogs.cpp:189
-msgid "Game title)"
-msgstr "Назва гри)"
-
 #. I18N: Previous page button
-#: engines/scumm/dialogs.cpp:275
+#: engines/scumm/dialogs.cpp:273
 msgid "~P~revious"
 msgstr "~П~опер"
 
 #. I18N: Next page button
-#: engines/scumm/dialogs.cpp:277
+#: engines/scumm/dialogs.cpp:275
 msgid "~N~ext"
 msgstr "~Н~аст"
 
-#: engines/scumm/dialogs.cpp:614
+#: engines/scumm/dialogs.cpp:826
 msgid "Speech Only"
 msgstr "Тільки озвучка"
 
-#: engines/scumm/dialogs.cpp:615
+#: engines/scumm/dialogs.cpp:827
 msgid "Speech and Subtitles"
 msgstr "Озвучка та субтитри"
 
-#: engines/scumm/dialogs.cpp:616
+#: engines/scumm/dialogs.cpp:828
 msgid "Subtitles Only"
 msgstr "Тільки субтитри"
 
-#: engines/scumm/dialogs.cpp:624
+#: engines/scumm/dialogs.cpp:836
 msgctxt "lowres"
 msgid "Speech & Subs"
 msgstr "Озвучка та текст"
 
-#: engines/scumm/dialogs.cpp:670
+#: engines/scumm/dialogs.cpp:882
 msgid "Select a Proficiency Level."
 msgstr "Оберіть режим складності."
 
-#: engines/scumm/dialogs.cpp:672
+#: engines/scumm/dialogs.cpp:884
 msgid "Refer to your Loom(TM) manual for help."
 msgstr "За допомогою звертайтеся до інструкції Loom(TM)."
 
-#: engines/scumm/dialogs.cpp:676
+#: engines/scumm/dialogs.cpp:888
 msgid "Practice"
 msgstr "Практикант"
 
-#: engines/scumm/dialogs.cpp:677
+#: engines/scumm/dialogs.cpp:889
 msgid "Expert"
 msgstr "Експерт"
 
-#: engines/scumm/dialogs.cpp:704
+#: engines/scumm/dialogs.cpp:942
 msgid "Overture Timing:"
 msgstr "Час увертюри:"
 
-#: engines/scumm/dialogs.cpp:708
+#: engines/scumm/dialogs.cpp:946
 msgid ""
 "When using replacement music, this adjusts the time when the Overture "
 "changes to the scene with the Lucasfilm and Loom logotypes."
 msgstr ""
 "Якщо використовується заміна для музики, це налаштування підстроює час, коли "
 "увертюра переключиться на сцену з логотипами Lucasfilm та Loom."
+
+#: engines/scumm/dialogs.cpp:1022
+msgid "Playback Adjust:"
+msgstr "Підстроїти відтворення:"
+
+#: engines/scumm/dialogs.cpp:1026
+msgid ""
+"When playing sound from the CD audio track, adjust the start position of the "
+"sound by this much. Use this if you often hear bits of the wrong sound."
+msgstr ""
+"Під час програвання звуку з CD-треку, пидстроїти стартове положення звуку на "
+"вказаний обсяг. Використовуйте це, якщо чуєте неправильні звуки."
+
+#: engines/scumm/dialogs.cpp:1098
+msgid "Intro Adjust:"
+msgstr "Підстроїти вступ:"
+
+#: engines/scumm/dialogs.cpp:1102
+msgid ""
+"When playing the intro track, play from this point in it. Use this if the "
+"music gets cut off prematurely, or if you are unhappy with the way the music "
+"syncs up with the intro."
+msgstr ""
+"Під час відтворення вступу, почати програвання зі вказанної точки. "
+"Використовуйте це, якщо музика завершується передчасно, або якщо вам не "
+"подобається, як музика синхронізується зі вступом."
+
+#: engines/scumm/dialogs.cpp:1111
+msgid "Outlook Adjust:"
+msgstr "Підстроїти краєвид:"
+
+#: engines/scumm/dialogs.cpp:1115
+msgid ""
+"The outlook music is part of the intro track. Adjust the position in the "
+"track at which it starts playing. Use this if the music is cut off, or if "
+"you hear part of the previous music."
+msgstr ""
+"Музика краєвиду програється під час вступу. Підстроюйте положення треку, "
+"коли вона почне програватись. Використовуйте це, якщо музика вимикається "
+"передчасно, або ви чуєте частину попередньої музики."
 
 #: engines/scumm/help.cpp:72
 msgid "Common keyboard commands:"
@@ -7308,23 +7533,23 @@ msgstr "Летіти направо"
 msgid "Fly to lower right"
 msgstr "Летіти донизу направо"
 
-#: engines/scumm/input.cpp:590
+#: engines/scumm/input.cpp:1061
 msgid "Snap scroll on"
 msgstr "Прокрутка стрибками"
 
-#: engines/scumm/input.cpp:592
+#: engines/scumm/input.cpp:1063
 msgid "Snap scroll off"
 msgstr "Вмикає прокрутку стрибками"
 
-#: engines/scumm/input.cpp:605
+#: engines/scumm/input.cpp:1076
 msgid "Music volume: "
 msgstr "Гучність музики: "
 
-#: engines/scumm/input.cpp:622
+#: engines/scumm/input.cpp:1093
 msgid "Subtitle speed: "
 msgstr "Швид. субтитрів: "
 
-#: engines/scumm/metaengine.cpp:330
+#: engines/scumm/metaengine.cpp:335
 msgid ""
 "The Lite version of Putt-Putt Saves the Zoo iOS is not supported to avoid "
 "piracy.\n"
@@ -7333,15 +7558,15 @@ msgstr ""
 "Задля запобігання піратства, Lite-версія гри Putt-Putt Save the Zoo для iOS\n"
 "не підтримується. Повну версію можна придбати у iTunes Store."
 
-#: engines/scumm/metaengine.cpp:427
+#: engines/scumm/metaengine.cpp:432
 msgid "HE v71+ support is not compiled in"
 msgstr "Підтримку для версії HE v71+ не скомпільовано"
 
-#: engines/scumm/metaengine.cpp:451
+#: engines/scumm/metaengine.cpp:456
 msgid "SCUMM v7-8 support is not compiled in"
 msgstr "Підтримку для SCUMM v7-8 не скомпільовано"
 
-#: engines/scumm/scumm.cpp:544
+#: engines/scumm/scumm.cpp:260
 msgid ""
 "You have enabled 'aspect ratio correction'. However, FM-TOWNS' natural "
 "resolution is 320x240, which doesn't allow aspect ratio correction.\n"
@@ -7353,7 +7578,7 @@ msgstr ""
 "Корекцію співвідношення сторін можна отримати, обрізавши роздільну здатність "
 "до 320x200, на вкладці \"движок\"."
 
-#: engines/scumm/scumm.cpp:1357
+#: engines/scumm/scumm.cpp:1096
 msgid ""
 "Could not find the 'Indy' Macintosh executable. High-resolution fonts will\n"
 "be disabled."
@@ -7361,7 +7586,7 @@ msgstr ""
 "Не вдалося знайти файл програми 'Indy' Macintosh. Шрифти високої\n"
 "роздільності буде вимкнено."
 
-#: engines/scumm/scumm.cpp:1383
+#: engines/scumm/scumm.cpp:1122
 msgid ""
 "Could not find the 'Loom' Macintosh executable. Music and high-resolution\n"
 "versions of font and cursor will be disabled."
@@ -7369,7 +7594,7 @@ msgstr ""
 "Не вдалося знайти файл програми 'Loom' Macintosh. Музику та шрифти\n"
 "високої роздільності буде вимкнено."
 
-#: engines/scumm/scumm.cpp:1405
+#: engines/scumm/scumm.cpp:1144
 msgid ""
 "Could not find the 'Monkey Island' Macintosh executable to read the\n"
 "instruments from. Music will be disabled."
@@ -7377,7 +7602,7 @@ msgstr ""
 "Не вдалося знайти файл програми 'Monkey Island' Macintosh аби прочитати\n"
 "з нього інструменти. Музику було вимкнено."
 
-#: engines/scumm/scumm.cpp:1682
+#: engines/scumm/scumm.cpp:1440
 msgid ""
 "Audio files compressed with ScummVM Tools were detected; *.BUN/*.SOU\n"
 "compression is not supported anymore for this game, audio will be disabled.\n"
@@ -7388,7 +7613,7 @@ msgstr ""
 "виключено.\n"
 "Будь-ласка скопіюйте наново файли з оригінальних дисків без компресії."
 
-#: engines/scumm/scumm.cpp:2154
+#: engines/scumm/scumm.cpp:1914
 #, c-format
 msgid ""
 "Native MIDI support requires the Roland Upgrade from LucasArts,\n"
@@ -7397,7 +7622,7 @@ msgstr ""
 "Режим \"рідного\" MIDI потребує поновлення Roland Upgrade від\n"
 "LucasArts, проте %s відсутній. Перемикаюсь на AdLib."
 
-#: engines/scumm/scumm.cpp:3095
+#: engines/scumm/scumm.cpp:3221
 msgid ""
 "Usually, Maniac Mansion would start now. But for that to work, the game "
 "files for Maniac Mansion have to be in the 'Maniac' directory inside the "
@@ -7469,7 +7694,7 @@ msgstr "Прозорі вікна"
 msgid "Show windows with a partially transparent background"
 msgstr "Показувати вікна з частково прозорим тлом"
 
-#: engines/sky/compact.cpp:141
+#: engines/sky/compact.cpp:140
 msgid "The \"sky.cpt\" engine data file has an incorrect size."
 msgstr "Файл даних движка sky.cpt має неправильний розмір."
 
@@ -7505,19 +7730,19 @@ msgstr "Перемикання дуже швидкого режиму"
 msgid "WARNING: Deleting the autosave slot is not supported by this engine"
 msgstr "УВАГА: Видалення слоту автозбереження не підтримується цим движком"
 
-#: engines/stark/detection.cpp:375
+#: engines/stark/detection.cpp:387
 msgid "Load modded assets"
 msgstr "Завантажити дані для моду"
 
-#: engines/stark/detection.cpp:376
+#: engines/stark/detection.cpp:388
 msgid "Enable loading of external replacement assets."
 msgstr "Ввімкнути заванатження додаткових даних для заміни."
 
-#: engines/stark/detection.cpp:386
+#: engines/stark/detection.cpp:398
 msgid "Enable linear filtering of the backgrounds images"
 msgstr "Ввімкнути лінійну фільтрацію фонових зображень"
 
-#: engines/stark/detection.cpp:387
+#: engines/stark/detection.cpp:399
 msgid ""
 "When linear filtering is enabled the background graphics are smoother in "
 "full screen mode, at the cost of some details."
@@ -7525,11 +7750,11 @@ msgstr ""
 "Лінійна фільтрація згладжує фонові зображення у повноекранному режимі за "
 "рахунок втрати деяких деталей."
 
-#: engines/stark/detection.cpp:397 engines/ultima/detection.cpp:136
+#: engines/stark/detection.cpp:409 engines/ultima/detection.cpp:143
 msgid "Enable font anti-aliasing"
 msgstr "Ввімкнути згладжування шрифтів"
 
-#: engines/stark/detection.cpp:398 engines/ultima/detection.cpp:137
+#: engines/stark/detection.cpp:410 engines/ultima/detection.cpp:144
 msgid "When font anti-aliasing is enabled, the text is smoother."
 msgstr "Якщо згладжування увімкнено, текст стає гладкішим."
 
@@ -7687,11 +7912,11 @@ msgstr "Показувати назви об'єктів"
 msgid "Show labels for objects on mouse hover"
 msgstr "Показувати назви для об'єктів при наведенні миші"
 
-#: engines/sword25/detection.cpp:47
+#: engines/sword25/detection.cpp:50
 msgid "Use English speech"
 msgstr "Використовувати озвучення англійською"
 
-#: engines/sword25/detection.cpp:48
+#: engines/sword25/detection.cpp:51
 msgid ""
 "Use English speech instead of German for every language other than German"
 msgstr ""
@@ -7715,123 +7940,127 @@ msgstr "Saturn CD версія ще не підтримується"
 msgid "Font variant not present in '%s' engine data file."
 msgstr "Варіант шрифту відстутній у файлі движка %s."
 
-#: engines/toon/toon.cpp:215
+#: engines/toon/toon.cpp:244
 #, c-format
 msgid "Saved game in slot #%d "
 msgstr "Гру записано у слот %d "
 
-#: engines/toon/toon.cpp:219
+#: engines/toon/toon.cpp:248
 #, c-format
 msgid "Could not quick save into slot #%d"
 msgstr "Не вдалося швидко зберегти гру у слот №%d"
 
-#: engines/toon/toon.cpp:232
+#: engines/toon/toon.cpp:261
 #, c-format
 msgid "Saved game #%d quick loaded"
 msgstr "Збережену гру №%d завантажено"
 
-#: engines/toon/toon.cpp:236
+#: engines/toon/toon.cpp:265
 #, c-format
 msgid "Could not quick load the saved game #%d"
 msgstr "Не вдалося завантажити збережену гру №%d"
 
-#: engines/toon/toon.cpp:1563
+#: engines/toon/toon.cpp:1502
+msgid "Are you sure you want to exit?"
+msgstr "Ви упевнені, що хочете вийти?"
+
+#: engines/toon/toon.cpp:1906
 #, c-format
 msgid "Unable to locate the '%s' data file."
 msgstr "Не вдалося знайти файл даних '%s'."
 
-#: engines/twine/detection.cpp:259
+#: engines/twine/detection.cpp:272
 msgid "This version requires Giflib which was not compiled into ScummVM"
 msgstr "Ця гра потрeбує бібліотеки Giflib, яка відсутня у збірці"
 
-#: engines/twine/detection.cpp:673
+#: engines/twine/detection.cpp:1014
 msgid "Enable wall collisions"
 msgstr "Ввімкнути зіткнення зі стінами"
 
-#: engines/twine/detection.cpp:674
+#: engines/twine/detection.cpp:1015
 msgid "Enable the original wall collision damage"
 msgstr "Ввімкнути пошкодження від зіткнення зі стінами як в оригіналі"
 
-#: engines/twine/detection.cpp:683
+#: engines/twine/detection.cpp:1026
 msgid "Disable save menu"
 msgstr "Заборонити меню збереження"
 
-#: engines/twine/detection.cpp:684
+#: engines/twine/detection.cpp:1027
 msgid ""
 "The original only had autosaves. This allows you to save whenever you want."
 msgstr ""
 "Оригінал мав тільки автоматичне збереження гри. Ця опція дозволить вам "
 "записатися у довільний момент."
 
-#: engines/twine/detection.cpp:692
+#: engines/twine/detection.cpp:1037
 msgid "Enable debug mode"
 msgstr "Ввімкнути режим відладки"
 
-#: engines/twine/detection.cpp:693
+#: engines/twine/detection.cpp:1038
 msgid "Enable the debug mode"
 msgstr "Ввімкнути режим відладки"
 
-#: engines/twine/detection.cpp:701
+#: engines/twine/detection.cpp:1048
 msgid "Enable audio CD"
 msgstr "Ввімкнути аудіо CD"
 
-#: engines/twine/detection.cpp:702
+#: engines/twine/detection.cpp:1049
 msgid "Enable the original audio cd track"
 msgstr "Ввімкнути оригінальний трек з CD"
 
-#: engines/twine/detection.cpp:710
+#: engines/twine/detection.cpp:1059
 msgid "Enable sound"
 msgstr "Ввімкнути звук"
 
-#: engines/twine/detection.cpp:711
+#: engines/twine/detection.cpp:1060
 msgid "Enable the sound for the game"
 msgstr "Ввімкнути звук у грі"
 
-#: engines/twine/detection.cpp:719
+#: engines/twine/detection.cpp:1070
 msgid "Enable voices"
 msgstr "Ввімкнути озвучку"
 
-#: engines/twine/detection.cpp:720
+#: engines/twine/detection.cpp:1071
 msgid "Enable the voices for the game"
 msgstr "Ввімкнути озвучку голосів у грі"
 
-#: engines/twine/detection.cpp:728
+#: engines/twine/detection.cpp:1081
 msgid "Enable text"
 msgstr "Ввімкнути текст"
 
-#: engines/twine/detection.cpp:729
+#: engines/twine/detection.cpp:1082
 msgid "Enable the text for the game"
 msgstr "Ввімкнути тексти у грі"
 
-#: engines/twine/detection.cpp:737
+#: engines/twine/detection.cpp:1092
 msgid "Enable movies"
 msgstr "Ввімкнути роліки"
 
-#: engines/twine/detection.cpp:738
+#: engines/twine/detection.cpp:1093
 msgid "Enable the cutscenes for the game"
 msgstr "Ввімкнути відеороліки у грі"
 
-#: engines/twine/detection.cpp:746
+#: engines/twine/detection.cpp:1103
 msgid "Enable mouse"
 msgstr "Ввімкнути мишу"
 
-#: engines/twine/detection.cpp:747
+#: engines/twine/detection.cpp:1104
 msgid "Enable the mouse for the UI"
 msgstr "Ввімкнути мишу для інтерфейса користувача"
 
-#: engines/twine/detection.cpp:755
+#: engines/twine/detection.cpp:1114
 msgid "Use the USA version"
 msgstr "Використовувати версію USA"
 
-#: engines/twine/detection.cpp:756
+#: engines/twine/detection.cpp:1115
 msgid "Enable the USA specific version flags"
 msgstr "Ввімкнути опції гри, специфічні для USA версії"
 
-#: engines/twine/detection.cpp:764 engines/ultima/detection.cpp:92
+#: engines/twine/detection.cpp:1125 engines/ultima/detection.cpp:99
 msgid "Enable high resolution"
 msgstr "Ввімкнути високе розгалуження"
 
-#: engines/twine/detection.cpp:765 engines/ultima/detection.cpp:93
+#: engines/twine/detection.cpp:1126 engines/ultima/detection.cpp:100
 msgid "Enable a higher resolution for the game"
 msgstr "Ввімкнути високе розгалуження для гри"
 
@@ -7980,74 +8209,74 @@ msgctxt "Options menu"
 msgid "Wall collision off"
 msgstr "Зіткнення зі стінами вимкнено"
 
-#: engines/ultima/detection.cpp:68
+#: engines/ultima/detection.cpp:66
 msgid "Enable frame skipping"
 msgstr "Ввімкнути пропуск кадрів"
 
-#: engines/ultima/detection.cpp:69
+#: engines/ultima/detection.cpp:67
 msgid "Allow the game to skip animation frames when running too slow."
 msgstr ""
 "Дозволяє грі пропускати кадри анімації якщо комп'ютер занадто повільний."
 
-#: engines/ultima/detection.cpp:76
+#: engines/ultima/detection.cpp:77
 msgid "Enable frame limiting"
 msgstr "Ввімкнути лімітування кадрів"
 
-#: engines/ultima/detection.cpp:77
+#: engines/ultima/detection.cpp:78
 msgid "Limits the speed of the game to prevent running too fast."
 msgstr "Лімітує швідкість гри, щоб уникнути занадто швидкого відтворювання."
 
-#: engines/ultima/detection.cpp:84
+#: engines/ultima/detection.cpp:88
 msgid "Enable cheats"
 msgstr "Ввімкнути чіти"
 
-#: engines/ultima/detection.cpp:85
+#: engines/ultima/detection.cpp:89
 msgid "Allow cheats by commands and a menu when player is clicked."
 msgstr "Вмикає чіти через команди та меню під час кліку гравця."
 
-#: engines/ultima/detection.cpp:104
+#: engines/ultima/detection.cpp:110
 msgid "Play foot step sounds"
 msgstr "Відтворювати звуки кроків"
 
-#: engines/ultima/detection.cpp:105
+#: engines/ultima/detection.cpp:111
 msgid "Plays sound when the player moves."
 msgstr "Відтворює звуки кроків під час руху гравця."
 
-#: engines/ultima/detection.cpp:112
+#: engines/ultima/detection.cpp:121
 msgid "Enable jump to mouse position"
 msgstr "Ввімкнути стрибок до позиції миші"
 
-#: engines/ultima/detection.cpp:113
+#: engines/ultima/detection.cpp:122
 msgid ""
 "Jumping while not moving targets the mouse cursor rather than direction only."
 msgstr ""
 "Стрибати на місце, вказане курсором миші (не під час пересування цілей)."
 
-#: engines/ultima/detection.cpp:128
+#: engines/ultima/detection.cpp:132
 msgid "Enable font replacement"
 msgstr "Ввімкнути заміну шрифтів"
 
-#: engines/ultima/detection.cpp:129
+#: engines/ultima/detection.cpp:133
 msgid "Replaces game fonts with rendered fonts"
 msgstr "Замінює шрифти гри на шрифти поліпшеної якості"
 
 #. I18N: Silencer is the player-character in Crusader games, known as the Avatar in Ultima series.
-#: engines/ultima/detection.cpp:148
+#: engines/ultima/detection.cpp:155
 msgid "Camera moves with Silencer"
 msgstr "Камера переміщується разом з Сайленсером"
 
-#: engines/ultima/detection.cpp:149
+#: engines/ultima/detection.cpp:156
 msgid ""
 "Camera tracks the player movement rather than snapping to defined positions."
 msgstr "Камера йде за переміщенням гравця, а не стрибає по заданим позиціям."
 
-#: engines/ultima/detection.cpp:164
+#: engines/ultima/detection.cpp:166
 msgid "Always enable Christmas easter-egg"
 msgstr "Постійно ввімкнути Різдвяний секрет (easter egg)"
 
-#: engines/ultima/detection.cpp:165
+#: engines/ultima/detection.cpp:167
 msgid "Enable the Christmas music at any time of year."
-msgstr "Увімкнути різдвяну музику у будь-яку пору року."
+msgstr "Ввімкнути різдвяну музику у будь-яку пору року."
 
 #: engines/ultima/shared/early/ultima_early.cpp:70
 msgid "Could not find correct ultima.dat datafile"
@@ -8125,6 +8354,16 @@ msgstr "Білінійна фільтрація спрайтів (повільн
 #: engines/wintermute/detection.cpp:65
 msgid "Apply bilinear filtering to individual sprites"
 msgstr "Застосувати білінійну фільтрацію до окремих спрайтів"
+
+#: engines/wintermute/detection.cpp:77
+msgid "Force to use 2D renderer (2D games only)"
+msgstr "Примусово використовувати 2D рендерер (тільки для 2D ігор)"
+
+#: engines/wintermute/detection.cpp:78
+msgid "This setting forces ScummVM to use 2D renderer while running 2D games"
+msgstr ""
+"Це налаштування примушує ScummVM використовувати 2D рендерер під час запуску "
+"2D ігор"
 
 #: engines/wintermute/metaengine.cpp:64
 msgid "FoxTail support is not compiled in"
@@ -8843,6 +9082,78 @@ msgstr ""
 "всі шрифти з пакету, який ви оберете, тобто, LiberationMono, LiberationSans "
 "та LiberationSerif, або FreeMono, FreeSans та FreeSerif відповідно."
 
+#~ msgid "Insert Disk %c and Press Button to Continue."
+#~ msgstr "Вставте диск %c та натисніть клавішу для продовження."
+
+#~ msgid "Unable to Find %s, (%c%d) Press Button."
+#~ msgstr "Не вдалося знайти %s, (%c%d) Натисніть клавішу."
+
+#~ msgid "Error reading disk %c, (%c%d) Press Button."
+#~ msgstr "Помилка читання диску %c, (%c%d) Натисніть клавішу."
+
+#~ msgid "Game Paused.  Press SPACE to Continue."
+#~ msgstr "Ігру призупинено.  Натисніть пробіл для продовження."
+
+#~ msgid "Are you sure you want to restart?  (Y/N)Y"
+#~ msgstr "Ви впевнені, що хочете розпочати спочатку?  (Y/N)Y"
+
+#~ msgid "Are you sure you want to quit?  (Y/N)Y"
+#~ msgstr "Ви впевнені, що хочете вийти?  (Y/N)Y"
+
+#~ msgid "Insert save/load game disk"
+#~ msgstr "Вставте диск зі збереженими іграми"
+
+#~ msgid "You must enter a name"
+#~ msgstr "Ви мусите ввести ім'я"
+
+#~ msgid "The game was NOT saved (disk full?)"
+#~ msgstr "Гру НЕ БУЛО записано (повний диск?)"
+
+#~ msgid "The game was NOT loaded"
+#~ msgstr "Гру НЕ БУЛО завантажено"
+
+#~ msgid "Saving '%s'"
+#~ msgstr "Записую '%s'"
+
+#~ msgid "Loading '%s'"
+#~ msgstr "Завантажую '%s'"
+
+#~ msgid "Name your SAVE game"
+#~ msgstr "Назовіть цю збережену гру"
+
+#~ msgid "Select a game to LOAD"
+#~ msgstr "Виберіть гру для завантаження"
+
+#~ msgid "Game title)"
+#~ msgstr "Назва гри)"
+
+#~ msgid "Start debugging immediately"
+#~ msgstr "Відразу запустити відладку"
+
+#~ msgid "Halts progress and stops at the debugger immediately"
+#~ msgstr "Припиняє прогрес і відразу запускає відладчик"
+
+#~ msgid "Save progress automatically"
+#~ msgstr "Автоматично зберігати прогрес"
+
+#~ msgid "Progress Saved"
+#~ msgstr "Прогрес збережено"
+
+#, fuzzy
+#~ msgid ""
+#~ "Failed to load save, the save file was created by a newer version of "
+#~ "ScummVM."
+#~ msgstr ""
+#~ "Цей файл зі збереженою грою було створено у новішій версії ScummVM. Не "
+#~ "зможу його заватнажити."
+
+#~ msgid ""
+#~ "WARNING: Existing save has longer gameplay duration than the current "
+#~ "state. Are you sure you want to overwrite it?"
+#~ msgstr ""
+#~ "УВАГА: У збереженні гри, яке буде перезаписано, ви грали довший час, ніж "
+#~ "у поточному. Чи ви справді хочете його перезаписати?"
+
 #~ msgid "I don't understand your command. "
 #~ msgstr "Я не розумію вашої команди. "
 
@@ -9012,9 +9323,6 @@ msgstr ""
 #~ "Малювати текст з вірними проміжками. Це виглядає нібито краще, але не "
 #~ "відповідає оригіналу."
 
-#~ msgid "Ok"
-#~ msgstr "Гаразд"
-
 #~ msgid "~E~dit Game..."
 #~ msgstr "Реда~г~увати гру..."
 
@@ -9038,9 +9346,6 @@ msgstr ""
 
 #~ msgid "Enable cross fading of images and scenes"
 #~ msgstr "Ввімкнути плавний перехід між зображеннями та сценами"
-
-#~ msgid "V-Sync in 3D Games"
-#~ msgstr "Вертикальна синхронізація у 3D іграх"
 
 #~ msgid "Auto"
 #~ msgstr "Автоматично"
@@ -9552,9 +9857,6 @@ msgstr ""
 
 #~ msgid "(You can always enable it in the options dialog on the Misc tab)"
 #~ msgstr "(Ви завжди можете включити її у Налаштуваннях на закладці Інше)"
-
-#~ msgid "Check for updates automatically"
-#~ msgstr "Автоматично перевіряти оновлення"
 
 #~ msgid "8 kHz"
 #~ msgstr "8 кГц"

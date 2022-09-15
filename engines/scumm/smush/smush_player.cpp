@@ -298,7 +298,6 @@ void SmushPlayer::init(int32 speed) {
 	_vm->_mixer->stopHandle(*_compressedFileSoundHandle);
 	_vm->_mixer->stopHandle(*_IACTchannel);
 	_IACTpos = 0;
-	resetAudioTracks();
 }
 
 void SmushPlayer::release() {
@@ -584,7 +583,7 @@ void SmushPlayer::handleTextResource(uint32 subType, int32 subSize, Common::Seek
 
 	byte transBuf[512];
 	if (_vm->_game.id == GID_CMI) {
-		_vm->translateText((const byte *)str - 1, transBuf);
+		_vm->translateText((const byte *)str - 1, transBuf, sizeof(transBuf));
 		while (*str++ != '/')
 			;
 		string2 = (char *)transBuf;
@@ -679,8 +678,8 @@ bool SmushPlayer::readString(const char *file) {
 		error("invalid filename : %s", file);
 	}
 	char fname[260];
-	memcpy(fname, file, i - file);
-	strcpy(fname + (i - file), ".trs");
+	memcpy(fname, file, MIN<int>(sizeof(fname), i - file));
+	Common::strlcpy(fname + (i - file), ".trs", sizeof(fname) - (i - file));
 	if ((_strings = getStrings(_vm, fname, false)) != 0) {
 		return true;
 	}
@@ -737,6 +736,10 @@ void SmushPlayer::handleNewPalette(int32 subSize, Common::SeekableReadStream &b)
 
 	readPalette(_pal, b);
 	setDirtyColors(0, 255);
+}
+
+byte *SmushPlayer::getVideoPalette() {
+	return _pal;
 }
 
 void smush_decode_codec1(byte *dst, const byte *src, int left, int top, int width, int height, int pitch);
@@ -1123,8 +1126,8 @@ void SmushPlayer::tryCmpFile(const char *filename) {
 	// FIXME: How about using AudioStream::openStreamFile instead of the code below?
 
 #ifdef USE_VORBIS
-	memcpy(fname, filename, i - filename);
-	strcpy(fname + (i - filename), ".ogg");
+	memcpy(fname, filename, MIN<int>(i - filename, sizeof(fname)));
+	Common::strlcpy(fname + (i - filename), ".ogg", sizeof(fname) - (i - filename));
 	if (file->open(fname)) {
 		_compressedFileMode = true;
 		_vm->_mixer->playStream(Audio::Mixer::kSFXSoundType, _compressedFileSoundHandle, Audio::makeVorbisStream(file, DisposeAfterUse::YES));
@@ -1132,8 +1135,8 @@ void SmushPlayer::tryCmpFile(const char *filename) {
 	}
 #endif
 #ifdef USE_MAD
-	memcpy(fname, filename, i - filename);
-	strcpy(fname + (i - filename), ".mp3");
+	memcpy(fname, filename, MIN<int>(i - filename, sizeof(fname)));
+	Common::strlcpy(fname + (i - filename), ".mp3", sizeof(fname) - (i - filename));
 	if (file->open(fname)) {
 		_compressedFileMode = true;
 		_vm->_mixer->playStream(Audio::Mixer::kSFXSoundType, _compressedFileSoundHandle, Audio::makeMP3Stream(file, DisposeAfterUse::YES));
@@ -1248,7 +1251,7 @@ void SmushPlayer::play(const char *filename, int32 speed, int32 offset, int32 st
 			skipped = 0;
 		if (_updateNeeded) {
 			if (!skipFrame) {
-				// Workaround for bug #2415: "FT DEMO: assertion triggered
+				// WORKAROUND for bug #2415: "FT DEMO: assertion triggered
 				// when playing movie". Some frames there are 384 x 224
 				int w = MIN(_width, _vm->_screenWidth);
 				int h = MIN(_height, _vm->_screenHeight);
@@ -1300,6 +1303,8 @@ void SmushPlayer::initAudio(int samplerate, int32 maxChunkSize) {
 	_smushAudioSampleRate = samplerate;
 	_smushAudioInitialized = true;
 	_smushAudioCallbackEnabled = true;
+
+	resetAudioTracks();
 }
 
 void SmushPlayer::terminateAudio() {

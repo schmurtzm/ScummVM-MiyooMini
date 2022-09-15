@@ -90,7 +90,7 @@ GlkDetectedGame::GlkDetectedGame(const char *id, const char *desc, const Common:
 }
 
 GlkDetectedGame::GlkDetectedGame(const char *id, const char *desc, const Common::String &filename,
-		Common::Language lang, GameSupportLevel supportLevel) : DetectedGame("glk", id, desc, lang, Common::kPlatformUnknown) {
+		Common::Language lang, Common::Platform p, GameSupportLevel supportLevel) : DetectedGame("glk", id, desc, lang, p) {
 	setGUIOptions(getGlkGUIOptions());
 	gameSupportLevel = supportLevel;
 	addExtraEntry("filename", filename);
@@ -180,7 +180,7 @@ PlainGameDescriptor GlkMetaEngineDetection::findGame(const char *gameId) const {
 
 #undef FIND_GAME
 
-DetectedGames GlkMetaEngineDetection::detectGames(const Common::FSList &fslist) {
+DetectedGames GlkMetaEngineDetection::detectGames(const Common::FSList &fslist, uint32 /*skipADFlags*/, bool /*skipIncomplete*/) {
 #ifndef RELEASE_BUILD
 	// This is as good a place as any to detect multiple sub-engines using the same Ids
 	detectClashes();

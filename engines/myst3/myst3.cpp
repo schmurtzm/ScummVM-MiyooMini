@@ -130,22 +130,21 @@ bool Myst3Engine::hasFeature(EngineFeature f) const {
 	Graphics::RendererType desiredRendererType = Graphics::Renderer::parseTypeCode(rendererConfig);
 	Graphics::RendererType matchingRendererType = Graphics::Renderer::getBestMatchingAvailableType(desiredRendererType,
 #if defined(USE_OPENGL_GAME)
-			Graphics::kRendererTypeOpenGL |
+	                Graphics::kRendererTypeOpenGL |
 #endif
 #if defined(USE_OPENGL_SHADERS)
-			Graphics::kRendererTypeOpenGLShaders |
+	                Graphics::kRendererTypeOpenGLShaders |
 #endif
 #if defined(USE_TINYGL)
-			Graphics::kRendererTypeTinyGL |
+	                Graphics::kRendererTypeTinyGL |
 #endif
-			0);
+	                0);
 	bool softRenderer = matchingRendererType == Graphics::kRendererTypeTinyGL;
 
-	return
-		(f == kSupportsReturnToLauncher) ||
-		(f == kSupportsLoadingDuringRuntime) ||
-		(f == kSupportsSavingDuringRuntime) ||
-		(f == kSupportsArbitraryResolutions && !softRenderer);
+	return (f == kSupportsReturnToLauncher) ||
+	       (f == kSupportsLoadingDuringRuntime) ||
+	       (f == kSupportsSavingDuringRuntime) ||
+	       (f == kSupportsArbitraryResolutions && !softRenderer);
 }
 
 Common::Error Myst3Engine::run() {
@@ -182,7 +181,6 @@ Common::Error Myst3Engine::run() {
 
 	_cursor = new Cursor(this);
 	_inventory = new Inventory(this);
-
 
 	// Init the font
 	Graphics::Surface *font = loadTexture(1206);
@@ -360,14 +358,15 @@ void Myst3Engine::closeArchives() {
 
 bool Myst3Engine::checkDatafiles() {
 	if (!SearchMan.hasFile("OVER101.m3o")) {
+		const char* urlForPatchesDownload = "https://www.scummvm.org/frs/extras/patches/";
 		warning("Unable to open the update game archive 'OVER101.m3o'");
 		Common::U32String updateMessage =
-				_("This version of Myst III has not been updated with the latest official patch.\n"
+				Common::U32String::format(_("This version of Myst III has not been updated with the latest official patch.\n"
 						  "Please install the official update corresponding to your game's language.\n"
 						  "The updates can be downloaded from:\n"
-						  "https://www.scummvm.org/frs/extras/patches/");
+						  "%s"), urlForPatchesDownload);
 		warning("%s", updateMessage.encode().c_str());
-		GUI::displayErrorDialog(updateMessage);
+		GUIErrorMessageWithURL(updateMessage, urlForPatchesDownload);
 		return false;
 	}
 
@@ -1319,7 +1318,7 @@ void Myst3Engine::loadNodeSubtitles(uint32 id) {
 }
 
 ResourceDescription Myst3Engine::getFileDescription(const Common::String &room, uint32 index, uint16 face,
-													Archive::ResourceType type) {
+	                                            Archive::ResourceType type) {
 	Common::String archiveRoom = room;
 	if (archiveRoom == "") {
 		archiveRoom = _db->getRoomName(_state->getLocationRoom(), _state->getLocationAge());
@@ -1342,7 +1341,7 @@ ResourceDescription Myst3Engine::getFileDescription(const Common::String &room, 
 }
 
 ResourceDescriptionArray Myst3Engine::listFilesMatching(const Common::String &room, uint32 index, uint16 face,
-													 Archive::ResourceType type) {
+	                                                Archive::ResourceType type) {
 	Common::String archiveRoom = room;
 	if (archiveRoom == "") {
 		archiveRoom = _db->getRoomName(_state->getLocationRoom(), _state->getLocationAge());
@@ -1662,8 +1661,7 @@ void Myst3Engine::animateDirectionChange(float targetPitch, float targetHeading,
 			if (numTicks >= 15) {
 				// Fast then slow movement
 				if (elapsedTicks > numTicks / 2.0f)
-					step = 1.0f - (numTicks - elapsedTicks) * (numTicks - elapsedTicks)
-								/ (numTicks / 2.0f * numTicks / 2.0f) / 2.0f;
+					step = 1.0f - (numTicks - elapsedTicks) * (numTicks - elapsedTicks) / (numTicks / 2.0f * numTicks / 2.0f) / 2.0f;
 				else
 					step = elapsedTicks * elapsedTicks / (numTicks / 2.0f * numTicks / 2.0f) / 2.0f;
 
@@ -1763,8 +1761,8 @@ void Myst3Engine::playMovieFullFrame(uint16 movie) {
 
 bool Myst3Engine::inputValidatePressed() {
 	return _inputEnterPressed ||
-			_inputSpacePressed ||
-			getEventManager()->getButtonState() & Common::EventManager::LBUTTON;
+	       _inputSpacePressed ||
+	       getEventManager()->getButtonState() & Common::EventManager::LBUTTON;
 }
 
 bool Myst3Engine::inputEscapePressed() {
@@ -1780,7 +1778,7 @@ bool Myst3Engine::inputTilePressed() {
 }
 
 void Myst3Engine::addSunSpot(uint16 pitch, uint16 heading, uint16 intensity,
-		uint16 color, uint16 var, bool varControlledIntensity, uint16 radius) {
+	                     uint16 color, uint16 var, bool varControlledIntensity, uint16 radius) {
 
 	SunSpot *s = new SunSpot();
 
@@ -1788,11 +1786,11 @@ void Myst3Engine::addSunSpot(uint16 pitch, uint16 heading, uint16 intensity,
 	s->heading = heading;
 	s->intensity = intensity * 2.55;
 	s->color = (color & 0xF) | 16
-			* ((color & 0xF) | 16
-			* (((color >> 4) & 0xF) | 16
-			* (((color >> 4) & 0xF) | 16
-			* (((color >> 8) & 0xF) | 16
-			* (((color >> 8) & 0xF))))));
+	           * ((color & 0xF) | 16
+	           * (((color >> 4) & 0xF) | 16
+	           * (((color >> 4) & 0xF) | 16
+	           * (((color >> 8) & 0xF) | 16
+	           * (((color >> 8) & 0xF))))));
 	s->var = var;
 	s->variableIntensity = varControlledIntensity;
 	s->radius = radius;

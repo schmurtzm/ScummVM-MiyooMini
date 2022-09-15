@@ -48,6 +48,8 @@
 #include "director/lingo/lingo-object.h"
 #include "director/lingo/lingo-utils.h"
 
+#include "image/pict.h"
+
 namespace Director {
 
 static BuiltinProto builtins[] = {
@@ -521,6 +523,11 @@ void LB::b_string(int nargs) {
 
 void LB::b_value(int nargs) {
 	Datum d = g_lingo->pop();
+	if (d.type != STRING) {
+		g_lingo->push(d);
+		return;
+	}
+
 	Common::String expr = d.asString();
 	if (expr.empty()) {
 		g_lingo->push(Datum(0));
@@ -1048,7 +1055,7 @@ void LB::b_sort(int nargs) {
 // Files
 ///////////////////
 void LB::b_closeDA(int nargs) {
-	warning("STUB: b_closeDA");
+	warning("BUILDBOT: closeDA is not supported in ScummVM");
 }
 
 void LB::b_closeResFile(int nargs) {
@@ -1079,7 +1086,7 @@ void LB::b_getNthFileNameInFolder(int nargs) {
 	// for directory, we either return the correct path, which we can access recursively.
 	// or we get a wrong path, which will lead us to a non-exist file node
 
-	Common::StringTokenizer directory_list(path, "/");
+	Common::StringTokenizer directory_list(path, Common::String(g_director->_dirSeparator));
 	Common::FSNode d = Common::FSNode(*g_director->getGameDataDir());
 	while (d.exists() && !directory_list.empty()) {
 		d = d.getChild(directory_list.nextToken());
@@ -1106,15 +1113,23 @@ void LB::b_getNthFileNameInFolder(int nargs) {
 }
 
 void LB::b_open(int nargs) {
-	g_lingo->printSTUBWithArglist("b_open", nargs);
+	Datum d = g_lingo->pop();
+	if (nargs == 2)
+		g_lingo->pop();
+	warning("LB::b_open(): Unsupported command open encountered -> The movie tried to open %s", d.asString().c_str());
 
-	g_lingo->dropStack(nargs);
+	if (!debugChannelSet(-1, kDebugFewFramesOnly) &&
+		!(g_director->getGameGID() == GID_TEST || g_director->getGameGID() == GID_TESTALL)) {
+		Common::U32String message = Common::String::format("Unsupported command open encountered -> The movie tried to execute open %s!", d.asString().c_str());
+		GUI::MessageDialog dialog(message, _("Ok"));
+		dialog.runModal();
+	}
 }
 
 void LB::b_openDA(int nargs) {
 	Datum d = g_lingo->pop();
 
-	warning("STUB: b_openDA(%s)", d.asString().c_str());
+	warning("BUILDBOT: openDA is not supported in ScummVM");
 }
 
 void LB::b_openResFile(int nargs) {
@@ -1186,28 +1201,38 @@ void LB::b_setCallBack(int nargs) {
 }
 
 void LB::b_showResFile(int nargs) {
-	Datum d = g_lingo->pop();
-
-	warning("STUB: b_showResFile(%s)", d.asString().c_str());
+	if (nargs)
+		g_lingo->pop();
+	Common::String out;
+	for (auto it = g_director->_openResFiles.begin(); it != g_director->_openResFiles.end(); it++)
+		out += it->_key + "\n";
+	g_debugger->debugLogFile(out, false);
 }
 
 void LB::b_showXlib(int nargs) {
-	Datum d = g_lingo->pop();
-
-	warning("STUB: b_showXlib(%s)", d.asString().c_str());
+	if (nargs)
+		g_lingo->pop();
+	Common::String out;
+	for (auto it = g_lingo->_openXLibs.begin(); it != g_lingo->_openXLibs.end(); it++)
+		out += it->_key + "\n";
+	g_debugger->debugLogFile(out, false);
 }
 
 void LB::b_xFactoryList(int nargs) {
 	Datum d = g_lingo->pop();
+	d.type = STRING;
+	d.u.s = new Common::String();
 
-	warning("STUB: b_xFactoryList(%s)", d.asString().c_str());
+	for (auto it = g_lingo->_openXLibs.begin(); it != g_lingo->_openXLibs.end(); it++)
+		*d.u.s += it->_key + "\n";
+	g_lingo->push(d);
 }
 
 ///////////////////
 // Control
 ///////////////////
 void LB::b_abort(int nargs) {
-	warning("STUB: b_abort");
+	g_lingo->_abort = true;
 }
 
 void LB::b_continue(int nargs) {
@@ -1513,7 +1538,7 @@ void LB::b_param(int nargs) {
 }
 
 void LB::b_printFrom(int nargs) {
-	g_lingo->printSTUBWithArglist("b_printFrom", nargs);
+	warning("BUILDBOT: printFrom is not supported in ScummVM");
 
 	g_lingo->dropStack(nargs);
 }
@@ -1655,9 +1680,11 @@ void LB::b_alert(int nargs) {
 }
 
 void LB::b_clearGlobals(int nargs) {
-	g_lingo->printSTUBWithArglist("b_clearGlobals", nargs);
-
-	g_lingo->dropStack(nargs);
+	for (DatumHash::iterator it = g_lingo->_globalvars.begin(); it != g_lingo->_globalvars.end(); it++) {
+		if (!it->_value.ignoreGlobal) {
+			g_lingo->_globalvars.erase(it);
+		}
+	}
 }
 
 void LB::b_cursor(int nargs) {
@@ -1674,7 +1701,7 @@ void LB::b_put(int nargs) {
 			output += " ";
 	}
 	if (g_debugger->isActive()) {
-		g_debugger->debugPrintf("-- %s\n", output.c_str());
+		g_debugger->debugLogFile(output, true);
 	} else {
 		debug("-- %s", output.c_str());
 	}
@@ -1682,11 +1709,28 @@ void LB::b_put(int nargs) {
 }
 
 void LB::b_showGlobals(int nargs) {
-	warning("STUB: b_showGlobals");
+	b_version(0);
+	Datum ver = g_lingo->pop();
+	Common::String global_out = "-- Global Variables --\nversion = ";
+	global_out += ver.asString() + "\n";
+	if (g_lingo->_globalvars.size()) {
+		for (auto it = g_lingo->_globalvars.begin(); it != g_lingo->_globalvars.end(); it++) {
+			if (!it->_value.ignoreGlobal) {
+				global_out += it->_key + " = " + it->_value.asString() + "\n";
+			}
+		}
+	}
+	g_debugger->debugLogFile(global_out, false);
 }
 
 void LB::b_showLocals(int nargs) {
-	warning("STUB: b_showLocals");
+	Common::String local_out = "-- Local Variables --\n";
+	if (g_lingo->_localvars) {
+		for (auto it = g_lingo->_localvars->begin(); it != g_lingo->_localvars->end(); it++) {
+			local_out += it->_key + " = " + it->_value.asString() + "\n";
+		}
+	}
+	g_debugger->debugLogFile(local_out, false);
 }
 
 ///////////////////
@@ -1732,9 +1776,8 @@ void LB::b_constrainV(int nargs) {
 }
 
 void LB::b_copyToClipBoard(int nargs) {
-	g_lingo->printSTUBWithArglist("b_copyToClipBoard", nargs);
-
-	g_lingo->dropStack(nargs);
+	Datum d = g_lingo->pop();
+	g_director->_clipBoard = new CastMemberID(d.asMemberID());
 }
 
 void LB::b_duplicate(int nargs) {
@@ -1746,7 +1789,7 @@ void LB::b_duplicate(int nargs) {
 	auto channels = g_director->getCurrentMovie()->getScore()->_channels;
 
 	castMember->setModified(true);
-	g_director->getCurrentMovie()->getCast()->_loadedCast->setVal(to.u.i, castMember);
+	g_director->getCurrentMovie()->createOrReplaceCastMember(to.asMemberID(), castMember);
 
 	for (uint16 i = 0; i < currentFrame->_sprites.size(); i++) {
 		if (currentFrame->_sprites[i]->_castId == to.asMemberID())
@@ -1810,17 +1853,84 @@ void LB::b_erase(int nargs) {
 }
 
 void LB::b_findEmpty(int nargs) {
-	g_lingo->printSTUBWithArglist("b_findEmpty", nargs);
+	Datum d = g_lingo->pop();
+	Cast *cast = g_director->getCurrentMovie()->getCast();
+	uint16 c_start = cast->_castArrayStart;
+	uint16 c_end = cast->_castArrayEnd;
 
-	g_lingo->dropStack(nargs);
+	if (d.type != CASTREF) {
+		warning("Incorrect argument type for findEmpty");
+		return;
+	}
 
-	g_lingo->push(Datum(0));
+	if (d.u.cast->member > c_end) {
+		d.type = INT;
+		g_lingo->push(d);
+		return;
+	}
+
+	if (d.u.cast->member > c_start) {
+		c_start = (uint16) d.u.cast->member;
+	}
+
+	for (uint16 i = c_start; i <= c_end; i++) {
+		if (!(cast->getCastMember(i) && cast->getCastMember(i)->_type != kCastTypeNull)) {
+			d.u.i = i;
+			d.type = INT;
+			g_lingo->push(d);
+			return;
+		}
+	}
+
+	d.type = INT;
+	d.u.i = (int) c_end + 1;
+	g_lingo->push(d);
 }
 
 void LB::b_importFileInto(int nargs) {
-	g_lingo->printSTUBWithArglist("b_importFileInto", nargs);
 
-	g_lingo->dropStack(nargs);
+	Datum file = g_lingo->pop();
+	Datum dst = g_lingo->pop();
+
+	if (!dst.isCastRef()) {
+		warning("b_importFileInto(): bad cast ref field type: %s", dst.type2str());
+		return;
+	}
+
+	CastMemberID memberID = *dst.u.cast;
+
+	if (!(file.asString().matchString("*.pic") || file.asString().matchString("*.pict"))) {
+		warning("LB::b_importFileInto : %s is not a valid PICT file", file.asString().c_str());
+		return;
+	}
+
+	Common::String path = pathMakeRelative(file.asString());
+	Common::File in;
+	in.open(path);
+
+	if (!in.isOpen()) {
+		warning("b_importFileInto(): Cannot open file %s", path.c_str());
+		return;
+	}
+
+	Image::PICTDecoder *img = new Image::PICTDecoder();
+	img->loadStream(in);
+	in.close();
+
+	Movie *movie = g_director->getCurrentMovie();
+	BitmapCastMember *bitmapCast = new BitmapCastMember(movie->getCast(), memberID.member, img);
+	movie->createOrReplaceCastMember(memberID, bitmapCast);
+	bitmapCast->setModified(true);
+	const Graphics::Surface *surf = img->getSurface();
+	bitmapCast->_size = surf->pitch * surf->h + img->getPaletteColorCount() * 3;
+	auto channels = g_director->getCurrentMovie()->getScore()->_channels;
+
+	for (uint i = 0; i < channels.size(); i++) {
+		if (channels[i]->_sprite->_castId == dst.asMemberID()) {
+			channels[i]->setCast(memberID);
+			channels[i]->_dirty = true;
+		}
+	}
 }
 
 void menuCommandsCallback(int action, Common::String &text, void *data) {
@@ -1848,9 +1958,7 @@ void LB::b_installMenu(int nargs) {
 	}
 	TextCastMember *field = static_cast<TextCastMember *>(member);
 
-	// TODO: We should process the U32String instead of encoding it to Mac Roman first
-	Common::String menuStxt = g_lingo->_compiler->codePreprocessor(field->getText(), field->getCast()->_lingoArchive, kNoneScript, memberID, true).encode(Common::kMacRoman);
-	Common::String line;
+	Common::U32String menuStxt = g_lingo->_compiler->codePreprocessor(field->getText(), field->getCast()->_lingoArchive, kNoneScript, memberID, true);
 	int linenum = -1; // We increment it before processing
 
 	Graphics::MacMenu *menu = g_director->_wm->addMenu();
@@ -1861,27 +1969,50 @@ void LB::b_installMenu(int nargs) {
 
 	menu->setCommandsCallback(menuCommandsCallback, g_director);
 
-	debugC(3, kDebugLingoExec, "installMenu: '%s'", Common::toPrintable(menuStxt).c_str());
+	debugC(3, kDebugLingoExec, "installMenu: '%s'", Common::toPrintable(menuStxt).encode().c_str());
 
 	LingoArchive *mainArchive = g_director->getCurrentMovie()->getMainLingoArch();
 
-	for (const byte *s = (const byte *)menuStxt.c_str(); *s; s++) {
-		// Get next line
-		line.clear();
-		while (*s && *s != '\n') { // If we see a whitespace
-			if (*s == (byte)'\xc2') {
-				s++;
-				if (*s == '\n') {
-					line += ' ';
+	// Since loading the STXT converts the text to Unicode based on the platform
+	// encoding, we need to fetch the correct Unicode character for the platform.
 
+	// STXT sections use Mac-style carriage returns for line breaks.
+	// The code preprocessor converts carriage returns to line feeds.
+	const uint32 LINE_BREAK = 0x0a;
+	// Menu definitions use the character 0xc3 to denote a checkmark.
+	// For Mac, this is √. For Windows, this is Ã.
+	const uint8 CHECKMARK_CHAR = 0xc3;
+	const uint32 CHECKMARK_U32 = numToChar(CHECKMARK_CHAR);
+	const char *CHECKMARK_STR = "\xc3\x83"; // "Ã"
+	// Menu definitions use the character 0xc5 to denote a code separator.
+	// For Mac, this is ≈. For Windows, this is Å.
+	const uint8 CODE_SEPARATOR_CHAR = 0xc5;
+	const uint32 CODE_SEPARATOR_U32 = numToChar(CODE_SEPARATOR_CHAR);
+	const char *CODE_SEPARATOR_STR = "\xc3\x85"; // "Å"
+
+	Common::U32String lineBuffer;
+
+	for (const Common::u32char_type_t *s = menuStxt.c_str(); *s; s++) {
+		lineBuffer.clear();
+		while (*s && *s != LINE_BREAK) {
+			if (*s == CHECKMARK_U32) {
+				lineBuffer += CHECKMARK_CHAR;
+				s++;
+			} else if (*s == CODE_SEPARATOR_U32) {
+				lineBuffer += CODE_SEPARATOR_CHAR;
+				s++;
+			} else if (*s == CONTINUATION) { // fast forward to the next line
+				s++;
+				if (*s == LINE_BREAK) {
+					lineBuffer += ' ';
 					s++;
 				}
 			} else {
-				line += *s++;
+				lineBuffer += *s++;
 			}
 		}
-
 		linenum++;
+		Common::String line = lineBuffer.encode();
 
 		if (line.empty())
 			continue;
@@ -1906,14 +2037,22 @@ void LB::b_installMenu(int nargs) {
 			continue;
 		}
 
-		// We have \xc5 as a separator
-		const char *p = strchr(line.c_str(), '\xc5');
+		// If the line has a UTF8 checkmark, replace it with a byte character
+		// as expected by MacMenu.
+		size_t checkOffset = line.find(CHECKMARK_STR);
+		if (checkOffset != Common::String::npos) {
+			line.erase(checkOffset, strlen(CHECKMARK_STR));
+			line.insertChar(CHECKMARK_CHAR, checkOffset);
+		}
+
+		// Split the line at the code separator
+		size_t sepOffset = line.find(CODE_SEPARATOR_STR);
 
 		Common::String text;
 
-		if (p) {
-			text = Common::String(line.c_str(), p);
-			command = Common::String(p + 1);
+		if (sepOffset != Common::String::npos) {
+			text = Common::String(line.c_str(), line.c_str() + sepOffset);
+			command = Common::String(line.c_str() + sepOffset + strlen(CODE_SEPARATOR_STR));
 		} else {
 			text = line;
 			command = "";
@@ -1965,9 +2104,75 @@ void LB::b_marker(int nargs) {
 }
 
 void LB::b_move(int nargs) {
-	g_lingo->printSTUBWithArglist("b_move", nargs);
+	Datum src, dest;
 
-	g_lingo->dropStack(nargs);
+	if (nargs == 1) {
+		Datum d;
+		d.type = CASTREF;
+		d.u.cast = new CastMemberID();
+		d.u.cast->member = (int) g_director->getCurrentMovie()->getCast()->_castArrayStart;
+		g_lingo->push(d);
+		b_findEmpty(1);
+		dest = g_lingo->pop();
+		src = g_lingo->pop();
+	} else if (nargs == 2) {
+		dest = g_lingo->pop();
+		src = g_lingo->pop();
+	}
+
+	//Convert dest datum to type CASTREF if it is INT
+	//As CastMemberID constructor changes all the values, datum_int is used to preserve int
+	if (dest.type == INT) {
+		dest.type = CASTREF;
+		int datum_int = dest.u.i;
+		dest.u.cast = new CastMemberID();
+		dest.u.cast->member = datum_int;
+	}
+
+	//No need to move if src and dest are same
+	if (src.u.cast->member == dest.u.cast->member) {
+		return;
+	}
+
+	if (!g_director->getCurrentMovie()->getCastMember(*src.u.cast)) {
+		warning("b_move: Source CastMember doesn't exist");
+		return;
+	}
+
+	if (src.u.cast->castLib != 0) {
+		warning("b_move: wrong castLib '%d' in src CastMemberID", src.u.cast->castLib);
+	}
+
+	g_lingo->push(dest);
+	b_erase(1);
+
+	Movie *movie = g_director->getCurrentMovie();
+	uint16 frame = movie->getScore()->getCurrentFrame();
+	Frame *currentFrame = movie->getScore()->_frames[frame];
+	auto channels = g_director->getCurrentMovie()->getScore()->_channels;
+
+
+	movie->getScore()->renderFrame(frame, kRenderForceUpdate);
+
+	CastMember *toMove = g_director->getCurrentMovie()->getCastMember(src.asMemberID());
+	CastMember *toReplace = new CastMember(*toMove);
+	toReplace->_type = kCastTypeNull;
+	g_director->getCurrentMovie()->createOrReplaceCastMember(dest.asMemberID(), toMove);
+	g_director->getCurrentMovie()->createOrReplaceCastMember(src.asMemberID(), toReplace);
+
+	for (uint16 i = 0; i < currentFrame->_sprites.size(); i++) {
+		if (currentFrame->_sprites[i]->_castId == dest.asMemberID())
+			currentFrame->_sprites[i]->setCast(dest.asMemberID());
+	}
+
+	for (uint i = 0; i < channels.size(); i++) {
+		if (channels[i]->_sprite->_castId == dest.asMemberID()) {
+			channels[i]->_sprite->setCast(CastMemberID(1, 0));
+			channels[i]->_dirty = true;
+		}
+	}
+
+	movie->getScore()->renderFrame(frame, kRenderForceUpdate);
 }
 
 void LB::b_moveableSprite(int nargs) {
@@ -1987,9 +2192,32 @@ void LB::b_moveableSprite(int nargs) {
 }
 
 void LB::b_pasteClipBoardInto(int nargs) {
-	g_lingo->printSTUBWithArglist("b_pasteClipBoardInto", nargs);
+	Datum to = g_lingo->pop();
+	if (!g_director->_clipBoard) {
+		warning("LB::b_pasteClipBoardInto(): Nothing to paste from clipboard, skipping paste..");
+		return;
+	}
 
-	g_lingo->dropStack(nargs);
+	Movie *movie = g_director->getCurrentMovie();
+	uint16 frame = movie->getScore()->getCurrentFrame();
+	Frame *currentFrame = movie->getScore()->_frames[frame];
+	CastMember *castMember = movie->getCastMember(*g_director->_clipBoard);
+	auto channels = movie->getScore()->_channels;
+
+	castMember->setModified(true);
+	movie->createOrReplaceCastMember(*to.u.cast, castMember);
+
+	for (uint16 i = 0; i < currentFrame->_sprites.size(); i++) {
+		if (currentFrame->_sprites[i]->_castId == to.asMemberID())
+			currentFrame->_sprites[i]->setCast(to.asMemberID());
+	}
+
+	for (uint i = 0; i < channels.size(); i++) {
+		if (channels[i]->_sprite->_castId == to.asMemberID()) {
+			channels[i]->_sprite->setCast(to.asMemberID());
+			channels[i]->_dirty = true;
+		}
+	}
 }
 
 void LB::b_puppetPalette(int nargs) {
@@ -2366,7 +2594,7 @@ void LB::b_updateStage(int nargs) {
 	movie->getWindow()->render();
 
 	// play any puppet sounds that have been queued
-	score->playSoundChannel(score->getCurrentFrame());
+	score->playSoundChannel(score->getCurrentFrame(), true);
 
 	if (score->_cursorDirty) {
 		score->renderCursor(movie->getWindow()->getMousePos());
@@ -2377,6 +2605,7 @@ void LB::b_updateStage(int nargs) {
 
 	if (debugChannelSet(-1, kDebugFewFramesOnly)) {
 		score->_framesRan++;
+			warning("LB::b_updateStage(): ran frame %0d", score->_framesRan);
 
 		if (score->_framesRan > 9) {
 			warning("b_updateStage(): exiting due to debug few frames only");
@@ -2468,27 +2697,95 @@ void LB::b_inside(int nargs) {
 }
 
 void LB::b_map(int nargs) {
-	g_lingo->printSTUBWithArglist("b_map", nargs);
+	Datum toRect = g_lingo->pop();
+	Datum fromRect = g_lingo->pop();
+	Datum srcArr = g_lingo->pop();
 
-	g_lingo->dropStack(nargs);
+	if (!(toRect.type == RECT || (toRect.type == ARRAY && toRect.u.farr->arr.size() == 4)) ||
+		!(fromRect.type == RECT || (fromRect.type == ARRAY && fromRect.u.farr->arr.size() == 4))) {
+		warning("LB::b_map(): Invalid Datum Type of source and destination Rects");
+		return;
+	}
 
-	g_lingo->push(Datum(0));
+	int toWidth = toRect.u.farr->arr[2].u.i - toRect.u.farr->arr[0].u.i;
+	int toHeight = toRect.u.farr->arr[3].u.i - toRect.u.farr->arr[1].u.i;
+	int fromWidth = fromRect.u.farr->arr[2].u.i - fromRect.u.farr->arr[0].u.i;
+	int fromHeight = fromRect.u.farr->arr[3].u.i - fromRect.u.farr->arr[1].u.i;
+
+	if (!(srcArr.type == POINT ||
+		srcArr.type == RECT ||
+		(srcArr.type == ARRAY && (srcArr.u.farr->arr.size() == 2 || srcArr.u.farr->arr.size() == 4)))) {
+		warning("LB::b_map(): Invalid Datum type of input Point / Rect");
+		return;
+	}
+
+	Datum d;
+	d.type = POINT;
+	d.u.farr = new FArray();
+	d.u.farr->arr.push_back((srcArr.u.farr->arr[0].u.i - fromRect.u.farr->arr[0].u.i) * (toWidth / fromWidth) + toRect.u.farr->arr[0].u.i);
+	d.u.farr->arr.push_back((srcArr.u.farr->arr[1].u.i - fromRect.u.farr->arr[1].u.i) * (toHeight / fromHeight) + toRect.u.farr->arr[1].u.i);
+
+	if (srcArr.type == RECT ||
+		(srcArr.type == ARRAY && srcArr.u.farr->arr.size() == 4)) {
+		d.type = RECT;
+		d.u.farr->arr.push_back((srcArr.u.farr->arr[2].u.i - srcArr.u.farr->arr[0].u.i) * (toWidth / fromWidth) + d.u.farr->arr[0].u.i);
+		d.u.farr->arr.push_back((srcArr.u.farr->arr[3].u.i - srcArr.u.farr->arr[1].u.i) * (toWidth / fromWidth) + d.u.farr->arr[1].u.i);
+	}
+
+	g_lingo->push(d);
 }
 
 void LB::b_offsetRect(int nargs) {
-	g_lingo->printSTUBWithArglist("b_offsetRect", nargs);
+	Datum vert = g_lingo->pop();
+	Datum hori = g_lingo->pop();
+	Datum rect = g_lingo->pop();
 
-	g_lingo->dropStack(nargs);
+	if (vert.type != INT ||
+		hori.type != INT ||
+		!(rect.type == RECT || (rect.type == ARRAY && rect.u.farr->arr.size() >= 4))) {
+		warning(" LB::b_offsetRect(): Invalid DatumType of inputs");
+		g_lingo->push(rect);
+	}
 
-	g_lingo->push(Datum(0));
+	//When vert is positive, rect moves higher
+	//When hori is positive, rect moves towards right
+
+	rect.u.farr->arr[0].u.i += hori.u.i;
+	rect.u.farr->arr[2].u.i += hori.u.i;
+	rect.u.farr->arr[1].u.i -= vert.u.i;
+	rect.u.farr->arr[3].u.i -= vert.u.i;
+
+
+	g_lingo->push(rect);
 }
 
 void LB::b_union(int nargs) {
-	g_lingo->printSTUBWithArglist("b_union", nargs);
+	if (nargs != 2) {
+		warning("Wrong number of arguments for b_union: Expected 2, got %d", nargs);
+		g_lingo->dropStack(nargs);
+		g_lingo->push(Datum(0));
+		return;
+	}
 
-	g_lingo->dropStack(nargs);
+	Datum rect1 = g_lingo->pop();
+	Datum rect2 = g_lingo->pop();
 
-	g_lingo->push(Datum(0));
+	if (rect1.type != RECT || rect2.type != RECT) {
+		warning("Wrong type of arguments for b_union");
+		g_lingo->push(Datum(0));
+		return;
+	}
+
+	Datum res;
+	res.type = RECT;
+
+	res.u.farr = new FArray();
+	res.u.farr->arr.push_back(Datum(MIN(rect1.u.farr->arr[0].u.i, rect2.u.farr->arr[0].u.i)));
+	res.u.farr->arr.push_back(Datum(MIN(rect1.u.farr->arr[1].u.i, rect2.u.farr->arr[1].u.i)));
+	res.u.farr->arr.push_back(Datum(MAX(rect1.u.farr->arr[2].u.i, rect2.u.farr->arr[2].u.i)));
+	res.u.farr->arr.push_back(Datum(MAX(rect1.u.farr->arr[3].u.i, rect2.u.farr->arr[3].u.i)));
+
+	g_lingo->push(res);
 }
 
 

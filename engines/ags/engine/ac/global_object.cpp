@@ -19,6 +19,7 @@
  *
  */
 
+#include "ags/lib/std/algorithm.h"
 #include "ags/engine/ac/global_object.h"
 #include "ags/shared/ac/common.h"
 #include "ags/engine/ac/object.h"
@@ -60,9 +61,9 @@ int GetObjectIDAtScreen(int scrx, int scry) {
 }
 
 int GetObjectIDAtRoom(int roomx, int roomy) {
-	int aa, bestshotyp = -1, bestshotwas = -1;
+	int bestshotyp = -1, bestshotwas = -1;
 	// Iterate through all objects in the room
-	for (aa = 0; aa < _G(croom)->numobj; aa++) {
+	for (uint32_t aa = 0; aa < _G(croom)->numobj; aa++) {
 		if (_G(objs)[aa].on != 1) continue;
 		if (_G(objs)[aa].flags & OBJF_NOINTERACT)
 			continue;
@@ -213,7 +214,7 @@ int GetObjectBaseline(int obn) {
 	return _G(objs)[obn].baseline;
 }
 
-void AnimateObjectImpl(int obn, int loopn, int spdd, int rept, int direction, int blocking, int sframe) {
+void AnimateObjectImpl(int obn, int loopn, int spdd, int rept, int direction, int blocking, int sframe, int volume) {
 	if (obn >= MANOBJNUM) {
 		scAnimateCharacter(obn - 100, loopn, spdd, rept);
 		return;
@@ -257,7 +258,8 @@ void AnimateObjectImpl(int obn, int loopn, int spdd, int rept, int direction, in
 	_G(objs)[obn].num = Math::InRangeOrDef<uint16_t>(pic, 0);
 	if (pic > UINT16_MAX)
 		debug_script_warn("Warning: object's (id %d) sprite %d is outside of internal range (%d), reset to 0", obn, pic, UINT16_MAX);
-	CheckViewFrame(_G(objs)[obn].view, loopn, _G(objs)[obn].frame);
+	_G(objs)[obn].anim_volume = Math::Clamp(volume, 0, 100);
+	CheckViewFrame(_G(objs)[obn].view, loopn, _G(objs)[obn].frame, _G(objs)[obn].anim_volume);
 
 	if (blocking)
 		GameLoopUntilValueIsZero(&_G(objs)[obn].cycling);
@@ -384,7 +386,7 @@ void GetObjectName(int obj, char *buffer) {
 	if (!is_valid_object(obj))
 		quit("!GetObjectName: invalid object number");
 
-	strcpy(buffer, get_translation(_G(croom)->obj[obj].name.GetCStr()));
+	snprintf(buffer, MAX_MAXSTRLEN, "%s", get_translation(_G(croom)->obj[obj].name.GetCStr()));
 }
 
 void MoveObject(int objj, int xx, int yy, int spp) {

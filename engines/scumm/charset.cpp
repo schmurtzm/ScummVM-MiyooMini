@@ -55,7 +55,7 @@ void ScummEngine::loadCJKFont() {
 	_textSurfaceMultiplier = 1;
 	_newLineCharacter = 0;
 
-	_useMultiFont = 0;	// Korean Multi-Font
+	_useMultiFont = false;	// Korean Multi-Font
 
 	// Special case for Korean
 	if (isScummvmKorTarget()) {
@@ -179,7 +179,7 @@ void ScummEngine::loadKorFont() {
 	_useCJKMode = true;
 
 	if (_game.version < 7 || _game.id == GID_FT)
-		_useMultiFont = 1;
+		_useMultiFont = true;
 
 	if (_useMultiFont) {
 		debug("Loading Korean Multi Font System");
@@ -213,7 +213,7 @@ void ScummEngine::loadKorFont() {
 		}
 		if (_numLoadedFont == 0) {
 			warning("Cannot load any font for multi font");
-			_useMultiFont = 0;
+			_useMultiFont = false;
 		} else {
 			debug("%d fonts are loaded", _numLoadedFont);
 		}
@@ -456,7 +456,13 @@ int CharsetRendererClassic::getCharWidth(uint16 chr) const {
 
 int CharsetRenderer::getStringWidth(int arg, const byte *text) {
 	int pos = 0;
-	int width = (_vm->_game.id == GID_FT) ? 0 : 1;
+
+	// I have confirmed from disasm that neither LOOM EGA and FM-TOWNS (EN/JP) nor any other games withing the
+	// v0-v3 version range add 1 to the width. There isn't even a getStringWidth method. And the v0-2 games don't
+	// even support text rendering over strip borders. However, LOOM VGA Talkie and MONKEY1 EGA do have the
+	// getStringWidth method and they do add 1 to the width. So that seems to have been introduced with version 4.
+	int width = (_vm->_game.version < 4 || _vm->_game.id == GID_FT) ? 0 : 1;
+
 	int chr;
 	int oldID = getCurID();
 	int code = (_vm->_game.heversion >= 80) ? 127 : 64;
@@ -943,6 +949,11 @@ void CharsetRendererV3::drawChar(int chr, Graphics::Surface &s, int x, int y) {
 }
 
 void CharsetRenderer::translateColor() {
+	// Don't do anything for v1 and v2 CGA and Hercules modes
+	// here (and v0 doesn't have any of these modes).
+	if (_vm->_game.version < 3)
+		return;
+
 	// Based on disassembly
 	if (_vm->_renderMode == Common::kRenderCGA) {
 		static const byte CGAtextColorMap[16] = {0,  3, 3, 3, 5, 5, 5,  15,
@@ -1985,7 +1996,7 @@ int CharsetRendererV7::draw2byte(byte *buffer, Common::Rect &clipRect, int x, in
 	return _origWidth + _spacing;
 }
 
-int CharsetRendererV7::drawChar(byte *buffer, Common::Rect &clipRect, int x, int y, int pitch, int16 col, TextStyleFlags flags, byte chr) {
+int CharsetRendererV7::drawCharV7(byte *buffer, Common::Rect &clipRect, int x, int y, int pitch, int16 col, TextStyleFlags flags, byte chr) {
 	if (!prepareDraw(chr))
 		return 0;
 
@@ -2095,9 +2106,9 @@ int CharsetRendererNut::draw2byte(byte *buffer, Common::Rect &clipRect, int x, i
 	return _current->draw2byte(buffer, clipRect, x, y, pitch, col, chr);
 }
 
-int CharsetRendererNut::drawChar(byte *buffer, Common::Rect &clipRect, int x, int y, int pitch, int16 col, TextStyleFlags flags, byte chr) {
+int CharsetRendererNut::drawCharV7(byte *buffer, Common::Rect &clipRect, int x, int y, int pitch, int16 col, TextStyleFlags flags, byte chr) {
 	assert(_current);
-	return _current->drawChar(buffer, clipRect, x, y, pitch, col, flags, chr);
+	return _current->drawCharV7(buffer, clipRect, x, y, pitch, col, flags, chr);
 }
 #endif
 
@@ -2360,7 +2371,7 @@ void CharsetRendererTownsClassic::processCharsetColors() {
 		if (c > 16) {
 			uint8 t = (_vm->_currentPalette[c * 3] < 32) ? 4 : 12;
 			t |= ((_vm->_currentPalette[c * 3 + 1] < 32) ? 2 : 10);
-			t |= ((_vm->_currentPalette[c * 3 + 1] < 32) ? 1 : 9);
+			t |= ((_vm->_currentPalette[c * 3 + 2] < 32) ? 1 : 9);
 			c = t;
 		}
 

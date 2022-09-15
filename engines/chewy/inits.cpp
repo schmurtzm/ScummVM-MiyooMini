@@ -35,10 +35,9 @@ namespace Chewy {
 void standard_init() {
 	_G(mem) = new Memory();
 	_G(out) = new McgaGraphics();
-	_G(in) = new InputMgr();
 	_G(fx) = new Effect();
 	_G(txt) = new Text();
-	_G(ged) = new GedClass(&ged_user_func);
+	_G(barriers) = new Barriers();
 	_G(room) = new Room();
 	_G(obj) = new Object(&_G(gameState));
 	_G(uhr) = new Timer(MAX_TIMER_OBJ, _G(ani_timer));
@@ -48,47 +47,37 @@ void standard_init() {
 
 	_G(out)->init();
 	_G(out)->cls();
-	_G(out)->setClip(0, 0, 320, 200);
 	_G(scr_width) = 0;
-	_G(screen0) = (byte *)g_screen->getPixels();
 
-	// WORKAROUND: Moved from init_load because the original
-	// uses _G(curtaf)->_image below before _G(curtaf) was initialized
-	_G(curtaf) = _G(mem)->taf_adr(CURSOR_TAF);
-
-	_G(curblk).sprite = _G(curtaf)->_image;
-	
-	_G(cur) = new Cursor(&_G(curblk));
+	_G(cur) = new Cursor();
 	_G(cur)->setAnimation(0, 0, 0);
 
 	alloc_buffers();
 	_G(pal)[765] = 63;
 	_G(pal)[766] = 63;
 	_G(pal)[767] = 63;
-	_G(out)->einblenden(_G(pal), 0);
+	_G(out)->fadeIn(_G(pal));
 	_G(room)->set_timer_start(1);
 
 	_G(out)->cls();
 
 	var_init();
 	_G(ablage) = _G(room)->get_ablage();
-	_G(ged_mem) = _G(room)->get_ged_mem();
 
 	_G(zoom_horizont) = 140;
 	_G(pal)[765] = 63;
 	_G(pal)[766] = 63;
 	_G(pal)[767] = 63;
-	_G(out)->einblenden(_G(pal), 0);
+	_G(out)->fadeIn(_G(pal));
 	_G(out)->cls();
 	_G(uhr)->setNewTimer(0, 5, SEC_10_MODE);
 
-	sound_init();
 	init_load();
 }
 
 void var_init() {
 	_G(Rdi) = _G(det)->getRoomDetailInfo();
-	_G(Sdi) = &_G(Rdi)->Sinfo[0];
+	_G(Sdi) = &_G(Rdi)->staticSprite[0];
 	_G(Adi) = &_G(Rdi)->Ainfo[0];
 
 	_G(auto_p_nr) = 0;
@@ -97,7 +86,7 @@ void var_init() {
 	new_game();
 	_G(gameState).MainMenuY = MENU_Y;
 	_G(gameState).DispFlag = true;
-	_G(gameState).AkInvent = -1;
+	_G(cur)->setInventoryCursor(-1);
 	_G(gameState).ScrollxStep = 1;
 	_G(gameState).ScrollyStep = 1;
 
@@ -139,12 +128,10 @@ void var_init() {
 	_G(gpkt).Vorschub = _G(spieler_mi)[P_CHEWY].Vorschub;
 	init_room();
 	_G(gameState).FramesPerSecond = 7;
-	_G(currentSong) = -1;
 	_G(SetUpScreenFunc) = nullptr;
 	_G(pfeil_delay) = 0;
 	_G(pfeil_ani) = 0;
 	_G(timer_action_ctr) = 0;
-	_G(flags).CursorStatus = true;
 	_G(savegameFlag) = false;
 }
 
@@ -157,9 +144,6 @@ void init_room() {
 	_G(room_blk).Rmo = _G(gameState).room_m_obj;
 	_G(room_blk).Rsi = _G(gameState).room_s_obj;
 	_G(room_blk).AadLoad = true;
-	_G(room_blk).AtsLoad = true;
-
-	_G(room)->open_handle(EPISODE1_GEP, R_GEP_DATA);
 }
 
 void new_game() {
@@ -177,20 +161,6 @@ void new_game() {
 	_G(obj)->load(INVENTORY_IIB, &_G(gameState).room_m_obj[0]);
 	_G(obj)->load(INVENTORY_SIB, &_G(gameState).room_s_obj[0]);
 	_G(obj)->load(EXIT_EIB, &_G(gameState).room_e_obj[0]);
-
-	Common::File f;
-
-	if (!f.open(ROOM_ATS_STEUER))
-		error("Error reading file: %s", ROOM_ATS_STEUER);
-	for (int16 i = 0; i < ROOM_ATS_MAX; i++)
-		_G(gameState).Ats[i * MAX_ATS_STATUS] = f.readByte();
-	f.close();
-
-	if (!f.open(INV_ATS_STEUER))
-		error("Error reading file: %s", INV_ATS_STEUER);
-	for (int16 i = 0; i < MAX_MOV_OBJ; i++)
-		_G(gameState).InvAts[i * MAX_ATS_STATUS] = f.readByte();
-	f.close();
 
 	_G(obj)->sort();
 	for (int16 i = 0; i < _G(obj)->spieler_invnr[0]; i++)
@@ -233,10 +203,9 @@ void tidy() {
 	delete _G(uhr);
 	delete _G(obj);
 	delete _G(room);
-	delete _G(ged);
+	delete _G(barriers);
 	delete _G(txt);
 	delete _G(fx);
-	delete _G(in);
 	delete _G(out);
 	delete _G(mem);
 
@@ -247,19 +216,11 @@ void tidy() {
 	_G(uhr) = nullptr;
 	_G(obj) = nullptr;
 	_G(room) = nullptr;
-	_G(ged) = nullptr;
+	_G(barriers) = nullptr;
 	_G(txt) = nullptr;
 	_G(fx) = nullptr;
-	_G(in) = nullptr;
 	_G(out) = nullptr;
 	_G(mem) = nullptr;
-}
-
-void sound_init() {
-	_G(gameState).MusicVol = 63;
-	_G(gameState).SoundVol = 63;
-	g_engine->_sound->setMusicVolume(_G(gameState).MusicVol * Audio::Mixer::kMaxChannelVolume / 120);
-	g_engine->_sound->setSoundVolume(_G(gameState).SoundVol * Audio::Mixer::kMaxChannelVolume / 120);
 }
 
 void show_intro() {

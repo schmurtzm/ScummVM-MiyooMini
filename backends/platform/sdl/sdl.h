@@ -90,12 +90,16 @@ public:
 	Common::TimerManager *getTimerManager() override;
 	Common::SaveFileManager *getSavefileManager() override;
 
-	//Screenshots
+	// Default paths
+	virtual Common::String getDefaultIconsPath();
 	virtual Common::String getScreenshotsPath();
 
 #if defined(USE_OPENGL_GAME) || defined(USE_OPENGL_SHADERS)
 	Common::Array<uint> getSupportedAntiAliasingLevels() const override;
-	OpenGL::ContextOGLType getOpenGLType() const override { return _oglType; }
+	OpenGL::ContextType getOpenGLType() const override { return _oglType; }
+#endif
+#if defined(USE_OPENGL) && defined(USE_GLAD)
+	void *getOpenGLProcAddress(const char *name) const override;
 #endif
 
 protected:
@@ -120,12 +124,6 @@ protected:
 	Common::String _logFilePath;
 
 	/**
-	 * A path specified by the user where screenshots are created.
-	 * This may be empty, in which case a OS-dependent default path is used.
-	 */
-	Common::String _userScreenshotPath;
-
-	/**
 	 * The event source we use for obtaining SDL events.
 	 */
 	SdlEventSource *_eventSource;
@@ -143,7 +141,7 @@ protected:
 	void detectOpenGLFeaturesSupport();
 	void detectAntiAliasingSupport();
 
-	OpenGL::ContextOGLType _oglType;
+	OpenGL::ContextType _oglType;
 	bool _supportsFrameBuffer;
 	bool _supportsShaders;
 	Common::Array<uint> _antiAliasLevels;

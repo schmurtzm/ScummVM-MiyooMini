@@ -358,7 +358,7 @@ public:
 	 * (possibly empty) list of games supported by the engine that were
 	 * found among the given files.
 	 */
-	DetectedGames detectGames(const Common::FSList &fslist) override;
+	DetectedGames detectGames(const Common::FSList &fslist, uint32 skipADFlags, bool skipIncomplete) override;
 
 	/**
 	 * A generic createInstance.
@@ -382,7 +382,7 @@ public:
 	 *
 	 * @return A list of extra GUI options for an engine plugin and target.
 	 */
-	const ExtraGuiOptions getExtraGuiOptions(const Common::String &target) const override;
+	const ExtraGuiOptions getExtraGuiOptions(const Common::String &target) const override final;
 
 	static Common::StringArray getPathsFromEntry(const ADGameDescription *g);
 
@@ -419,15 +419,17 @@ protected:
 	 * Parameters @p language and @p platform are used to pass the values
 	 * specified by the user. This is used to restrict search scope.
 	 *
-	 * @param parent    Parent node of this file node.
-	 * @param allFiles  List of all present files, as computed by the @ref composeFileHashMap.
-	 * @param language  Restrict results to the specified language.
-	 * @param platform  Restrict results to the specified platform.
-	 * @param extra     Restrict results to the specified @c extra string (only if @ref kADFlagUseExtraAsHint is set).
+	 * @param parent		  Parent node of this file node.
+	 * @param allFiles		  List of all present files, as computed by the @ref composeFileHashMap.
+	 * @param language		  Restrict results to the specified language.
+	 * @param platform		  Restrict results to the specified platform.
+	 * @param extra			  Restrict results to the specified @c extra string (only if @ref kADFlagUseExtraAsHint is set).
+	 * @param skipADFlags	  Specify bitmask of ADGF flags to be ignored (for mass add).
+	 * @param skipIncomplete  Ignore results with incomplete file/md5/size matches (for mass add).
 	 *
 	 * @return A list of @ref ADGameDescription pointers corresponding to the matched games.
 	 */
-	virtual ADDetectedGames detectGame(const Common::FSNode &parent, const FileMap &allFiles, Common::Language language, Common::Platform platform, const Common::String &extra);
+	virtual ADDetectedGames detectGame(const Common::FSNode &parent, const FileMap &allFiles, Common::Language language, Common::Platform platform, const Common::String &extra, uint32 skipADFlags = 0, bool skipIncomplete = false);
 
 	/**
 	 * @return True if variant of a game with unknown files can be played with the engine and false otherwise.
@@ -491,7 +493,7 @@ public:
 	/**
 	 * Return the name of the engine plugin based on the engineID.
 	 *
-	 * The the engineID must match the one from MetaEngine.
+	 * The engineID must match the one from MetaEngine.
 	 *
 	 * @see MetaEngine::getName().
 	 */

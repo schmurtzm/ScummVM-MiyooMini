@@ -64,6 +64,7 @@ class Stxt;
 class CastMember : public Object<CastMember> {
 public:
 	CastMember(Cast *cast, uint16 castId, Common::SeekableReadStreamEndian &stream);
+	CastMember(Cast *cast, uint16 castId);
 	virtual ~CastMember() {}
 
 	Cast *getCast() { return _cast; }
@@ -73,7 +74,7 @@ public:
 	virtual bool isEditable() { return false; }
 	virtual void setEditable(bool editable) {}
 	virtual bool isModified() { return _modified; }
-	virtual void setModified(bool modified) { _modified = modified; }
+	void setModified(bool modified);
 	virtual Graphics::MacWidget *createWidget(Common::Rect &bbox, Channel *channel, SpriteType spriteType) { return nullptr; }
 	virtual void updateWidget(Graphics::MacWidget *widget, Channel *channel) {}
 	virtual void updateFromWidget(Graphics::MacWidget *widget) {}
@@ -81,7 +82,9 @@ public:
 
 	virtual void setColors(uint32 *fgcolor, uint32 *bgcolor) { return; }
 	virtual uint32 getForeColor() { return 0; }
+	virtual void setForeColor(uint32 fgCol) { return; }
 	virtual uint32 getBackColor() { return 0; }
+	virtual void setBackColor(uint32 bgCol) { return; }
 
 	bool hasProp(const Common::String &propName) override;
 	Datum getProp(const Common::String &propName) override;
@@ -110,23 +113,26 @@ protected:
 	// a link to the widget we created, we may use it later
 	Graphics::MacWidget *_widget;
 	bool _modified;
+	bool _isChanged;
 };
 
 class BitmapCastMember : public CastMember {
 public:
 	BitmapCastMember(Cast *cast, uint16 castId, Common::SeekableReadStreamEndian &stream, uint32 castTag, uint16 version, uint8 flags1 = 0);
+	BitmapCastMember(Cast *cast, uint16 castId, Image::ImageDecoder *img, uint8 flags1 = 0);
 	~BitmapCastMember();
 	Graphics::MacWidget *createWidget(Common::Rect &bbox, Channel *channel, SpriteType spriteType) override;
 
 	void createMatte(Common::Rect &bbox);
 	Graphics::Surface *getMatte(Common::Rect &bbox);
-	void copyStretchImg(Graphics::Surface *surface, const Common::Rect &bbox);
+	void copyStretchImg(Graphics::Surface *surface, const Common::Rect &bbox, const byte *pal = 0);
 
 	bool hasField(int field) override;
 	Datum getField(int field) override;
 	bool setField(int field, const Datum &value) override;
 
 	Image::ImageDecoder *_img;
+	Graphics::Surface *_ditheredImg;
 	Graphics::FloodFill *_matte;
 
 	uint16 _pitch;
@@ -140,6 +146,12 @@ public:
 
 	uint32 _tag;
 	bool _noMatte;
+
+private:
+	void ditherImage();
+	void ditherFloydImage();
+
+	Graphics::PaletteLookup _paletteLookup;
 };
 
 class DigitalVideoCastMember : public CastMember {
@@ -217,6 +229,18 @@ public:
 	Common::Array<Channel> _subchannels;
 };
 
+class MovieCastMember : public CastMember {
+public:
+	MovieCastMember(Cast *cast, uint16 castId, Common::SeekableReadStreamEndian &stream, uint16 version);
+
+	uint32 _flags;
+	bool _looping;
+	bool _enableScripts;
+	bool _enableSound;
+	bool _crop;
+	bool _center;
+};
+
 class SoundCastMember : public CastMember {
 public:
 	SoundCastMember(Cast *cast, uint16 castId, Common::SeekableReadStreamEndian &stream, uint16 version);
@@ -231,6 +255,8 @@ public:
 	ShapeCastMember(Cast *cast, uint16 castId, Common::SeekableReadStreamEndian &stream, uint16 version);
 	uint32 getForeColor() override { return _fgCol; }
 	uint32 getBackColor() override { return _bgCol; }
+	void setBackColor(uint32 bgCol) override;
+	void setForeColor(uint32 fgCol) override;
 
 	ShapeType _shapeType;
 	uint16 _pattern;
@@ -258,7 +284,9 @@ public:
 	Graphics::TextAlign getAlignment();
 
 	uint32 getBackColor() override { return _bgcolor; }
+	void setBackColor(uint32 bgCol) override;
 	uint32 getForeColor() override { return _fgcolor; }
+	void setForeColor(uint32 fgCol) override;
 
 	bool hasField(int field) override;
 	Datum getField(int field) override;

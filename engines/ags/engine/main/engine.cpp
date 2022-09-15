@@ -104,9 +104,10 @@ bool engine_init_backend() {
 }
 
 void winclosehook() {
-	_G(want_exit) = 1;
-	_G(abort_engine) = 1;
+	_G(want_exit) = true;
+	_G(abort_engine) = true;
 	_G(check_dynamic_sprites_at_exit) = 0;
+	AbortGame();
 }
 
 void engine_setup_window() {
@@ -509,7 +510,6 @@ void show_preload() {
 
 int engine_init_sprites() {
 	Debug::Printf(kDbgMsg_Info, "Initialize sprites");
-
 	HError err = _GP(spriteset).InitFile(SpriteFile::DefaultSpriteFileName, SpriteFile::DefaultSpriteIndexName);
 	if (!err) {
 		sys_main_shutdown();
@@ -521,6 +521,8 @@ int engine_init_sprites() {
 		return EXIT_ERROR;
 	}
 
+	if (_GP(usetup).SpriteCacheSize > 0)
+		_GP(spriteset).SetMaxCacheSize(_GP(usetup).SpriteCacheSize);
 	return 0;
 }
 
@@ -737,7 +739,7 @@ void engine_init_game_settings() {
 	_GP(play).speech_textwindow_gui = _GP(game).options[OPT_TWCUSTOM];
 	if (_GP(play).speech_textwindow_gui == 0)
 		_GP(play).speech_textwindow_gui = -1;
-	strcpy(_GP(play).game_name, _GP(game).gamename);
+	snprintf(_GP(play).game_name, sizeof(_GP(play).game_name), "%s", _GP(game).gamename);
 	_GP(play).lastParserEntry[0] = 0;
 	_GP(play).follow_change_room_timer = 150;
 	for (ee = 0; ee < MAX_ROOM_BGFRAMES; ee++)
@@ -1174,7 +1176,7 @@ int initialize_engine(const ConfigTree &startup_opts) {
 	// Configure game window after renderer was initialized
 	engine_setup_window();
 
-	SetMultitasking(0);
+	SetMultitasking(_GP(usetup).multitasking);
 
 	sys_window_show_cursor(false); // hide the system cursor
 

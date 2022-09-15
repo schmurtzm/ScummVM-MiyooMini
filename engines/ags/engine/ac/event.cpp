@@ -170,6 +170,8 @@ void process_event(const EventHappened *evp) {
 			if (evp->data3 == EVROM_BEFOREFADEIN) {
 				_G(in_enters_screen)++;
 				run_on_event(GE_ENTER_ROOM, RuntimeScriptValue().SetInt32(_G(displayed_room)));
+			} else if (evp->data3 == EVROM_AFTERFADEIN) {
+				run_on_event(GE_ENTER_ROOM_AFTERFADE, RuntimeScriptValue().SetInt32(_G(displayed_room)));
 			}
 			//Debug::Printf("Running room interaction, event %d", evp->data3);
 		}
@@ -253,7 +255,6 @@ void process_event(const EventHappened *evp) {
 					boxhit = Math::Clamp(boxhit, 0, viewport.GetHeight());
 					int lxp = viewport.GetWidth() / 2 - boxwid / 2;
 					int lyp = viewport.GetHeight() / 2 - boxhit / 2;
-					_G(gfxDriver)->Vsync();
 					temp_scr->Blit(saved_backbuf, lxp, lyp, lxp, lyp,
 					               boxwid, boxhit);
 					render_to_screen();

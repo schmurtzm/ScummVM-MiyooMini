@@ -164,13 +164,15 @@ class AgiMetaEngineDetection : public AdvancedMetaEngineDetection {
 public:
 	AgiMetaEngineDetection() : AdvancedMetaEngineDetection(Agi::gameDescriptions, sizeof(Agi::AGIGameDescription), agiGames, optionsList) {
 		_guiOptions = GUIO1(GUIO_NOSPEECH);
-	}
-
-	const char *getEngineId() const override {
-		return "agi";
+		_maxScanDepth = 2;
+		_flags = kADFlagMatchFullPaths;
 	}
 
 	const char *getName() const override {
+		return "agi";
+	}
+
+	const char *getEngineName() const override {
 		return "AGI preAGI + v2 + v3";
 	}
 

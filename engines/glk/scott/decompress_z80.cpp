@@ -19,26 +19,37 @@
  *
  */
 
-#include "glk/scott/decompress_z80.h"
+/*
+ * Based on ScottFree interpreter version 1.14 developed by Swansea
+ * University Computer Society without disassembly of any other game
+ * drivers, only of game databases as permitted by EEC law (for purposes
+ * of compatibility).
+ *
+ * Licensed under GPLv2
+ *
+ * https://github.com/angstsmurf/spatterlight/tree/master/terps/scott
+ */
+
 #include "common/algorithm.h"
 #include "common/array.h"
 #include "common/textconsole.h"
+#include "glk/scott/decompress_z80.h"
 
 namespace Glk {
 namespace Scott {
 
 /* Sizes of some of the arrays in the snap structure */
 const int SNAPSHOT_RAM_PAGES = 16;
-const int SNAPSHOT_SLT_PAGES = 256;
-const int SNAPSHOT_ZXATASP_PAGES = 32;
-const int SNAPSHOT_ZXCF_PAGES = 64;
-const int SNAPSHOT_DOCK_EXROM_PAGES = 8;
-const int SNAPSHOT_JOYSTICKS = 7;
-const int SNAPSHOT_DIVIDE_PAGES = 4;
+//const int SNAPSHOT_SLT_PAGES = 256;
+//const int SNAPSHOT_ZXATASP_PAGES = 32;
+//const int SNAPSHOT_ZXCF_PAGES = 64;
+//const int SNAPSHOT_DOCK_EXROM_PAGES = 8;
+//const int SNAPSHOT_JOYSTICKS = 7;
+//const int SNAPSHOT_DIVIDE_PAGES = 4;
 
 void *libspectrumReallocN(void *ptr, size_t nmemb, size_t size) {
 	if (nmemb > SIZE_MAX / size)
-		error("Can't reallocate to required size");
+		error("libspectrumReallocN: Can't reallocate to required size");
 
 	return realloc(ptr, nmemb * size);
 }

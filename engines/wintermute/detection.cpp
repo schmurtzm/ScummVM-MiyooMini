@@ -70,6 +70,20 @@ static const ADExtraGuiOptionsMap gameGuiOptions[] = {
 		}
 	},
 
+#ifdef ENABLE_WME3D
+	{
+		GAMEOPTION_FORCE_2D_RENDERER,
+		{
+			_s("Force to use 2D renderer (2D games only)"),
+			_s("This setting forces ScummVM to use 2D renderer while running 2D games"),
+			"force_2d_renderer",
+			false,
+			0,
+			0
+		}
+	},
+#endif
+
 	AD_EXTRA_GUI_OPTIONS_TERMINATOR
 };
 
@@ -86,16 +100,20 @@ public:
 		// Use kADFlagUseExtraAsHint to distinguish between SD and HD versions
 		// of J.U.L.I.A. when their datafiles sit in the same directory (e.g. in Steam distribution).
 		_flags = kADFlagUseExtraAsHint;
+#ifdef ENABLE_WME3D
+		_guiOptions = GUIO4(GUIO_NOMIDI, GAMEOPTION_SHOW_FPS, GAMEOPTION_BILINEAR, GAMEOPTION_FORCE_2D_RENDERER);
+#else
 		_guiOptions = GUIO3(GUIO_NOMIDI, GAMEOPTION_SHOW_FPS, GAMEOPTION_BILINEAR);
+#endif
 		_maxScanDepth = 2;
 		_directoryGlobs = directoryGlobs;
 	}
 
-	const char *getEngineId() const override {
+	const char *getName() const override {
 		return "wintermute";
 	}
 
-	const char *getName() const override {
+	const char *getEngineName() const override {
 		return "Wintermute";
 	}
 
@@ -120,7 +138,7 @@ public:
 			}
 		}
 
-		const Plugin *metaEnginePlugin = EngineMan.findPlugin(getEngineId());
+		const Plugin *metaEnginePlugin = EngineMan.findPlugin(getName());
 
 		if (metaEnginePlugin) {
 			const Plugin *enginePlugin = PluginMan.getEngineFromMetaEngine(metaEnginePlugin);

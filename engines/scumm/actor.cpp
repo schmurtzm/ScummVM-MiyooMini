@@ -1524,7 +1524,7 @@ void Actor::setDirection(int direction) {
 			// For versions 1 to 6 we need to store the direction info in the frame array (like
 			// the original interpreters do). I haven't found any signs that v7/8 require it, though.
 			// I haven't checked HE, but since it uses the same AKOS costumes as v7/8 I leave that
-			// as it is...	
+			// as it is...
 			if ((vald & 3) == newDirToOldDir(_facing)) {
 				// v1/2 skip the frame only if everything is equal...
 				if (_vm->_game.version > 2 || (vald >> 2) == _frame)
@@ -1567,7 +1567,7 @@ void Actor_v0::setDirection(int direction) {
 }
 
 void Actor::faceToObject(int obj) {
-	int x2, y2, dir;
+	int x2, y2, dir, width;
 
 	if (!isInCurrentRoom())
 		return;
@@ -1575,7 +1575,17 @@ void Actor::faceToObject(int obj) {
 	if (_vm->getObjectOrActorXY(obj, x2, y2) == -1)
 		return;
 
-	dir = (x2 > _pos.x) ? 90 : 270;
+	if (_vm->_game.version > 4) {
+		dir = (x2 > _pos.x) ? 90 : 270;
+	} else {
+		_vm->getObjectOrActorWidth(obj, width);
+		dir = (_pos.x < x2) ? 1 : 0;
+		if (abs(_pos.x - x2) < width / 2)
+			dir = (_pos.y > y2) ? 3 : 2;
+
+		dir = oldDirToNewDir(dir);
+	}
+
 	turnToDirection(dir);
 }
 
@@ -2963,12 +2973,6 @@ void ScummEngine::actorTalk(const byte *msg) {
 	} else {
 		int oldact;
 
-		// WORKAROUND bug #1025
-		if (_game.id == GID_LOOM && _roomResource == 23 &&
-			vm.slot[_currentScript].number == 232 && _actorToPrintStrFor == 0) {
-			_actorToPrintStrFor = 2;	// Could be anything from 2 to 5. Maybe compare to original?
-		}
-
 		a = derefActor(_actorToPrintStrFor, "actorTalk");
 
 		if (!a->isInCurrentRoom()) {
@@ -3060,14 +3064,20 @@ void ScummEngine::stopTalk() {
 		}
 		if (_game.version <= 7 && _game.heversion == 0)
 			setTalkingActor(0xFF);
-		if (_game.heversion != 0)
-			((ActorHE *)a)->_heTalking = false;
+		if (_game.heversion != 0) {
+			if (_game.heversion == 98 && _game.id == GID_FREDDI4) {
+				// Delay unsetting _heTalking to next sound frame. fixes bug #3533.
+				_actorShouldStopTalking = true;
+			} else {
+				((ActorHE *)a)->_heTalking = true;
+			}
+		}
 	}
 
 	if ((_game.id == GID_DIG && !(_game.features & GF_DEMO)) || _game.id == GID_CMI) {
 		setTalkingActor(0);
 		VAR(VAR_HAVE_MSG) = 0;
-	} else if (_game.heversion >= 60) {
+	} else if (_game.heversion >= 60 && !_actorShouldStopTalking) {
 		setTalkingActor(0);
 	}
 
@@ -3165,15 +3175,15 @@ void Actor::setActorCostume(int c) {
 	} else if (_vm->_game.features & GF_OLD_BUNDLE) {
 		for (i = 0; i < 16; i++)
 			_palette[i] = i;
-
-		// Make stuff more visible on CGA. Based on disassembly
-		if (_vm->_renderMode == Common::kRenderCGA && _vm->_game.version > 2) {
-			_palette[6] = 5;
-			_palette[7] = 15;
-		}
 	} else {
 		for (i = 0; i < 32; i++)
 			_palette[i] = 0xFF;
+	}
+
+	// Make stuff more visible on CGA. Based on disassembly. It is exactly the same in INDY3, LOOM and MI1 EGA.
+	if (_vm->_renderMode == Common::kRenderCGA && _vm->_game.version > 2 && _vm->_game.version < 5) {
+		_palette[6] = 5;
+		_palette[7] = 15;
 	}
 }
 
@@ -3361,7 +3371,12 @@ bool Actor::isPlayer() {
 bool Actor_v2::isPlayer() {
 	// isPlayer() is not supported by v0
 	assert(_vm->_game.version != 0);
-	return _vm->VAR(42) <= _number && _number <= _vm->VAR(43);
+	// MM V1 PC uses VAR_EGO and not VARS 42 / 43. ZAK V1 does already have VARS 42 / 43 here.
+	// For MM NES I do not have a disasm and the room I used to test it (MM room 24) also has
+	// different box flags in the NES version, so it will not even call into this function.
+	// However, I could at least confirm that VARS 42 and 43 are both set to 0, so apparently
+	// not in use.
+	return (_vm->_game.id == GID_MANIAC && _vm->_game.version == 1) ? (_number == _vm->VAR(_vm->VAR_EGO)) : (_vm->VAR(42) <= _number && _number <= _vm->VAR(43));
 }
 
 void ActorHE::setHEFlag(int bit, int set) {
@@ -3827,6 +3842,29 @@ void Actor::saveLoadWithSerializer(Common::Serializer &s) {
 			if (_cost.frame[i] != 0xffff)
 				_cost.frame[i] = (_cost.frame[i] << 2) | newDirToOldDir(_facing);
 		}
+	}
+
+	// WORKAROUND: Post-load actor palette fixes for games that were saved with a different render mode
+	// (concerns INDY3, LOOM and MI1EGA). The original interpreter does not fix this, savegames from
+	// different videomodes will cause glitches there.
+	if (s.isLoading() && (_vm->_game.version == 3 || _vm->_game.id == GID_MONKEY_EGA) && _vm->_game.platform == Common::kPlatformDOS) {
+		// Loom is not really much of a problem here, since it has extensive scripted post-load
+		// treatment in ScummEngine_v3::scummLoop_handleSaveLoad(). But there are situations
+		// where it won't be triggered (basically savegames from places where the original does
+		// not allow saving).  Indy3 is more dependant on this than Loom, since it does have much
+		// less scripted post-load magic of its own. Monkey Island always needs this, since V4+
+		// games don't do scripted loading of savegames (scripted post-load things) at all.
+		bool cga = (_vm->_renderMode == Common::kRenderCGA);
+		if (cga && _vm->_game.id == GID_MONKEY_EGA && _palette[6] == 0xFF && _palette[7] == 0xFF) {
+			_palette[6] = 5;
+			_palette[7] = 15;
+		} else if ((cga && _palette[6] == 6 && _palette[7] == 7) || (!cga && _palette[6] == 5 && _palette[7] == 15)) {
+			_palette[6] ^= 3;
+			_palette[7] ^= 8;
+		}
+		// Extra fix for Bobbin in his normal costume.
+		if (_vm->_game.id == GID_LOOM && _number == 1 && ((cga && _palette[8] == 8) || (!cga && _palette[8] == 0)))
+			_palette[8] ^= 8;
 	}
 }
 

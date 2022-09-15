@@ -86,6 +86,8 @@ Common::KeymapArray BladeRunnerMetaEngine::initKeymaps(const char *target) const
 		gameDesc = "Blade Runner";
 	} else if (gameId == "bladerunner-final") {
 		gameDesc = "Blade Runner (Restored Content)";
+	} else if (gameId == "bladerunner-ee") {
+		gameDesc = "Blade Runner: Enhanced Edition";
 	}
 
 	if (gameDesc.empty()) {
@@ -212,6 +214,14 @@ Common::KeymapArray BladeRunnerMetaEngine::initKeymaps(const char *target) const
 	act->setCustomEngineActionEvent(BladeRunnerEngine::kMpActionScrollDown);
 	act->addDefaultInputMapping("MOUSE_WHEEL_DOWN");
 	act->addDefaultInputMapping("JOY_DOWN");
+	kiaOnlyKeymap->addAction(act);
+
+	// I18N: This keymap allows (in KIA only) for a clue to be set as private or public
+	// (only when the KIA is upgraded).
+	act = new Action("KIATOGGLECLUEPRIVACY", _("Toggle Clue Privacy"));
+	act->setCustomEngineActionEvent(BladeRunnerEngine::kMpActionToggleCluePrivacy);
+	act->addDefaultInputMapping("MOUSE_RIGHT");
+	act->addDefaultInputMapping("JOY_RIGHT_SHOULDER");
 	kiaOnlyKeymap->addAction(act);
 
 	// I18N: This keymap opens KIA's HELP tab.

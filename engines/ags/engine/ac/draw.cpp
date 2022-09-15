@@ -344,7 +344,7 @@ void create_blank_image(int coldepth) {
 	/*}
 	catch (Ali3DException gfxException)
 	{
-	    quit((char*)gfxException._message);
+		quit(gfxException.Message.GetCStr());
 	}*/
 }
 
@@ -685,7 +685,7 @@ void render_black_borders() {
 void render_to_screen() {
 	// Stage: final plugin callback (still drawn on game screen
 	if (pl_any_want_hook(AGSE_FINALSCREENDRAW)) {
-		_G(gfxDriver)->BeginSpriteBatch(_GP(play).GetMainViewport(), SpriteTransform(), Point(0, _GP(play).shake_screen_yoff), (GlobalFlipType)_GP(play).screen_flipped);
+		_G(gfxDriver)->BeginSpriteBatch(_GP(play).GetMainViewport(), SpriteTransform(), Point(0, _GP(play).shake_screen_yoff), (GraphicFlip)_GP(play).screen_flipped);
 		_G(gfxDriver)->DrawSprite(AGSE_FINALSCREENDRAW, 0, nullptr);
 		_G(gfxDriver)->EndSpriteBatch();
 	}
@@ -693,17 +693,17 @@ void render_to_screen() {
 	construct_engine_overlay();
 
 	// only vsync in full screen mode, it makes things worse in a window
-	_G(gfxDriver)->EnableVsyncBeforeRender((_GP(scsystem).vsync > 0) && (!_GP(scsystem).windowed));
+	_G(gfxDriver)->SetVsync((_GP(scsystem).vsync > 0) && (!_GP(scsystem).windowed));
 
 	bool succeeded = false;
-	while (!succeeded) {
+	while (!succeeded && !_G(want_exit) && !_G(abort_engine)) {
 		//     try
 		//     {
 		// For software renderer, need to blacken upper part of the game frame when shaking screen moves image down
 		const Rect &viewport = _GP(play).GetMainViewport();
 		if (_GP(play).shake_screen_yoff > 0 && !_G(gfxDriver)->RequiresFullRedrawEachFrame())
 			_G(gfxDriver)->ClearRectangle(viewport.Left, viewport.Top, viewport.GetWidth() - 1, _GP(play).shake_screen_yoff, nullptr);
-		_G(gfxDriver)->Render(0, _GP(play).shake_screen_yoff, (GlobalFlipType)_GP(play).screen_flipped);
+		_G(gfxDriver)->Render(0, _GP(play).shake_screen_yoff, (GraphicFlip)_GP(play).screen_flipped);
 
 #if AGS_PLATFORM_OS_ANDROID
 		if (_GP(game).color_depth == 1)
@@ -715,9 +715,12 @@ void render_to_screen() {
 
 		succeeded = true;
 		/*}
-		catch (Ali3DFullscreenLostException)
-		{
-		    platform->Delay(500);
+		catch (Ali3DFullscreenLostException e) {
+			Debug::Printf("Renderer exception: %s", e.Message.GetCStr());
+			while (_G(game_update_suspend) && (!_G(want_exit)) && (!_G(abort_engine))) {
+				sys_evt_process_pending();
+				platform->Delay(300);
+			}
 		}*/
 	}
 }
@@ -766,22 +769,27 @@ void draw_sprite_slot_support_alpha(Bitmap *ds, bool ds_has_alpha, int xpos, int
 	                          blend_mode, alpha);
 }
 
-IDriverDependantBitmap *recycle_ddb_bitmap(IDriverDependantBitmap *ddb, Bitmap *source, bool has_alpha, bool opaque) {
-	if (ddb) {
-		// same colour depth, width and height -> reuse
-		if ((ddb->GetColorDepth() == source->GetColorDepth()) &&
-			(ddb->GetWidth() == source->GetWidth()) && (ddb->GetHeight() == source->GetHeight())) {
-			_G(gfxDriver)->UpdateDDBFromBitmap(ddb, source, has_alpha);
-			return ddb;
-		}
-
-		_G(gfxDriver)->DestroyDDB(ddb);
+Engine::IDriverDependantBitmap* recycle_ddb_sprite(Engine::IDriverDependantBitmap *ddb, uint32_t sprite_id, Shared::Bitmap *source, bool has_alpha, bool opaque) {
+	// no ddb, - get or create shared object
+	if (!ddb)
+		return _G(gfxDriver)->GetSharedDDB(sprite_id, source, has_alpha, opaque);
+	// same sprite id, - use existing
+	if ((sprite_id != UINT32_MAX) && (ddb->GetRefID() == sprite_id))
+		return ddb;
+	// not related to a sprite ID, but has same resolution, -
+	// repaint directly from the given bitmap
+	if ((sprite_id == UINT32_MAX) && (ddb->GetColorDepth() == source->GetColorDepth()) &&
+		(ddb->GetWidth() == source->GetWidth()) && (ddb->GetHeight() == source->GetHeight())) {
+		_G(gfxDriver)->UpdateDDBFromBitmap(ddb, source, has_alpha);
+		return ddb;
 	}
-	return _G(gfxDriver)->CreateDDBFromBitmap(source, has_alpha, opaque);
+	// have to recreate ddb
+	_G(gfxDriver)->DestroyDDB(ddb);
+	return _G(gfxDriver)->GetSharedDDB(sprite_id, source, has_alpha, opaque);
 }
 
 void sync_object_texture(ObjTexture &obj, bool has_alpha = false, bool opaque = false) {
-	obj.Ddb = recycle_ddb_bitmap(obj.Ddb, obj.Bmp.get(), has_alpha, opaque);
+	obj.Ddb = recycle_ddb_sprite(obj.Ddb, obj.SpriteID, obj.Bmp.get(), has_alpha, opaque);
 }
 
 //------------------------------------------------------------------------
@@ -1082,8 +1090,8 @@ void apply_tint_or_light(int actspsindex, int light_level,
 	}
 }
 
-Bitmap *transform_sprite(Bitmap *src, bool src_has_alpha, std::unique_ptr<Bitmap> &dst, const Size dst_sz, BitmapFlip flip) {
-	if ((src->GetSize() == dst_sz) && (flip == kBitmap_NoFlip))
+Bitmap *transform_sprite(Bitmap *src, bool src_has_alpha, std::unique_ptr<Bitmap> &dst, const Size dst_sz, GraphicFlip flip) {
+	if ((src->GetSize() == dst_sz) && (flip == kFlip_None))
 		return src; // No transform: return source image
 
 	recycle_bitmap(dst, src->GetColorDepth(), dst_sz.Width, dst_sz.Height, true);
@@ -1097,14 +1105,14 @@ Bitmap *transform_sprite(Bitmap *src, bool src_has_alpha, std::unique_ptr<Bitmap
 		if (_G(in_new_room) > 0)
 			select_palette(_G(palette));
 
-		if (flip != kBitmap_NoFlip) {
+		if (flip != kFlip_None) {
 			Bitmap tempbmp;
 			tempbmp.CreateTransparent(dst_sz.Width, dst_sz.Height, src->GetColorDepth());
 			if ((IS_ANTIALIAS_SPRITES) && !src_has_alpha)
 				tempbmp.AAStretchBlt(src, RectWH(dst_sz), kBitmap_Transparency);
 			else
 				tempbmp.StretchBlt(src, RectWH(dst_sz), kBitmap_Transparency);
-			dst->FlipBlt(&tempbmp, 0, 0, kBitmap_HFlip);
+			dst->FlipBlt(&tempbmp, 0, 0, kFlip_Horizontal);
 		} else {
 			if ((IS_ANTIALIAS_SPRITES) && !src_has_alpha)
 				dst->AAStretchBlt(src, RectWH(dst_sz), kBitmap_Transparency);
@@ -1116,7 +1124,7 @@ Bitmap *transform_sprite(Bitmap *src, bool src_has_alpha, std::unique_ptr<Bitmap
 			unselect_palette();
 	} else {
 		// If not scaled, then simply blit mirrored
-		dst->FlipBlt(src, 0, 0, kBitmap_HFlip);
+		dst->FlipBlt(src, 0, 0, kFlip_Horizontal);
 	}
 	return dst.get(); // return transformed result
 }
@@ -1128,7 +1136,7 @@ Bitmap *transform_sprite(Bitmap *src, bool src_has_alpha, std::unique_ptr<Bitmap
 static bool scale_and_flip_sprite(int useindx, int sppic, int newwidth, int newheight, bool hmirror) {
 	Bitmap *src = _GP(spriteset)[sppic];
 	Bitmap *result = transform_sprite(src, (_GP(game).SpriteInfos[sppic].Flags & SPF_ALPHACHANNEL) != 0,
-		_GP(actsps)[useindx].Bmp, Size(newwidth, newheight), hmirror ? kBitmap_HFlip : kBitmap_NoFlip);
+		_GP(actsps)[useindx].Bmp, Size(newwidth, newheight), hmirror ? kFlip_Horizontal : kFlip_None);
 	return result != src;
 }
 
@@ -1136,7 +1144,6 @@ static bool scale_and_flip_sprite(int useindx, int sppic, int newwidth, int newh
 // returns 1 if nothing at all has changed and actsps is still
 // intact from last time; 0 otherwise
 int construct_object_gfx(int aa, int *drawnWidth, int *drawnHeight, bool alwaysUseSoftware) {
-	int useindx = aa;
 	bool hardwareAccelerated = !alwaysUseSoftware && _G(gfxDriver)->HasAcceleratedTransform();
 
 	if (_GP(spriteset)[_G(objs)[aa].num] == nullptr)
@@ -1210,7 +1217,9 @@ int construct_object_gfx(int aa, int *drawnWidth, int *drawnHeight, bool alwaysU
 		isMirrored = true;
 	}
 
+	const int useindx = aa; // actsps array index
 	auto &actsp = _GP(actsps)[useindx];
+	actsp.SpriteID = _G(objs)[aa].num; // for texture sharing
 	if ((hardwareAccelerated) &&
 			(_G(walkBehindMethod) != DrawOverCharSprite) &&
 			(_G(objcache)[aa].image != nullptr) &&
@@ -1310,16 +1319,16 @@ int construct_object_gfx(int aa, int *drawnWidth, int *drawnHeight, bool alwaysU
 void prepare_objects_for_drawing() {
 	_G(our_eip) = 32;
 
-	for (int aa = 0; aa < _G(croom)->numobj; aa++) {
+	for (uint32_t aa = 0; aa < _G(croom)->numobj; aa++) {
 		if (_G(objs)[aa].on != 1) continue;
 		// offscreen, don't draw
 		if ((_G(objs)[aa].x >= _GP(thisroom).Width) || (_G(objs)[aa].y < 1))
 			continue;
 
-		const int useindx = aa;
 		int tehHeight;
 		int actspsIntact = construct_object_gfx(aa, nullptr, &tehHeight, false);
 
+		const int useindx = aa; // actsps array index
 		auto &actsp = _GP(actsps)[useindx];
 
 		// update the cache for next time
@@ -1431,7 +1440,6 @@ void prepare_characters_for_drawing() {
 		if (_GP(game).chars[aa].on == 0) continue;
 		if (_GP(game).chars[aa].room != _G(displayed_room)) continue;
 		_G(eip_guinum) = aa;
-		const int useindx = aa + MAX_ROOM_OBJECTS;
 
 		CharacterInfo *chin = &_GP(game).chars[aa];
 		_G(our_eip) = 330;
@@ -1506,7 +1514,9 @@ void prepare_characters_for_drawing() {
 
 		_G(our_eip) = 3331;
 
+		const int useindx = aa + ACTSP_OBJSOFF; // actsps array index
 		auto &actsp = _GP(actsps)[useindx];
+		actsp.SpriteID = sppic; // for texture sharing
 
 		// if the character was the same sprite and scaling last time,
 		// just use the cached image
@@ -1659,7 +1669,7 @@ void prepare_characters_for_drawing() {
 }
 
 Bitmap *get_cached_character_image(int charid) {
-	return _GP(actsps)[charid + MAX_ROOM_OBJECTS].Bmp.get();
+	return _GP(actsps)[charid + ACTSP_OBJSOFF].Bmp.get();
 }
 
 Bitmap *get_cached_object_image(int objid) {
@@ -1690,12 +1700,11 @@ void prepare_room_sprites() {
 	// Background sprite is required for the non-software renderers always,
 	// and for software renderer in case there are overlapping viewports.
 	// Note that software DDB is just a tiny wrapper around bitmap, so overhead is negligible.
-	if (_G(roomBackgroundBmp) == nullptr) {
+	if (_G(current_background_is_dirty) || !_G(roomBackgroundBmp)) {
 		update_polled_stuff_if_runtime();
-		_G(roomBackgroundBmp) = _G(gfxDriver)->CreateDDBFromBitmap(_GP(thisroom).BgFrames[_GP(play).bg_frame].Graphic.get(), false, true);
-	} else if (_G(current_background_is_dirty)) {
-		update_polled_stuff_if_runtime();
-		_G(gfxDriver)->UpdateDDBFromBitmap(_G(roomBackgroundBmp), _GP(thisroom).BgFrames[_GP(play).bg_frame].Graphic.get(), false);
+		_G(roomBackgroundBmp) =
+			recycle_ddb_bitmap(_G(roomBackgroundBmp), _GP(thisroom).BgFrames[_GP(play).bg_frame].Graphic.get(), false, true);
+
 	}
 	if (_G(gfxDriver)->RequiresFullRedrawEachFrame()) {
 		if (_G(current_background_is_dirty) || _G(walkBehindsCachedForBgNum) != _GP(play).bg_frame) {
@@ -1718,8 +1727,8 @@ void prepare_room_sprites() {
 			_G(our_eip) = 34;
 
 			if (_G(walkBehindMethod) == DrawAsSeparateSprite) {
-				for (int wb = 1 /* 0 is "no area" */;
-					(wb < MAX_WALK_BEHINDS) && (wb < (int)_GP(walkbehindobj).size()); ++wb) {
+				for (size_t wb = 1 /* 0 is "no area" */;
+					(wb < MAX_WALK_BEHINDS) && (wb < (size_t)_GP(walkbehindobj).size()); ++wb) {
 					const auto &wbobj = _GP(walkbehindobj)[wb];
 					if (wbobj.Ddb) {
 						add_to_sprite_list(wbobj.Ddb, wbobj.Pos.X, wbobj.Pos.Y,
@@ -2057,7 +2066,7 @@ static void construct_room_view() {
 		                           0.f);
 		if (_G(gfxDriver)->RequiresFullRedrawEachFrame()) {
 			// we draw everything as a sprite stack
-			_G(gfxDriver)->BeginSpriteBatch(view_rc, room_trans, Point(0, _GP(play).shake_screen_yoff), (GlobalFlipType)_GP(play).screen_flipped);
+			_G(gfxDriver)->BeginSpriteBatch(view_rc, room_trans, Point(0, _GP(play).shake_screen_yoff), (GraphicFlip)_GP(play).screen_flipped);
 		} else {
 			if (_GP(CameraDrawData)[viewport->GetID()].Frame == nullptr && _GP(CameraDrawData)[viewport->GetID()].IsOverlap) {
 				// room background is prepended to the sprite stack
@@ -2086,7 +2095,7 @@ static void construct_room_view() {
 
 // Schedule ui rendering
 static void construct_ui_view() {
-	_G(gfxDriver)->BeginSpriteBatch(_GP(play).GetUIViewportAbs(), SpriteTransform(), Point(0, _GP(play).shake_screen_yoff), (GlobalFlipType)_GP(play).screen_flipped);
+	_G(gfxDriver)->BeginSpriteBatch(_GP(play).GetUIViewportAbs(), SpriteTransform(), Point(0, _GP(play).shake_screen_yoff), (GraphicFlip)_GP(play).screen_flipped);
 	draw_gui_and_overlays();
 	_G(gfxDriver)->EndSpriteBatch();
 	clear_draw_list();
@@ -2114,20 +2123,20 @@ static void construct_overlays() {
 		if (has_changed) {
 			// For software mode - prepare transformed bitmap if necessary
 			Bitmap *use_bmp = is_software_mode ?
-				transform_sprite(over.pic, over.HasAlphaChannel(), _GP(overlaybmp)[i], Size(over.scaleWidth, over.scaleHeight)) :
-				over.pic;
+				transform_sprite(over.GetImage(), over.HasAlphaChannel(), _GP(overlaybmp)[i], Size(over.scaleWidth, over.scaleHeight)) :
+				over.GetImage();
 
 			if ((_G(walkBehindMethod) == DrawOverCharSprite) && over.IsRoomLayer()) {
 				if (use_bmp != _GP(overlaybmp)[i].get()) {
-					recycle_bitmap(_GP(overlaybmp)[i], over.pic->GetColorDepth(), over.pic->GetWidth(), over.pic->GetHeight(), true);
-					_GP(overlaybmp)[i]->Blit(over.pic);
+					recycle_bitmap(_GP(overlaybmp)[i], use_bmp->GetColorDepth(), use_bmp->GetWidth(), use_bmp->GetHeight(), true);
+					_GP(overlaybmp)[i]->Blit(use_bmp);
 				}
 				Point pos = get_overlay_position(over);
 				walkbehinds_cropout(_GP(overlaybmp)[i].get(), pos.X, pos.Y, over.zorder);
 				use_bmp = _GP(overlaybmp)[i].get();
 			}
 
-			over.ddb = recycle_ddb_bitmap(over.ddb, use_bmp, over.HasAlphaChannel());
+			over.ddb = recycle_ddb_sprite(over.ddb, over.GetSpriteNum(), use_bmp, over.HasAlphaChannel());
 			over.ClearChanged();
 		}
 
@@ -2189,7 +2198,7 @@ void construct_game_screen_overlay(bool draw_mouse) {
 	if (pl_any_want_hook(AGSE_POSTSCREENDRAW)) {
 		_G(gfxDriver)->BeginSpriteBatch(_GP(play).GetMainViewport(),
 			SpriteTransform(), Point(0, _GP(play).shake_screen_yoff),
-			(GlobalFlipType)_GP(play).screen_flipped);
+			(GraphicFlip)_GP(play).screen_flipped);
 		_G(gfxDriver)->DrawSprite(AGSE_POSTSCREENDRAW, 0, nullptr);
 		_G(gfxDriver)->EndSpriteBatch();
 	}
@@ -2228,7 +2237,7 @@ void construct_game_screen_overlay(bool draw_mouse) {
 
 	if (_GP(play).screen_is_faded_out == 0) {
 		// Stage: mouse cursor
-		_G(gfxDriver)->BeginSpriteBatch(_GP(play).GetMainViewport(), SpriteTransform(), Point(0, _GP(play).shake_screen_yoff), (GlobalFlipType)_GP(play).screen_flipped);
+		_G(gfxDriver)->BeginSpriteBatch(_GP(play).GetMainViewport(), SpriteTransform(), Point(0, _GP(play).shake_screen_yoff), (GraphicFlip)_GP(play).screen_flipped);
 		if (draw_mouse && !_GP(play).mouse_cursor_hidden) {
 			_G(gfxDriver)->DrawSprite(_G(mousex) - _G(hotx), _G(mousey) - _G(hoty), _G(mouseCursor));
 			invalidate_sprite(_G(mousex) - _G(hotx), _G(mousey) - _G(hoty), _G(mouseCursor), false);
@@ -2391,7 +2400,7 @@ void render_graphics(IDriverDependantBitmap *extraBitmap, int extraX, int extraY
 	// TODO: extraBitmap is a hack, used to place an additional gui element
 	// on top of the screen. Normally this should be a part of the game UI stage.
 	if (extraBitmap != nullptr) {
-		_G(gfxDriver)->BeginSpriteBatch(_GP(play).GetUIViewportAbs(), SpriteTransform(), Point(0, _GP(play).shake_screen_yoff), (GlobalFlipType)_GP(play).screen_flipped);
+		_G(gfxDriver)->BeginSpriteBatch(_GP(play).GetUIViewportAbs(), SpriteTransform(), Point(0, _GP(play).shake_screen_yoff), (GraphicFlip)_GP(play).screen_flipped);
 		invalidate_sprite(extraX, extraY, extraBitmap, false);
 		_G(gfxDriver)->DrawSprite(extraX, extraY, extraBitmap);
 		_G(gfxDriver)->EndSpriteBatch();

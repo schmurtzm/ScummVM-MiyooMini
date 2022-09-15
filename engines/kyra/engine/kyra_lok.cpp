@@ -95,8 +95,26 @@ KyraEngine_LoK::KyraEngine_LoK(OSystem *system, const GameFlags &flags)
 
 	_malcolmFrame = 0;
 	_malcolmTimer1 = _malcolmTimer2 = 0;
-	_defaultFont = (_flags.lang == Common::ZH_TWN) ? Screen::FID_CHINESE_FNT : ((_flags.lang == Common::JA_JPN) ? Screen::FID_SJIS_FNT : Screen::FID_8_FNT);
-	_defaultLineSpacing = (_flags.lang == Common::ZH_TWN) ? 2 : 0;
+
+	_defaultFont = Screen::FID_8_FNT;
+	_noteFont = (_flags.isTalkie || _flags.platform == Common::kPlatformAmiga) ? _defaultFont : Screen::FID_6_FNT;
+	_defaultLineSpacing = 0;
+
+	switch (_flags.lang) {
+	case Common::JA_JPN:
+		_defaultFont = _noteFont = Screen::FID_SJIS_FNT;
+		break;
+	case Common::ZH_TWN:
+		_defaultFont = _noteFont = Screen::FID_CHINESE_FNT;
+		_defaultLineSpacing = 2;
+		break;
+	case Common::KO_KOR:
+		_defaultFont = _noteFont = Screen::FID_KOREAN_FNT;
+		_defaultLineSpacing = 1;
+		break;
+	default:
+		break;
+	}
 }
 
 KyraEngine_LoK::~KyraEngine_LoK() {
@@ -237,7 +255,7 @@ Common::Error KyraEngine_LoK::init() {
 	memset(_flagsTable, 0, sizeof(_flagsTable));
 
 	_talkingCharNum = -1;
-	_charSayUnk3 = -1;
+	_talkHeadAnimCharNum = -1;
 	_disabledTalkAnimObject = _enabledTalkAnimObject = 0;
 	memset(_currSentenceColor, 0, 3);
 	_startSentencePalIndex = -1;
@@ -307,6 +325,8 @@ Common::Error KyraEngine_LoK::go() {
 		_screen->loadFont(Screen::FID_CHINESE_FNT, "ASCII.FNT");
 		_screen->loadFont(Screen::FID_CHINESE_FNT, "KYRANDIA.FNT");
 		_screen->setTextMarginRight(312);
+	} else if (_flags.lang == Common::KO_KOR) {
+		_screen->loadFont(Screen::FID_KOREAN_FNT, "MK15.BIT");
 	}
 
 	_screen->setFont(_defaultFont);
@@ -428,10 +448,11 @@ void KyraEngine_LoK::startup() {
 			_gui->buttonMenuCallback(nullptr);
 			_menuDirectlyToLoad = false;
 		} else if (!shouldQuit()) {
+			restartPlayTimerAt(0);
 			saveGameStateIntern(0, "New game", nullptr);
 		}
 	} else {
-		_screen->setFont(_defaultFont);;
+		_screen->setFont(_defaultFont);
 		_screen->_lineSpacing = _defaultLineSpacing;
 		loadGameStateCheck(_gameToLoad);
 		_gameToLoad = -1;
@@ -484,6 +505,7 @@ void KyraEngine_LoK::mainLoop() {
 		_timer->update();
 		_sound->process();
 		updateTextFade();
+		updatePlayTimer();
 
 		if (inputFlag == 198 || inputFlag == 199)
 			processInput(_mouseX, _mouseY);
@@ -496,21 +518,25 @@ void KyraEngine_LoK::mainLoop() {
 }
 
 void KyraEngine_LoK::delayUntil(uint32 timestamp, bool updateTimers, bool update, bool isMainLoop) {
-	while (_system->getMillis() < timestamp && !shouldQuit() && !skipFlag()) {
+	uint32 ct = _system->getMillis();
+	while (ct < timestamp && !shouldQuit()) {
 		if (updateTimers)
 			_timer->update();
 
-		if (timestamp - _system->getMillis() >= 10)
+		ct = skipFlag() ? ct + _tickLength : _system->getMillis();
+
+		if (timestamp - ct >= 10)
 			delay(10, update, isMainLoop);
 	}
 }
 
 void KyraEngine_LoK::delay(uint32 amount, bool update, bool isMainLoop) {
 	uint32 start = _system->getMillis();
+	uint32 ct = start;
 	do {
 		if (update) {
 			_sprites->updateSceneAnims();
-			_animator->updateAllObjectShapes();
+			_animator->updateAllObjectShapes(!skipFlag());
 			updateTextFade();
 			updateMousePointer();
 		} else {
@@ -544,7 +570,8 @@ void KyraEngine_LoK::delay(uint32 amount, bool update, bool isMainLoop) {
 
 		if (skipFlag())
 			snd_stopVoice();
-	} while (!skipFlag() && _system->getMillis() < start + amount && !shouldQuit());
+		ct = skipFlag() ? ct + _tickLength : _system->getMillis();
+	} while (ct < start + amount && !shouldQuit());
 }
 
 bool KyraEngine_LoK::skipFlag() const {

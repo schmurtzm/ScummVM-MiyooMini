@@ -95,7 +95,7 @@ void ScummEngine::printString(int m, const byte *msg) {
 					if (a)
 						a->setAnimSpeed(2);
 					a = derefActorSafe(10, "printString");
-				if (a)
+					if (a)
 						a->setAnimSpeed(2);
 				}
 			}
@@ -153,8 +153,16 @@ void ScummEngine::showMessageDialog(const byte *msg) {
 	if (_string[3].color == 0)
 		_string[3].color = 4;
 
-	InfoDialog dialog(this, Common::U32String((char *)buf));
-	VAR(VAR_KEYPRESS) = runDialog(dialog);
+	if (isUsingOriginalGUI()) {
+		if (_game.version > 4)
+			VAR(VAR_KEYPRESS) = showBannerAndPause(0, -1, (const char *)msg).ascii;
+		else
+			VAR(VAR_KEYPRESS) = showOldStyleBannerAndPause((const char *)msg, _string[3].color, -1).ascii;
+	} else {
+		InfoDialog dialog(this, Common::U32String((char *)buf));
+		VAR(VAR_KEYPRESS) = runDialog(dialog);
+	}
+
 }
 
 #pragma mark -
@@ -538,9 +546,11 @@ bool ScummEngine::newLine() {
 			// (FT/German, if you look at the sign on the container at game start). After counterchecking
 			// the original code it seems that setting _nextLeft to 0 is the right thing to do here.
 			_nextLeft = /*_game.version >= 6 ? _string[0].xpos :*/ 0;
-	} else if (_game.version >= 4 && _game.version < 7 && _game.heversion == 0 && _language == Common::HE_ISR) {
-		if (_game.id == GID_MONKEY && _charset->getCurID() == 4) {
+	} else if (_isRTL) {
+		if (_game.id == GID_MANIAC || ((_game.id == GID_MONKEY || _game.id == GID_MONKEY2) && _charset->getCurID() == 4)) {
 			_nextLeft = _screenWidth - _charset->getStringWidth(0, _charsetBuffer + _charsetBufPos) - _nextLeft;
+		} else if (_game.id == GID_MONKEY2 && _charset->getCurID() == 5) {
+			_nextLeft += _screenWidth - 210 - _charset->getStringWidth(0, _charsetBuffer + _charsetBufPos);
 		}
 	}
 	if (_game.version == 0) {
@@ -567,12 +577,19 @@ void ScummEngine::fakeBidiString(byte *ltext, bool ignoreVerb) const {
 	// Reverses texts on each line marked by control characters (considering different control characters used in verbs panel)
 	// While preserving original order of numbers (also negative numbers and comma separated)
 	int32 ll = 0;
-	if (_game.id == GID_INDY4 && ltext[ll] == 0x7F) {
+	if ((_game.id == GID_INDY4 && ltext[ll] == 0x7F) || (_game.id == GID_MONKEY2 && ltext[ll] == 0x07)) {
 		ll++;
 	}
 	while (ltext[ll] == 0xFF) {
 		ll += 4;
 	}
+
+	if (_game.id == GID_MONKEY2 && ltext[0] == 0x07) {
+		for (int i = 1; i < ll; i++)
+			ltext[i - 1] = ltext[i];
+		ltext[--ll] = 0x07;
+	}
+
 	int32 ipos = 0;
 	int32 start = 0;
 	byte *text = ltext + ll;
@@ -588,7 +605,7 @@ void ScummEngine::fakeBidiString(byte *ltext, bool ignoreVerb) const {
 		if (*current == 0x0D || *current == 0 || *current == 0xFF || *current == 0xFE) {
 
 			// ignore the line break for verbs texts
-			if (ignoreVerb && (*(current + 1) ==  8)) {
+			if (ignoreVerb && *current && (*(current + 1) ==  8)) {
 				*(current + 1) = *current;
 				*current = 0x08;
 				ipos += 2;
@@ -648,9 +665,15 @@ void ScummEngine::fakeBidiString(byte *ltext, bool ignoreVerb) const {
 		}
 		break;
 	}
-	if (!ignoreVerb && _game.id == GID_INDY4 && ltext[0] == 0x7F) {
-		ltext[start + ipos + ll] = 0x80;
-		ltext[start + ipos + ll + 1] = 0;
+	if (!ignoreVerb) {
+		if (_game.id == GID_INDY4 && ltext[0] == 0x7F) {
+			ltext[start + ipos + ll] = 0x80;
+			ltext[start + ipos + ll + 1] = 0;
+		} else if (_game.id == GID_MONKEY2) {
+			// add non-printable character to end to avoid space trimming
+			ltext[start + ipos + ll] = '@';
+			ltext[start + ipos + ll + 1] = 0;
+		}
 	}
 
 	free(buff);
@@ -684,10 +707,13 @@ void ScummEngine::CHARSET_1() {
 		_string[0].ypos = a->getPos().y - a->getElevation() - _screenTop;
 
 		if (_game.version <= 5) {
-
 			if (VAR(VAR_V5_TALK_STRING_Y) < 0) {
-				s = (a->_scaley * (int)VAR(VAR_V5_TALK_STRING_Y)) / 0xFF;
-				_string[0].ypos += (int)(((VAR(VAR_V5_TALK_STRING_Y) - s) / 2) + s);
+				if (_game.version == 4) {
+					_string[0].ypos = (int)VAR(VAR_V5_TALK_STRING_Y) + a->getPos().y + a->getElevation();
+				} else {
+					s = (a->_scaley * (int)VAR(VAR_V5_TALK_STRING_Y)) / 0xFF;
+					_string[0].ypos += (int)(((VAR(VAR_V5_TALK_STRING_Y) - s) / 2) + s);
+				}
 			} else {
 				_string[0].ypos = (int)VAR(VAR_V5_TALK_STRING_Y);
 			}
@@ -767,7 +793,7 @@ void ScummEngine::CHARSET_1() {
 				restoreCharsetBg();
 		_msgCount = 0;
 	} else if (_game.version <= 2) {
-		_talkDelay += _msgCount * _defaultTalkDelay;
+		_talkDelay += _msgCount * _defaultTextSpeed;
 	}
 
 	if (_game.version > 3) {
@@ -785,9 +811,11 @@ void ScummEngine::CHARSET_1() {
 		_nextLeft -= _charset->getStringWidth(0, _charsetBuffer + _charsetBufPos) / 2;
 		if (_nextLeft < 0)
 			_nextLeft = _game.version >= 6 ? _string[0].xpos : 0;
-	} else if (_game.version >= 4 && _game.version < 7 && _game.heversion == 0 && _language == Common::HE_ISR) {
-		if (_game.id == GID_MONKEY && _charset->getCurID() == 4) {
+	} else if (_isRTL) {
+		if (_game.id == GID_MANIAC || ((_game.id == GID_MONKEY || _game.id == GID_MONKEY2) && _charset->getCurID() == 4)) {
 			_nextLeft = _screenWidth - _charset->getStringWidth(0, _charsetBuffer + _charsetBufPos) - _nextLeft;
+		} else if (_game.id == GID_MONKEY2 && _charset->getCurID() == 5) {
+			_nextLeft += _screenWidth - 210 - _charset->getStringWidth(0, _charsetBuffer + _charsetBufPos);
 		}
 	}
 
@@ -795,9 +823,8 @@ void ScummEngine::CHARSET_1() {
 
 	int c = 0;
 
-	if (_game.version >= 4 && _game.version < 7 && _game.heversion == 0 && _language == Common::HE_ISR) {
+	if (_isRTL)
 		fakeBidiString(_charsetBuffer + _charsetBufPos, true);
-	}
 
 	bool createTextBox = (_macScreen && _game.id == GID_INDY3);
 	bool drawTextBox = false;
@@ -868,7 +895,7 @@ void ScummEngine::CHARSET_1() {
 			mac_drawIndy3TextBox();
 
 		if (_game.version <= 2) {
-			_talkDelay += _defaultTalkDelay;
+			_talkDelay += _defaultTextSpeed;
 			VAR(VAR_CHARCOUNT)++;
 		} else {
 			_talkDelay += (int)VAR(VAR_CHARINC);
@@ -894,9 +921,8 @@ void ScummEngine::drawString(int a, const byte *msg) {
 
 	convertMessageToString(msg, buf, sizeof(buf));
 
-	if (_game.version >= 4 && _game.heversion == 0 && _language == Common::HE_ISR) {
+	if (_isRTL)
 		fakeBidiString(buf, false);
-	}
 
 	_charset->_top = _string[a].ypos + _screenTop;
 	_charset->_startLeft = _charset->_left = _string[a].xpos;
@@ -957,7 +983,7 @@ void ScummEngine::drawString(int a, const byte *msg) {
 
 	if (_charset->_center) {
 		_charset->_left -= _charset->getStringWidth(a, buf) / 2;
-	} else if (_game.version >= 4 && _game.version < 7 && _game.heversion == 0 && _game.id != GID_SAMNMAX && _language == Common::HE_ISR) {
+	} else if (_isRTL && _game.id != GID_SAMNMAX && _game.id != GID_MANIAC) {
 		// Ignore INDY4 verbs (but allow dialogue)
 		if (_game.id != GID_INDY4 || buf[0] == 127) {
 			if (_game.id == GID_INDY4)
@@ -1006,7 +1032,7 @@ void ScummEngine::drawString(int a, const byte *msg) {
 			case 8:
 				if (_charset->_center) {
 					_charset->_left = _charset->_startLeft - _charset->getStringWidth(a, buf + i);
-				} else if (_game.version >= 4 && _game.version < 7 && _game.heversion == 0 && _language == Common::HE_ISR) {
+				} else if (_isRTL) {
 					_charset->_left = _screenWidth - _charset->_startLeft - _charset->getStringWidth(1, buf + i);
 				} else {
 					_charset->_left = _charset->_startLeft;
@@ -1086,7 +1112,7 @@ int ScummEngine::convertMessageToString(const byte *msg, byte *dst, int dstSize)
 	}
 
 	if (_game.version >= 7 || isScummvmKorTarget()) {
-		translateText(msg, transBuf);
+		translateText(msg, transBuf, sizeof(transBuf));
 		src = transBuf;
 	} else {
 		src = msg;
@@ -1167,6 +1193,18 @@ int ScummEngine::convertMessageToString(const byte *msg, byte *dst, int dstSize)
 					*dst++ = chr;
 					*dst++ = src[num+0];
 					*dst++ = src[num+1];
+
+					// WORKAROUND: In some versions of Sam & Max, talking to Evelyn Morrison
+					// while wearing the bigfoot costume misattributes some lines to Max even
+					// though Sam is the one actually speaking. For example, the French and
+					// German releases use `startAnim(8)` while the English release correctly
+					// uses `startAnim(7)` for this.
+					if (_game.id == GID_SAMNMAX && _currentRoom == 52 && vm.slot[_currentScript].number == 102 &&
+						chr == 9 && readVar(0x8000 + 95) != 0 && (VAR(171) == 997 || VAR(171) == 998) &&
+						dst[-2] == 8 && _enableEnhancements) {
+						dst[-2] = 7;
+					}
+
 					if (_game.version == 8) {
 						*dst++ = src[num+2];
 						*dst++ = src[num+3];
@@ -1667,10 +1705,10 @@ void ScummEngine_v7::playSpeech(const byte *ptr) {
 	}
 }
 
-void ScummEngine_v7::translateText(const byte *text, byte *trans_buff) {
+void ScummEngine_v7::translateText(const byte *text, byte *trans_buff, int transBufferSize) {
 	if (isScummvmKorTarget()) {
 		// Support language bundle for FT
-		ScummEngine::translateText(text, trans_buff);
+		ScummEngine::translateText(text, trans_buff, transBufferSize);
 		return;
 	}
 	LangIndexNode target;
@@ -1747,25 +1785,32 @@ void ScummEngine_v7::translateText(const byte *text, byte *trans_buff) {
 	}
 
 	if (found != NULL) {
-		strcpy((char *)trans_buff, _languageBuffer + found->offset);
+		Common::strlcpy((char *)trans_buff, _languageBuffer + found->offset, transBufferSize);
 
-		if ((_game.id == GID_DIG) && !(_game.features & GF_DEMO)) {
-			// Replace any '%___' by the corresponding special codes in the source text
+		if (((_game.id == GID_DIG) && !(_game.features & GF_DEMO)) || _game.version == 8) {
+			// Replace any '%___' (or '%<var-name>%' for v8) by the corresponding special codes in the source text
 			const byte *src = text;
 			char *dst = (char *)trans_buff;
 
-			while ((dst = strstr(dst, "%___"))) {
+			while ((dst = (_game.version == 8 ? strchr(dst, '%') : strstr(dst, "%___")))) {
 				// Search for a special code in the message.
 				while (*src && *src != 0xFF) {
 					src++;
 				}
 
-				// Replace the %___ by the special code. Luckily, we can do
-				// that in-place.
+				// Replace the %___ (or %<var-name>%) by the special code.
+				// Luckily, we can do that in-place.
 				if (*src == 0xFF) {
-					memcpy(dst, src, 4);
-					src += 4;
-					dst += 4;
+					if (_game.version == 7) {
+						memcpy(dst, src, 4);
+						src += 4;
+						dst += 4;
+					} else {
+						memcpy(dst, src, 6);
+						src += 6;
+						dst += 6;
+						*dst = '\0';
+					}
 				} else
 					break;
 			}
@@ -1890,7 +1935,7 @@ const byte *ScummEngine::searchTranslatedLine(const byte *text, const Translatio
 	return nullptr;
 }
 
-void ScummEngine::translateText(const byte *text, byte *trans_buff) {
+void ScummEngine::translateText(const byte *text, byte *trans_buff, int transBufferSize) {
 	if (_existLanguageFile) {
 		if (_currentScript == 0xff) {
 			// used in drawVerb(), etc
@@ -1920,7 +1965,7 @@ void ScummEngine::translateText(const byte *text, byte *trans_buff) {
 					const byte *translatedText = searchTranslatedLine(text, scrpRange, true);
 					if (translatedText) {
 						debug(7, "translateText: Found by heuristic #1");
-						memcpy(trans_buff, translatedText, resStrLen(translatedText) + 1);
+						memcpy(trans_buff, translatedText, MIN<int>(resStrLen(translatedText) + 1, transBufferSize));
 						return;
 					}
 				}
@@ -1937,7 +1982,7 @@ void ScummEngine::translateText(const byte *text, byte *trans_buff) {
 					const byte *translatedText = searchTranslatedLine(text, scrpRange, true);
 					if (translatedText) {
 						debug(7, "translateText: Found by heuristic #2");
-						memcpy(trans_buff, translatedText, resStrLen(translatedText) + 1);
+						memcpy(trans_buff, translatedText, MIN<int>(resStrLen(translatedText) + 1, transBufferSize));
 						return;
 					}
 				}
@@ -1948,7 +1993,7 @@ void ScummEngine::translateText(const byte *text, byte *trans_buff) {
 		const byte *translatedText = searchTranslatedLine(text, TranslationRange(0, _numTranslatedLines - 1), false);
 		if (translatedText) {
 			debug(7, "translateText: Found by full search");
-			memcpy(trans_buff, translatedText, resStrLen(translatedText) + 1);
+			memcpy(trans_buff, translatedText, MIN<int>(resStrLen(translatedText) + 1, transBufferSize));
 			return;
 		}
 
@@ -1956,15 +2001,15 @@ void ScummEngine::translateText(const byte *text, byte *trans_buff) {
 	}
 
 	// Default: just copy the string
-	memcpy(trans_buff, text, resStrLen(text) + 1);
+	memcpy(trans_buff, text, MIN<int>(resStrLen(text) + 1, transBufferSize));
 }
 
-bool ScummEngine::reverseIfNeeded(const byte *text, byte *reverseBuf) const {
+bool ScummEngine::reverseIfNeeded(const byte *text, byte *reverseBuf, int reverseBufSize) const {
 	if (_language != Common::HE_ISR)
 		return false;
 	if (_game.id != GID_LOOM && _game.id != GID_ZAK)
 		return false;
-	strcpy(reinterpret_cast<char *>(reverseBuf), reinterpret_cast<const char *>(text));
+	Common::strlcpy(reinterpret_cast<char *>(reverseBuf), reinterpret_cast<const char *>(text), reverseBufSize);
 	fakeBidiString(reverseBuf, true);
 	return true;
 }
@@ -1989,7 +2034,7 @@ Common::CodePage ScummEngine::getDialogCodePage() const {
 			return Common::kWindows1255;
 		}
 	default:
-		return Common::kCodePageInvalid;
+		return (_game.version > 7) ? Common::kWindows1252 : Common::kDos850;
 	}
 }
 

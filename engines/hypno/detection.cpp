@@ -24,6 +24,12 @@
 #include "engines/advancedDetector.h"
 #include "hypno/hypno.h"
 
+#define GAMEOPTION_ORIGINAL_CHEATS   GUIO_GAMEOPTIONS1
+#define GAMEOPTION_INFINITE_HEALTH   GUIO_GAMEOPTIONS2
+#define GAMEOPTION_INFINITE_AMMO     GUIO_GAMEOPTIONS3
+#define GAMEOPTION_UNLOCK_ALL_LEVELS GUIO_GAMEOPTIONS4
+#define GAMEOPTION_RESTORED_CONTENT  GUIO_GAMEOPTIONS5
+
 static const DebugChannelDef debugFlagList[] = {
 	{Hypno::kHypnoDebugMedia, "media", "Media debug channel"},
 	{Hypno::kHypnoDebugParser, "parser", "Parser debug channel"},
@@ -47,7 +53,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"DCINE1.SMK", "1ff3db09d148e8dd8b56d2e87e7296b8", 493752),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING | ADGF_DEMO,
+		ADGF_DEMO,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -57,7 +63,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"MISSIONS.LIB", "585704e26094cbaf14fbee90798e8d5d", 119945),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING,
+		ADGF_NO_FLAGS,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -67,7 +73,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"MISSIONS.LIB", "585704e26094cbaf14fbee90798e8d5d", 119945),
 		Common::ES_ESP,
 		Common::kPlatformDOS,
-		ADGF_TESTING,
+		ADGF_NO_FLAGS,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -77,7 +83,17 @@ static const ADGameDescription gameDescriptions[] = {
 				"MISSIONS.LIB", "585704e26094cbaf14fbee90798e8d5d", 119945),
 		Common::DE_DEU,
 		Common::kPlatformDOS,
-		ADGF_TESTING,
+		ADGF_NO_FLAGS,
+		GUIO1(GUIO_NOMIDI)
+	},
+	{
+		"sinistersix", // IT release
+		nullptr,
+		AD_ENTRY2s("DATA.Z", "8e1aa1ab39e38c4f1bf67c0b330b3991", 8740866,
+				"MISSIONS.LIB", "585704e26094cbaf14fbee90798e8d5d", 119945),
+		Common::IT_ITA,
+		Common::kPlatformDOS,
+		ADGF_NO_FLAGS,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -98,7 +114,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"demo.exe", "15a6b1b3819ef002438df340509b5373", 533221),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING | ADGF_DEMO,
+		ADGF_DEMO,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -109,7 +125,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"demo.exe", "15a6b1b3819ef002438df340509b5373", 533221),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING | ADGF_DEMO,
+		ADGF_DEMO,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -119,7 +135,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"missions.lib", "6ffa658f22a00b6e17d7f920fcc13578", 12469),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING | ADGF_DEMO,
+		ADGF_DEMO,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -129,7 +145,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"missions.lib", "34b922fac8f64546c0690aa83f09e98e", 40891),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING | ADGF_DEMO,
+		ADGF_DEMO,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -139,7 +155,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"missions.lib", "34b922fac8f64546c0690aa83f09e98e", 40891),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING | ADGF_DEMO,
+		ADGF_DEMO,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -149,7 +165,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"wetmusic.81m", "0d99c63ce19633d09569b1fdcdff1505", 2833439),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING | ADGF_DEMO,
+		ADGF_DEMO,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -159,7 +175,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"c44_22k.raw", "4b2279af59ce3049cc5177b0047e8447", 5247618),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING | ADGF_DEMO,
+		ADGF_DEMO,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -169,7 +185,17 @@ static const ADGameDescription gameDescriptions[] = {
 				"missions.lib", "aeaaa8b26ab17e37f060334a311a3ff6", 309793),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_TESTING,
+		ADGF_NO_FLAGS,
+		GUIO1(GUIO_NOMIDI)
+	},
+	{
+		"wetlands", // Wetlands 1.1 (US)
+		nullptr,
+		AD_ENTRY2s("wetlands.exe", "15a6b1b3819ef002438df340509b5373", 647411,
+				"missions.lib", "aeaaa8b26ab17e37f060334a311a3ff6", 309793),
+		Common::EN_USA,
+		Common::kPlatformDOS,
+		ADGF_NO_FLAGS,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -179,7 +205,7 @@ static const ADGameDescription gameDescriptions[] = {
 			    "missions.lib", "aeaaa8b26ab17e37f060334a311a3ff6", 309793),
 		Common::FR_FRA,
 		Common::kPlatformDOS,
-		ADGF_TESTING,
+		ADGF_NO_FLAGS,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -189,7 +215,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"missions.lib", "aeaaa8b26ab17e37f060334a311a3ff6", 309793),
 		Common::ES_ESP,
 		Common::kPlatformDOS,
-		ADGF_TESTING,
+		ADGF_NO_FLAGS,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -199,7 +225,7 @@ static const ADGameDescription gameDescriptions[] = {
 				"missions.lib", "aeaaa8b26ab17e37f060334a311a3ff6", 309793),
 		Common::KO_KOR,
 		Common::kPlatformDOS,
-		ADGF_TESTING,
+		ADGF_NO_FLAGS,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -209,7 +235,7 @@ static const ADGameDescription gameDescriptions[] = {
 					"setup.exe", "bac1d734f2606dbdd0816dfa7a5cf518", 160740),
 		Common::EN_USA,
 		Common::kPlatformDOS,
-		ADGF_UNSTABLE,
+		ADGF_TESTING,
 		GUIO1(GUIO_NOMIDI)
 	},
 	{
@@ -224,6 +250,66 @@ static const ADGameDescription gameDescriptions[] = {
 	},
 	AD_TABLE_END_MARKER
 };
+
+static const ADExtraGuiOptionsMap optionsList[] = {
+	{
+		GAMEOPTION_ORIGINAL_CHEATS,
+		{
+			_s("Enable original cheats"),
+			_s("Allow cheats using the C key."),
+			"cheats",
+			true,
+			0,
+			0
+		}
+	},
+	{
+		GAMEOPTION_INFINITE_HEALTH,
+		{
+			_s("Enable infinite health cheat"),
+			_s("Player health will never decrease (except for game over scenes)."),
+			"infiniteHealth",
+			false,
+			0,
+			0
+		}
+	},
+	{
+		GAMEOPTION_INFINITE_AMMO,
+		{
+			_s("Enable infinite ammo cheat"),
+			_s("Player ammo will never decrease."),
+			"infiniteAmmo",
+			false,
+			0,
+			0
+		}
+	},
+	{
+		GAMEOPTION_UNLOCK_ALL_LEVELS,
+		{
+			_s("Unlock all levels"),
+			_s("All levels will be available to play."),
+			"unlockAllLevels",
+			false,
+			0,
+			0
+		}
+	},
+	{
+		GAMEOPTION_RESTORED_CONTENT,
+		{
+			_s("Enable restored content"),
+			_s("Add additional content that is not enabled the original implementation."),
+			"restored",
+			true,
+			0,
+			0
+		}
+	},
+	AD_EXTRA_GUI_OPTIONS_TERMINATOR
+};
+
 } // End of namespace Hypno
 
 static const char *const directoryGlobs[] = {
@@ -240,55 +326,19 @@ static const char *const directoryGlobs[] = {
 	nullptr
 };
 
-static const ExtraGuiOption hypnoExtraGuiOptionOriginalCheats = {
-	_s("Enable original cheats"),
-	_s("Allow cheats using the C key."),
-	"cheats",
-	true,
-	0,
-	0
-};
-
-static const ExtraGuiOption hypnoExtraGuiOptionInfiniteHealthCheat = {
-	_s("Enable infinite health cheat"),
-	_s("Player health will never decrease (except for game over scenes)."),
-	"infiniteHealth",
-	false,
-	0,
-	0
-};
-
-static const ExtraGuiOption hypnoExtraGuiOptionInfiniteAmmoCheat = {
-	_s("Enable infinite ammo cheat"),
-	_s("Player ammo will never decrease."),
-	"infiniteAmmo",
-	false,
-	0,
-	0
-};
-
-static const ExtraGuiOption hypnoExtraGuiOptionRestoredContent = {
-	_s("Enable restored content"),
-	_s("Add additional content that is not enabled the original implementation."),
-	"restored",
-	true,
-	0,
-	0
-};
-
 class HypnoMetaEngineDetection : public AdvancedMetaEngineDetection {
 public:
-	HypnoMetaEngineDetection() : AdvancedMetaEngineDetection(Hypno::gameDescriptions, sizeof(ADGameDescription), Hypno::hypnoGames) {
-		_guiOptions = GUIO1(GUIO_NOMIDI);
+	HypnoMetaEngineDetection() : AdvancedMetaEngineDetection(Hypno::gameDescriptions, sizeof(ADGameDescription), Hypno::hypnoGames, Hypno::optionsList) {
+		_guiOptions = GUIO6(GUIO_NOMIDI, GAMEOPTION_ORIGINAL_CHEATS, GAMEOPTION_INFINITE_HEALTH, GAMEOPTION_INFINITE_AMMO, GAMEOPTION_UNLOCK_ALL_LEVELS, GAMEOPTION_RESTORED_CONTENT);
 		_maxScanDepth = 3;
 		_directoryGlobs = directoryGlobs;
 	}
 
-	const char *getEngineId() const override {
+	const char *getName() const override {
 		return "hypno";
 	}
 
-	const char *getName() const override {
+	const char *getEngineName() const override {
 		return "Hypno";
 	}
 
@@ -301,18 +351,7 @@ public:
 	const DebugChannelDef *getDebugChannels() const override {
 		return debugFlagList;
 	}
-
-	const ExtraGuiOptions getExtraGuiOptions(const Common::String &target) const override;
 };
-
-const ExtraGuiOptions HypnoMetaEngineDetection::getExtraGuiOptions(const Common::String &target) const {
-	ExtraGuiOptions options;
-	options.push_back(hypnoExtraGuiOptionOriginalCheats);
-	options.push_back(hypnoExtraGuiOptionInfiniteHealthCheat);
-	options.push_back(hypnoExtraGuiOptionInfiniteAmmoCheat);
-	options.push_back(hypnoExtraGuiOptionRestoredContent);
-	return options;
-}
 
 REGISTER_PLUGIN_STATIC(HYPNO_DETECTION, PLUGIN_TYPE_ENGINE_DETECTION, HypnoMetaEngineDetection);
 

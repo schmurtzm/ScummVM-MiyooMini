@@ -781,27 +781,6 @@ void ScummEngine_v6::o6_startScript() {
 		return;
 	}
 
-	// WORKAROUND bug #3591: When turning pages in the recipe book
-	// (found on Blood Island), there is a brief moment where it displays
-	// text from two different pages at the same time.
-	//
-	// The content of the books is drawing (in an endless loop) by local
-	// script 2007. Changing the page is handled by script 2006, which
-	// first stops script 2007; then switches the page; then restarts
-	// script 2007. But it fails to clear the blast texts beforehand.
-	// Hence, the next time blast text is drawn, both the old one (from
-	// the old instance of script 2007) and the new text (from the new
-	// instance) are briefly drawn simultaneously.
-	//
-	// This looks like a script bug to me (a missing call to clearTextQueue).
-	// But this could also hint at a subtle bug in ScummVM; we should check
-	// whether this bug occurs with the original engine or not.
-	if (_game.id == GID_CMI && script == 2007 &&
-		_currentRoom == 62 && vm.slot[_currentScript].number == 2006) {
-
-		removeBlastTexts();
-	}
-
 	runScript(script, (flags & 1) != 0, (flags & 2) != 0, args);
 }
 
@@ -1345,8 +1324,8 @@ void ScummEngine_v6::o6_loadRoomWithEgo() {
 }
 
 void ScummEngine_v6::o6_getRandomNumber() {
-	int rnd;
-	rnd = _rnd.getRandomNumber(ABS(pop()));
+	int rnd = _rnd.getRandomNumber(0x7fff);
+	rnd = rnd % (pop() + 1);
 	if (VAR_RANDOM_NR != 0xFF)
 		VAR(VAR_RANDOM_NR) = rnd;
 	push(rnd);
@@ -1355,7 +1334,8 @@ void ScummEngine_v6::o6_getRandomNumber() {
 void ScummEngine_v6::o6_getRandomNumberRange() {
 	int max = pop();
 	int min = pop();
-	int rnd = _rnd.getRandomNumberRng(min, max);
+	int rnd = _rnd.getRandomNumber(0x7fff);
+	rnd = min + (rnd % (max - min + 1));
 	if (VAR_RANDOM_NR != 0xFF)
 		VAR(VAR_RANDOM_NR) = rnd;
 	push(rnd);
@@ -1504,6 +1484,19 @@ void ScummEngine_v6::o6_getVerbFromXY() {
 }
 
 void ScummEngine_v6::o6_beginOverride() {
+	// WORKAROUND (bug in the original):
+	// When Guybrush gets on the Sea Cucumber for the first time and the monkeys show up on deck,
+	// if the ESC key is pressed before the "Any last words, Threepwood?" dialogue, the music will
+	// continue playing indefinitely throughout the game (or until another "sequence" music is played).
+	//
+	// To amend this, we intercept this exact script override and we force the playback of sound 2277,
+	// which is the iMUSE sequence which would have been played after the dialogue.
+	if (_enableEnhancements && _game.id == GID_CMI && _currentRoom == 37 && vm.slot[_currentScript].number == 251 &&
+		_sound->isSoundRunning(2275) != 0 && (_scriptPointer - _scriptOrgPointer) == 0x1A) {
+		int list[16] = {0x1001, 2277, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		_sound->soundKludge(list, 2);
+	}
+
 	beginOverride();
 	_skipVideo = 0;
 }
@@ -1801,7 +1794,16 @@ void ScummEngine_v6::o6_actorOps() {
 
 	switch (subOp) {
 	case 76:		// SO_COSTUME
-		a->setActorCostume(pop());
+		i = pop();
+		// WORKAROUND: There's a small continuity error in DOTT; the fire that
+		// makes Washington leave the room can only exist if he's wearing the
+		// chattering teeth, but yet when he comes back he's not wearing them
+		// during this cutscene.
+		if (_game.id == GID_TENTACLE && _currentRoom == 13 && vm.slot[_currentScript].number == 211 &&
+			a->_number == 8 && i == 53 && _enableEnhancements) {
+			i = 69;
+		}
+		a->setActorCostume(i);
 		break;
 	case 77:		// SO_STEP_DIST
 		j = pop();
@@ -2379,7 +2381,7 @@ void ScummEngine_v6::o6_printEgo() {
 void ScummEngine_v6::o6_talkActor() {
 	int offset = _scriptPointer - _scriptOrgPointer;
 
-	// WORKAROUND for bug #1452: see below for detailed description
+	// WORKAROUND for missing waitForMessage() calls; see below
 	if (_forcedWaitForMessage) {
 		if (VAR(VAR_HAVE_MSG)) {
 			_scriptPointer--;
@@ -2407,6 +2409,20 @@ void ScummEngine_v6::o6_talkActor() {
 
 	_string[0].loadDefault();
 	actorTalk(_scriptPointer);
+
+	// WORKAROUND: Dr Fred's first reaction line about Hoagie's and Laverne's
+	// units after receiving a new diamond is unused because of missing
+	// wait.waitForMessage() calls. We always simulate this opcode when
+	// triggering Dr Fred's lines in this part of the script, since there is
+	// no stable offset for all the floppy, CD and translated versions, and
+	// no easy way to only target the impacted lines.
+	if (_game.id == GID_TENTACLE && vm.slot[_currentScript].number == 9
+		&& vm.localvar[_currentScript][0] == 216 && _actorToPrintStrFor == 4 && _enableEnhancements) {
+		_forcedWaitForMessage = true;
+		_scriptPointer--;
+
+		return;
+	}
 
 	// WORKAROUND for bug #1452: "DIG: Missing subtitles when talking to Brink"
 	// Original script does not have wait.waitForMessage() after several messages:
@@ -2887,12 +2903,12 @@ int ScummEngine::getKeyState(int key) {
 void ScummEngine_v6::o6_delayFrames() {
 	// WORKAROUND:  At startup, Moonbase Commander will pause for 20 frames before
 	// showing the Infogrames logo.  The purpose of this break is to give time for the
-	// GameSpy Arcade application to fill with the Online game infomation.
-	// 
+	// GameSpy Arcade application to fill with the online game infomation.
+	//
 	// [0000] (84) localvar2 = max(readConfigFile.number(":var263:","user","wait-for-gamespy"),10)
 	// [0029] (08) delayFrames((localvar2 * 2))
-	// 
-	// But since we don't support GameSpy and have our own Online support, this break
+	//
+	// But since we don't support GameSpy and have our own online support, this break
 	// has become redundant and only wastes time.
 	if (_game.id == GID_MOONBASE && vm.slot[_currentScript].number == 69) {
 		pop();

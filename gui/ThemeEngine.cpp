@@ -1059,7 +1059,8 @@ void ThemeEngine::drawLineSeparator(const Common::Rect &r) {
 	drawDD(kDDSeparator, r);
 }
 
-void ThemeEngine::drawCheckbox(const Common::Rect &r, int spacing, const Common::U32String &str, bool checked, WidgetStateInfo state, bool rtl) {
+void ThemeEngine::drawCheckbox(const Common::Rect &r, int spacing, const Common::U32String &str, bool checked, 
+							   WidgetStateInfo state, bool overrideText, bool rtl) {
 	if (!ready())
 		return;
 
@@ -1089,7 +1090,8 @@ void ThemeEngine::drawCheckbox(const Common::Rect &r, int spacing, const Common:
 	}
 
 	if (r2.right > r2.left) {
-		drawDDText(getTextData(dd), getTextColor(dd), r2, str, true, false, convertTextAlignH(_widgets[dd]->_textAlignH, rtl),
+		TextColor color = overrideText ? GUI::TextColor::kTextColorOverride : getTextColor(dd); 
+		drawDDText(getTextData(dd), color, r2, str, true, false, convertTextAlignH(_widgets[dd]->_textAlignH, rtl),
 		           _widgets[dd]->_textAlignV);
 	}
 }
@@ -1359,46 +1361,72 @@ void ThemeEngine::drawText(const Common::Rect &r, const Common::U32String &str, 
 	case kFontColorNormal:
 		if (inverted) {
 			colorId = kTextColorNormalInverted;
-		} else {
-			switch (state) {
-			case kStateDisabled:
-				colorId = kTextColorNormalDisabled;
-				break;
+			break; 
+		}
 
-			case kStateHighlight:
-				colorId = kTextColorNormalHover;
-				break;
+		switch (state) {
+		case kStateDisabled:
+			colorId = kTextColorNormalDisabled;
+			break;
 
-			default:
-				// fallthrough intended
-			case kStateEnabled:
-			case kStatePressed:
-				colorId = kTextColorNormal;
-				break;
-			}
+		case kStateHighlight:
+			colorId = kTextColorNormalHover;
+			break;
+
+		default:
+			// fallthrough intended
+		case kStateEnabled:
+		case kStatePressed:
+			colorId = kTextColorNormal;
+			break;
 		}
 		break;
 
 	case kFontColorAlternate:
 		if (inverted) {
 			colorId = kTextColorAlternativeInverted;
-		} else {
-			switch (state) {
-			case kStateDisabled:
-				colorId = kTextColorAlternativeDisabled;
-				break;
+			break; 
+		}
 
-			case kStateHighlight:
-				colorId = kTextColorAlternativeHover;
-				break;
+		switch (state) {
+		case kStateDisabled:
+			colorId = kTextColorAlternativeDisabled;
+			break;
 
-			default:
-				// fallthrough intended
-			case kStateEnabled:
-			case kStatePressed:
-				colorId = kTextColorAlternative;
-				break;
-			}
+		case kStateHighlight:
+			colorId = kTextColorAlternativeHover;
+			break;
+
+		default:
+			// fallthrough intended
+		case kStateEnabled:
+		case kStatePressed:
+			colorId = kTextColorAlternative;
+			break;
+		}
+		break;
+
+	case kFontColorOverride: 
+		if (inverted) {
+			colorId = kTextColorOverrideInverted; 
+			break; 
+		}
+			
+		switch (state) {
+		case kStateDisabled:
+			colorId = kTextColorAlternativeDisabled;
+			break;
+
+		case kStateHighlight:
+			colorId = kTextColorOverrideHover;
+			break;
+
+		default:
+			// fallthrough intended
+		case kStateEnabled:
+		case kStatePressed:
+			colorId = kTextColorOverride;
+			break;
 		}
 		break;
 
@@ -1639,11 +1667,11 @@ int ThemeEngine::getStringWidth(const Common::U32String &str, FontStyle font) co
 	return ready() ? _texts[fontStyleToData(font)]->_fontPtr->getStringWidth(str) : 0;
 }
 
-int ThemeEngine::getCharWidth(byte c, FontStyle font) const {
+int ThemeEngine::getCharWidth(uint32 c, FontStyle font) const {
 	return ready() ? _texts[fontStyleToData(font)]->_fontPtr->getCharWidth(c) : 0;
 }
 
-int ThemeEngine::getKerningOffset(byte left, byte right, FontStyle font) const {
+int ThemeEngine::getKerningOffset(uint32 left, uint32 right, FontStyle font) const {
 	return ready() ? _texts[fontStyleToData(font)]->_fontPtr->getKerningOffset(left, right) : 0;
 }
 

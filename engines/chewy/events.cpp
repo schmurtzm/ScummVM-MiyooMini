@@ -22,8 +22,6 @@
 #include "common/system.h"
 #include "chewy/events.h"
 #include "chewy/globals.h"
-#include "chewy/mouse.h"
-#include "chewy/ngsdefs.h"
 
 namespace Chewy {
 
@@ -88,15 +86,15 @@ void EventsManager::handleMouseEvent(const Common::Event &event) {
 
 	// Different event types handling
 	if (event.type != Common::EVENT_MOUSEMOVE)
-		_G(minfo)._button = 0;
+		_G(minfo).button = 0;
 
 	switch (event.type) {
 	case Common::EVENT_LBUTTONUP:
-		_G(minfo)._button = 1;
+		_G(minfo).button = 1;
 		break;
 
 	case Common::EVENT_RBUTTONUP:
-		_G(minfo)._button = 2;
+		_G(minfo).button = 2;
 		break;
 
 	case Common::EVENT_WHEELUP:
@@ -130,11 +128,8 @@ void EventsManager::handleMouseEvent(const Common::Event &event) {
 	}
 
 	// Set mouse position
-	if (!_cursorMoveFl) {
-		_cursorMoveFl = true;
-		g_events->_mousePos.x = event.mouse.x;
-		g_events->_mousePos.y = event.mouse.y;
-	}
+	g_events->_mousePos.x = event.mouse.x;
+	g_events->_mousePos.y = event.mouse.y;
 }
 
 void EventsManager::handleKbdEvent(const Common::Event &event) {
@@ -165,7 +160,7 @@ void EventsManager::clearEvents() {
 
 	_kbInfo._scanCode = Common::KEYCODE_INVALID;
 	_kbInfo._keyCode = '\0';
-	_G(minfo)._button = 0;
+	_G(minfo).button = 0;
 }
 
 void EventsManager::update() {
@@ -222,6 +217,30 @@ void EventsManager::processEvents() {
 void EventsManager::warpMouse(const Common::Point &newPos) {
 	_mousePos = newPos;
 	g_system->warpMouse(newPos.x, newPos.y);
+}
+
+int16 EventsManager::getSwitchCode() {
+	int16 switch_code = -1;
+
+	if (_G(minfo).button == 2)
+		switch_code = Common::KEYCODE_ESCAPE;
+	else if (_G(minfo).button == 1)
+		switch_code = Common::MOUSE_BUTTON_LEFT;
+	else if (_G(minfo).button == 4)
+		switch_code = Common::MOUSE_BUTTON_MIDDLE;
+
+	if (g_events->_kbInfo._keyCode != 0)
+		switch_code = (int16)g_events->_kbInfo._keyCode;
+
+	// Virtual key, set when an item is taken from the inventory
+	if (_hotkey != Common::KEYCODE_INVALID) {
+		switch_code = _hotkey;
+		_hotkey = Common::KEYCODE_INVALID;
+	}
+
+	//debug("Mouse button: %d, key: %d, hotkey: %d", _G(minfo).button, g_events->_kbInfo._keyCode, _hotkey);
+
+	return switch_code;
 }
 
 void delay(size_t time) {

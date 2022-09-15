@@ -22,11 +22,11 @@
 #ifndef AGS_STD_VECTOR_H
 #define AGS_STD_VECTOR_H
 
+#include "ags/lib/std/type_traits.h"
 #include "ags/lib/std/utility.h"
 #include "common/scummsys.h"
 #include "common/algorithm.h"
 #include "common/memory.h"
-#include "common/initializer_list.h"
 
 namespace AGS3 {
 namespace std {
@@ -192,6 +192,12 @@ public:
 			new ((void *)&_storage[_size++]) T(element);
 		else
 			insert_aux(end(), &element, &element + 1);
+	}
+
+	template<class... Args>
+	void emplace_back(Args... args) {
+		T tmp(args...);
+		push_back(tmp);
 	}
 
 	/** Append an element to the end of the array. */

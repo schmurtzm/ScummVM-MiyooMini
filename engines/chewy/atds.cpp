@@ -23,11 +23,9 @@
 #include "chewy/atds.h"
 #include "chewy/defines.h"
 #include "chewy/events.h"
+#include "chewy/font.h"
 #include "chewy/globals.h"
-#include "chewy/main.h"
 #include "chewy/mcga_graphics.h"
-#include "chewy/mouse.h"
-#include "chewy/ngsdefs.h"
 #include "chewy/sound.h"
 #include "chewy/text.h"
 
@@ -56,17 +54,7 @@ void AadInfoArray::load(const void *data, size_t count) {
 		(*this)[i].load(&src);
 }
 
-bool AadTxtHeader::load(const void *src) {
-	Common::MemoryReadStream rs((const byte *)src, 8);
-
-	_diaNr = rs.readSint16LE();
-	_perNr = rs.readSint16LE();
-	_aMov = rs.readSint16LE();
-	_curNr = rs.readSint16LE();
-	return true;
-}
-
-bool AdsTxtHeader::load(const void *src) {
+bool DialogCloseupTxtHeader::load(const void *src) {
 	Common::MemoryReadStream rs((const byte *)src, 8);
 
 	_diaNr = rs.readSint16LE();
@@ -81,12 +69,11 @@ Atdsys::Atdsys() {
 	_aadv._dialog = false;
 	_aadv._strNr = -1;
 	_aadv._silentCount = false;
-	_adsv._dialog = -1;
-	_adsv._autoDia = false;
-	_adsv._strNr = -1;
-	_adsv._silentCount = false;
-	_tmpDelay = 1;
-	_atdsv._delay = &_tmpDelay;
+	_dialogCloseup._dialog = -1;
+	_dialogCloseup._autoDia = false;
+	_dialogCloseup._strNr = -1;
+	_dialogCloseup._silentCount = false;
+	_atdsv._delay = 1;
 	_atdsv._silent = false;
 	_atdsv._diaNr = -1;
 	_atdsv.aad_str = nullptr;
@@ -97,20 +84,17 @@ Atdsys::Atdsys() {
 	_invBlockNr = -1;
 
 	_dialogResource = new DialogResource(ADS_TXT_STEUER);
-	_text = new Text();
+	_text = _G(txt);
 
-	_adsnb._blkNr = 0;
-	_adsnb._endNr = 0;
-	_adsStackPtr = 0;
+	_dialogCloseupNextBlock._blkNr = 0;
+	_dialogCloseupNextBlock._endNr = 0;
+	_dialogCloseupStackPtr = 0;
 
 	init();
 	initItemUseWith();
 }
 
 Atdsys::~Atdsys() {
-	delete _atdsHandle;
-	_atdsHandle = nullptr;
-
 	for (int16 i = 0; i < MAX_HANDLE; i++) {
 		if (_atdsMem[i])
 			free(_atdsMem[i]);
@@ -121,20 +105,11 @@ Atdsys::~Atdsys() {
 }
 
 void Atdsys::init() {
-	_atdsHandle = new Common::File();
-	_atdsHandle->open(ATDS_TXT);
-	if (!_atdsHandle->isOpen()) {
-		error("Error opening %s", ATDS_TXT);
-	}
-
-	set_handle(ATDS_TXT, ATS_DATA, ATS_TAP_OFF, ATS_TAP_MAX);
-	set_handle(ATDS_TXT, INV_ATS_DATA, INV_TAP_OFF, INV_TAP_MAX);
-	set_handle(ATDS_TXT, AAD_DATA, AAD_TAP_OFF, AAD_TAP_MAX);
-	set_handle(ATDS_TXT, ADS_DATA, ADS_TAP_OFF, ADS_TAP_MAX);
-	set_handle(ATDS_TXT, INV_USE_DATA, USE_TAP_OFF, USE_TAP_MAX);
+	set_handle(AAD_DATA, AAD_TAP_OFF, AAD_TAP_MAX);
+	set_handle(DIALOG_CLOSEUP_DATA, ADS_TAP_OFF, ADS_TAP_MAX);
 	_G(gameState).AadSilent = 10;
 	_G(gameState).DelaySpeed = 5;
-	_G(spieler_vector)[P_CHEWY].Delay = _G(gameState).DelaySpeed;
+	_G(moveState)[P_CHEWY].Delay = _G(gameState).DelaySpeed;
 	set_delay(&_G(gameState).DelaySpeed, _G(gameState).AadSilent);
 	set_string_end_func(&atdsStringStart);
 }
@@ -163,7 +138,7 @@ void Atdsys::initItemUseWith() {
 }
 
 void Atdsys::set_delay(int16 *delay, int16 silent) {
-	_atdsv._delay = delay;
+	_atdsv._delay = *delay;
 	_atdsv._silent = silent;
 }
 
@@ -181,7 +156,7 @@ int16 Atdsys::get_delay(int16 txt_len) {
 	if (txt_len > maxLen)
 		txt_len = maxLen;
 
-	int16 ret = *_atdsv._delay * (txt_len + z_len);
+	int16 ret = _atdsv._delay * (txt_len + z_len);
 	return ret;
 }
 
@@ -340,7 +315,9 @@ void Atdsys::set_split_win(int16 nr, int16 x, int16 y) {
 	_ssi[nr]._y = y;
 }
 
-void Atdsys::set_handle(const char *fname, int16 mode, int16 chunkStart, int16 chunkNr) {
+void Atdsys::set_handle(int16 mode, int16 chunkStart, int16 chunkNr) {
+	assert(mode == AAD_DATA || mode == DIALOG_CLOSEUP_DATA);
+
 	uint32 size = _text->findLargestChunk(chunkStart, chunkStart + chunkNr);
 	char *tmp_adr = size ? (char *)MALLOC(size + 3) : nullptr;
 
@@ -351,9 +328,11 @@ void Atdsys::set_handle(const char *fname, int16 mode, int16 chunkStart, int16 c
 }
 
 void Atdsys::load_atds(int16 chunkNr, int16 mode) {
+	assert(mode == AAD_DATA || mode == DIALOG_CLOSEUP_DATA);
+
 	char *txt_adr = _atdsMem[mode];
 
-	if (_atdsHandle && txt_adr) {
+	if (txt_adr) {
 		const uint32 chunkSize = _text->getChunk(chunkNr + _atdsPoolOff[mode])->size;
 		const uint8 *chunkData = _text->getChunkData(chunkNr + _atdsPoolOff[mode]);
 		memcpy(txt_adr, chunkData, chunkSize);
@@ -364,38 +343,15 @@ void Atdsys::load_atds(int16 chunkNr, int16 mode) {
 	}
 }
 
-void Atdsys::set_ats_mem(int16 mode) {
-	switch (mode) {
-	case ATS_DATA:
-		_ats_sheader = _G(gameState).Ats;
-		_atsMem = _atdsMem[mode];
-		break;
-
-	case INV_USE_DATA:
-		_ats_sheader = _G(gameState).InvUse;
-		_atsMem = _atdsMem[mode];
-		break;
-
-	case INV_USE_DEF:
-		error("set_ats_mem() called with mode INV_USE_DEF");
-
-	case INV_ATS_DATA:
-		_ats_sheader = _G(gameState).InvAts;
-		_atsMem = _atdsMem[mode];
-		break;
-
-	default:
-		break;
-	}
-}
-
 bool Atdsys::start_ats(int16 txtNr, int16 txtMode, int16 color, int16 mode, int16 *vocNr) {
 	assert(mode == ATS_DATA || mode == INV_USE_DATA || mode == INV_USE_DEF);
 
-	*vocNr = -1;
+	EVENTS_CLEAR;
+	g_events->_kbInfo._scanCode = Common::KEYCODE_INVALID;
+	g_events->_kbInfo._keyCode = '\0';
+	_G(minfo).button = 0;
 
-	if (mode != INV_USE_DEF)
-		set_ats_mem(mode);
+	*vocNr = -1;
 
 	_atsv.shown = false;
 
@@ -415,16 +371,12 @@ bool Atdsys::start_ats(int16 txtNr, int16 txtMode, int16 color, int16 mode, int1
 
 	if (_atsv.text.size() > 0) {
 		*vocNr = txtMode != TXT_MARK_NAME ? _text->getLastSpeechId() : -1;
-		_atsv.shown = g_engine->_sound->subtitlesEnabled();
+		_atsv.shown = true;
 		_atsv._txtMode = txtMode;
 		_atsv._delayCount = get_delay(_atsv.text.size());
 		_atsv._color = color;
 		_printDelayCount1 = _atsv._delayCount / 10;
 		_mousePush = true;
-
-		if (*vocNr == -1) {
-			_atsv.shown = g_engine->_sound->subtitlesEnabled();
-		}
 	}
 
 	return _atsv.shown;
@@ -437,16 +389,19 @@ void Atdsys::stop_ats() {
 void Atdsys::print_ats(int16 x, int16 y, int16 scrX, int16 scrY) {
 	if (_atsv.shown) {
 		if (_atdsv._eventsEnabled) {
-			switch (_G(in)->getSwitchCode()) {
+			switch (g_events->getSwitchCode()) {
 			case Common::KEYCODE_ESCAPE:
 			case Common::KEYCODE_RETURN:
-			case MOUSE_LEFT:
+			case Common::MOUSE_BUTTON_LEFT:
 				if (!_mousePush) {
+					EVENTS_CLEAR;
+					g_events->_kbInfo._scanCode = Common::KEYCODE_INVALID;
+					g_events->_kbInfo._keyCode = '\0';
+					_G(minfo).button = 0;
+
 					if (_atsv._silentCount <= 0 && _atsv._delayCount > _printDelayCount1) {
 						_mousePush = true;
 						_atsv._delayCount = 0;
-						g_events->_kbInfo._scanCode = Common::KEYCODE_INVALID;
-						g_events->_kbInfo._keyCode = '\0';
 					}
 				}
 				break;
@@ -475,22 +430,24 @@ void Atdsys::print_ats(int16 x, int16 y, int16 scrX, int16 scrY) {
 			split_string(atsSsi, &splitString);
 
 			for (int16 i = 0; i < splitString._nr; i++) {
-				_G(out)->printxy(splitString._x[i],
-								 splitString._y + (i * h) + 1,
-								 0, 300, 0, splitString._strPtr[i]);
-				_G(out)->printxy(splitString._x[i],
-								 splitString._y + (i * h) - 1,
-								 0, 300, 0, splitString._strPtr[i]);
-				_G(out)->printxy(splitString._x[i] + 1,
-				              splitString._y + (i * h),
-				              0, 300, 0, splitString._strPtr[i]);
-				_G(out)->printxy(splitString._x[i] - 1,
-				              splitString._y + (i * h),
-				              0, 300, 0, splitString._strPtr[i]);
-				_G(out)->printxy(splitString._x[i],
-				              splitString._y + (i * h),
-				              _atsv._color,
-				              300, 0, splitString._strPtr[i]);
+				if (g_engine->_sound->subtitlesEnabled()) {
+					_G(out)->printxy(splitString._x[i],
+									 splitString._y + (i * h) + 1,
+									 0, 300, 0, splitString._strPtr[i]);
+					_G(out)->printxy(splitString._x[i],
+									 splitString._y + (i * h) - 1,
+									 0, 300, 0, splitString._strPtr[i]);
+					_G(out)->printxy(splitString._x[i] + 1,
+									 splitString._y + (i * h),
+									 0, 300, 0, splitString._strPtr[i]);
+					_G(out)->printxy(splitString._x[i] - 1,
+									 splitString._y + (i * h),
+									 0, 300, 0, splitString._strPtr[i]);
+					_G(out)->printxy(splitString._x[i],
+									 splitString._y + (i * h),
+									 _atsv._color,
+									 300, 0, splitString._strPtr[i]);
+				}
 
 				shownLen += strlen(splitString._strPtr[i]) + 1;
 			}
@@ -515,19 +472,7 @@ void Atdsys::print_ats(int16 x, int16 y, int16 scrX, int16 scrY) {
 }
 
 void Atdsys::set_ats_str(int16 txtNr, int16 txtMode, int16 strNr, int16 mode) {
-	set_ats_mem(mode);
-	uint8 status = _ats_sheader[(txtNr * MAX_ATS_STATUS) + (txtMode + 1) / 2];
-	int16 ak_nybble = (txtMode + 1) % 2;
-
-	uint8 lo_hi[2];
-	lo_hi[1] = status >> 4;
-	lo_hi[0] = status &= 15;
-	lo_hi[ak_nybble] = strNr;
-	status = 0;
-	lo_hi[1] <<= 4;
-	status |= lo_hi[0];
-	status |= lo_hi[1];
-	_ats_sheader[(txtNr * MAX_ATS_STATUS) + (txtMode + 1) / 2] = status;
+	_text->setTextId(txtNr, txtMode, strNr, mode);
 }
 
 void Atdsys::set_ats_str(int16 txtNr, int16 strNr, int16 mode) {
@@ -535,36 +480,28 @@ void Atdsys::set_ats_str(int16 txtNr, int16 strNr, int16 mode) {
 		set_ats_str(txtNr, i, strNr, mode);
 }
 
-int16 Atdsys::get_ats_str(int16 txtNr, int16 txtMode, int16 mode) {
-	set_ats_mem(mode);
-	uint8 status = _ats_sheader[(txtNr * MAX_ATS_STATUS) + (txtMode + 1) / 2];
-	int16 ak_nybble = (txtMode + 1) % 2;
-
-	uint8 lo_hi[2];
-	lo_hi[1] = status >> 4;
-	lo_hi[0] = status &= 15;
-
-	return (int16)lo_hi[ak_nybble];
-}
-
 int16 Atdsys::getControlBit(int16 txtNr, int16 bitIdx) {
-	set_ats_mem(ATS_DATA);
-	return (_ats_sheader[txtNr * MAX_ATS_STATUS] & bitIdx) != 0;
+	return _text->getControlBit(txtNr, bitIdx);
 }
 
 void Atdsys::setControlBit(int16 txtNr, int16 bitIdx) {
-	set_ats_mem(ATS_DATA);
-	_ats_sheader[txtNr * MAX_ATS_STATUS] |= bitIdx;
+	_text->setControlBit(txtNr, bitIdx);
 }
 
 void Atdsys::delControlBit(int16 txtNr, int16 bitIdx) {
-	set_ats_mem(ATS_DATA);
-	_ats_sheader[txtNr * MAX_ATS_STATUS] &= ~bitIdx;
+	_text->delControlBit(txtNr, bitIdx);
 }
 
-int16 Atdsys::start_aad(int16 diaNr) {
+int16 Atdsys::start_aad(int16 diaNr, bool continueWhenSpeechEnds) {
 	if (_aadv._dialog)
 		stopAad();
+
+	_continueWhenSpeechEnds = continueWhenSpeechEnds;
+
+	EVENTS_CLEAR;
+	g_events->_kbInfo._scanCode = Common::KEYCODE_INVALID;
+	g_events->_kbInfo._keyCode = '\0';
+	_G(minfo).button = 0;
 
 	if (_atdsMem[AAD_HANDLE]) {
 		_aadv._ptr = _atdsMem[AAD_HANDLE];
@@ -606,18 +543,19 @@ void Atdsys::stopAad() {
 void Atdsys::print_aad(int16 scrX, int16 scrY) {
 	if (_aadv._dialog) {
 		if (_atdsv._eventsEnabled) {
-			switch (_G(in)->getSwitchCode()) {
+			switch (g_events->getSwitchCode()) {
 			case Common::KEYCODE_ESCAPE:
 			case Common::KEYCODE_RETURN:
-			case MOUSE_LEFT:
-				EVENTS_CLEAR;
-
+			case Common::MOUSE_BUTTON_LEFT:
 				if (!_mousePush) {
+					EVENTS_CLEAR;
+					g_events->_kbInfo._scanCode = Common::KEYCODE_INVALID;
+					g_events->_kbInfo._keyCode = '\0';
+					_G(minfo).button = 0;
+
 					if (_aadv._silentCount <= 0 && _aadv._delayCount > _printDelayCount1) {
 						_mousePush = true;
 						_aadv._delayCount = 0;
-						g_events->_kbInfo._scanCode = Common::KEYCODE_INVALID;
-						g_events->_kbInfo._keyCode = '\0';
 					}
 				}
 				break;
@@ -648,10 +586,10 @@ void Atdsys::print_aad(int16 scrX, int16 scrY) {
 			SplitStringRet splitString;
 			split_string(&tmp_ssi, &splitString);
 
-			if (g_engine->_sound->subtitlesEnabled() ||
-			        (_aadv._strHeader->_vocNr - ATDS_VOC_OFFSET) == -1) {
-				const int16 h = _G(fontMgr)->getFont()->getDataHeight();
-				for (int16 i = 0; i < splitString._nr; i++) {
+			const int16 h = _G(fontMgr)->getFont()->getDataHeight();
+			for (int16 i = 0; i < splitString._nr; i++) {
+				if (g_engine->_sound->subtitlesEnabled() ||
+					_aadv._strHeader->_vocNr - ATDS_VOC_OFFSET == -1) {
 					_G(out)->printxy(splitString._x[i] + 1,
 									 splitString._y + (i * h),
 									 0, 300, 0, splitString._strPtr[i]);
@@ -666,38 +604,22 @@ void Atdsys::print_aad(int16 scrX, int16 scrY) {
 									 0, 300, 0, splitString._strPtr[i]);
 					_G(out)->printxy(splitString._x[i],
 									 splitString._y + (i * h),
-					              _aadv._person[personId]._color,
+									 _aadv._person[personId]._color,
 									 300, 0, splitString._strPtr[i]);
-					tmp_ptr += strlen(splitString._strPtr[i]) + 1;
 				}
-				str_null2leer(start_ptr, start_ptr + txt_len - 1);
-
+				tmp_ptr += strlen(splitString._strPtr[i]) + 1;
 			}
+			str_null2leer(start_ptr, start_ptr + txt_len - 1);
 
 			if (g_engine->_sound->speechEnabled() &&
-					(_aadv._strHeader->_vocNr - ATDS_VOC_OFFSET) != -1) {
+					_aadv._strHeader->_vocNr - ATDS_VOC_OFFSET != -1) {
 				if (_atdsv._vocNr != _aadv._strHeader->_vocNr - ATDS_VOC_OFFSET) {
 					_atdsv._vocNr = _aadv._strHeader->_vocNr - ATDS_VOC_OFFSET;
-					g_engine->_sound->playSpeech(_atdsv._vocNr, !g_engine->_sound->subtitlesEnabled());
-					int16 vocx = _G(spieler_vector)[personId].Xypos[0] -
-								 _G(gameState).scrollx + _G(spieler_mi)[personId].HotX;
-					g_engine->_sound->setSoundChannelBalance(0, getStereoPos(vocx));
-
-					if (!g_engine->_sound->subtitlesEnabled()) {
-						_aadv._strNr = -1;
-						_aadv._delayCount = 1;
-					}
+					g_engine->_sound->playSpeech(_atdsv._vocNr, false);
 				}
 
-				// FIXME: This breaks subtitles, as it removes
-				// all string terminators. This was previously
-				// used when either speech or subtitles (but not
-				// both) were selected, but its logic is broken.
-				// Check if it should be removed altogether.
-				/*for (int16 i = 0; i < splitString._nr; i++) {
-					tmp_ptr += strlen(splitString._strPtr[i]) + 1;
-				}
-				str_null2leer(start_ptr, start_ptr + txt_len - 1);*/
+				if (_continueWhenSpeechEnds && _atdsv._vocNr >= 0 && !g_engine->_sound->isSpeechActive())
+					stopAad();
 			}
 
 			if (_aadv._delayCount <= 0) {
@@ -709,7 +631,7 @@ void Atdsys::print_aad(int16 scrX, int16 scrY) {
 					if (_atdsv.aad_str != 0)
 						_atdsv.aad_str(_atdsv._diaNr, _aadv._strNr, personId, AAD_STR_END);
 					_aadv._dialog = false;
-					_adsv._autoDia = false;
+					_dialogCloseup._autoDia = false;
 					_aadv._strNr = -1;
 					splitString._next = false;
 				} else {
@@ -734,13 +656,8 @@ void Atdsys::print_aad(int16 scrX, int16 scrY) {
 					_aadv._silentCount = _atdsv._silent;
 				}
 			} else {
-				if (g_engine->_sound->subtitlesEnabled() ||
-				        (_aadv._strHeader->_vocNr - ATDS_VOC_OFFSET) == -1)
+				if (_aadv._strHeader->_vocNr - ATDS_VOC_OFFSET == -1)
 					--_aadv._delayCount;
-
-				else if (!g_engine->_sound->subtitlesEnabled()) {
-					_aadv._delayCount = 0;
-				}
 			}
 		} else {
 			--_aadv._silentCount;
@@ -778,10 +695,10 @@ void Atdsys::aad_search_dia(int16 diaNr, char **ptr) {
 			uint16 *pos = (uint16 *)start_ptr;
 			if (pos[0] == diaNr) {
 				ende = true;
-				_aadv._txtHeader = (AadTxtHeader *)start_ptr;
-				*ptr = start_ptr + sizeof(AadTxtHeader);
+				_aadv._txtHeader = (DialogCloseupTxtHeader *)start_ptr;
+				*ptr = start_ptr + sizeof(DialogCloseupTxtHeader);
 			} else {
-				start_ptr += sizeof(AadTxtHeader) + pos[1] * sizeof(AadInfo);
+				start_ptr += sizeof(DialogCloseupTxtHeader) + pos[1] * sizeof(AadInfo);
 				bool ende1 = false;
 				for (; !ende1; ++start_ptr) {
 					if (*start_ptr != ATDS_END_TEXT)
@@ -805,59 +722,59 @@ void Atdsys::aad_search_dia(int16 diaNr, char **ptr) {
 	}
 }
 
-bool  Atdsys::ads_start(int16 diaNr) {
+bool  Atdsys::startDialogCloseup(int16 diaNr) {
 	bool ret = false;
+	bool end = false;
 
-	load_atds(diaNr, ADS_DATA);
-	bool ende = false;
+	load_atds(diaNr, DIALOG_CLOSEUP_DATA);
 
 	if (_atdsMem[ADS_HANDLE][0] == (char)BLOCKENDE &&
 		    _atdsMem[ADS_HANDLE][1] == (char)BLOCKENDE &&
 		    _atdsMem[ADS_HANDLE][2] == (char)BLOCKENDE)
-		ende = true;
+		end = true;
 
-	if (!ende) {
-		_adsv._ptr = _atdsMem[ADS_HANDLE];
-		_adsv._txtHeader.load(_adsv._ptr);
+	if (!end) {
+		_dialogCloseup._ptr = _atdsMem[ADS_HANDLE];
+		_dialogCloseup._txtHeader.load(_dialogCloseup._ptr);
 
-		if (_adsv._txtHeader._diaNr == diaNr) {
+		if (_dialogCloseup._txtHeader._diaNr == diaNr) {
 			ret = true;
-			_adsv._ptr += AdsTxtHeader::SIZE();
-			_adsv._person.load(_adsv._ptr, _adsv._txtHeader._perNr);
-			_adsv._ptr += _adsv._txtHeader._perNr * AadInfo::SIZE();
-			_adsv._dialog = diaNr;
-			_adsv._strNr = 0;
-			_adsStack[0] = 0;
-			_adsStackPtr = 1;
+			_dialogCloseup._ptr += DialogCloseupTxtHeader::SIZE();
+			_dialogCloseup._person.load(_dialogCloseup._ptr, _dialogCloseup._txtHeader._perNr);
+			_dialogCloseup._ptr += _dialogCloseup._txtHeader._perNr * AadInfo::SIZE();
+			_dialogCloseup._dialog = diaNr;
+			_dialogCloseup._strNr = 0;
+			_dialogCloseupStack[0] = 0;
+			_dialogCloseupStackPtr = 1;
 		}
 	}
 	return ret;
 }
 
-void Atdsys::stop_ads() {
-	_adsv._dialog = -1;
-	_adsv._autoDia = false;
+void Atdsys::stopDialogCloseup() {
+	_dialogCloseup._dialog = -1;
+	_dialogCloseup._autoDia = false;
 }
 
-int16 Atdsys::ads_get_status() {
-	return _adsv._dialog;
+int16 Atdsys::getDialogCloseupStatus() {
+	return _dialogCloseup._dialog;
 }
 
-char **Atdsys::ads_item_ptr(uint16 dialogNum, int16 blockNr, int16 *retNr) {
+char **Atdsys::dialogCloseupItemPtr(uint16 dialogNum, int16 blockNr, int16 *retNr) {
 	*retNr = 0;
-	memset(_ePtr, 0, sizeof(char *) * ADS_MAX_BL_EIN);
-	if (_adsv._dialog != -1) {
-		_adsv._blkPtr = _adsv._ptr;
-		ads_search_block(blockNr, &_adsv._blkPtr);
-		if (_adsv._blkPtr) {
-			for (int16 i = 0; i < ADS_MAX_BL_EIN; i++) {
-				char *tmp_adr = _adsv._blkPtr;
-				ads_search_item(i, &tmp_adr);
-				if (tmp_adr) {
-					char nr = tmp_adr[-1];
-					tmp_adr += sizeof(AadStrHeader);
+	memset(_ePtr, 0, sizeof(char *) * DIALOG_CLOSEUP_MAX);
+	if (_dialogCloseup._dialog != -1) {
+		_dialogCloseup._blockPtr = _dialogCloseup._ptr;
+		dialogCloseupSearchBlock(blockNr, &_dialogCloseup._blockPtr);
+		if (_dialogCloseup._blockPtr) {
+			for (int16 i = 0; i < DIALOG_CLOSEUP_MAX; i++) {
+				char *itemPtr = _dialogCloseup._blockPtr;
+				dialogCloseupSearchItem(i, &itemPtr);
+				if (itemPtr) {
+					char nr = itemPtr[-1];
+					itemPtr += sizeof(AadStrHeader);
 					if (_dialogResource->isItemShown(dialogNum, blockNr, (int16)nr)) {
-						_ePtr[*retNr] = tmp_adr;
+						_ePtr[*retNr] = itemPtr;
 						_eNr[*retNr] = (int16)nr;
 						++(*retNr);
 					}
@@ -869,120 +786,120 @@ char **Atdsys::ads_item_ptr(uint16 dialogNum, int16 blockNr, int16 *retNr) {
 	return _ePtr;
 }
 
-AdsNextBlk *Atdsys::ads_item_choice(uint16 dialogNum, int16 blockNr, int16 itemNr) {
-	_adsnb._blkNr = blockNr;
+DialogCloseupNextBlock *Atdsys::dialogCloseupItemChoice(uint16 dialogNum, int16 blockNr, int16 itemNr) {
+	_dialogCloseupNextBlock._blkNr = blockNr;
 	if (!_aadv._dialog) {
-		if (!_adsv._autoDia) {
-			ads_search_item(_eNr[itemNr], &_adsv._blkPtr);
-			if (_adsv._blkPtr) {
-				if (start_ads_auto_dia(_adsv._blkPtr))
-					_adsv._autoDia = true;
+		if (!_dialogCloseup._autoDia) {
+			dialogCloseupSearchItem(_eNr[itemNr], &_dialogCloseup._blockPtr);
+			if (_dialogCloseup._blockPtr) {
+				if (startAutoDialogCloseup(_dialogCloseup._blockPtr))
+					_dialogCloseup._autoDia = true;
 				if (_dialogResource->hasExitBit(dialogNum, blockNr, _eNr[itemNr])) {
-					stop_ads();
-					_adsnb._endNr = _eNr[itemNr];
-					_adsnb._blkNr = -1;
+					stopDialogCloseup();
+					_dialogCloseupNextBlock._endNr = _eNr[itemNr];
+					_dialogCloseupNextBlock._blkNr = -1;
 				}
 			}
 		}
 	}
 
-	return &_adsnb;
+	return &_dialogCloseupNextBlock;
 }
 
-AdsNextBlk *Atdsys::calc_next_block(uint16 dialogNum, int16 blockNr, int16 itemNr) {
+DialogCloseupNextBlock *Atdsys::calcNextDialogCloseupBlock(uint16 dialogNum, int16 blockNr, int16 itemNr) {
 	if (!_dialogResource->hasShowBit(dialogNum, blockNr, _eNr[itemNr]))
 		_dialogResource->setItemShown(dialogNum, blockNr, _eNr[itemNr], false);
-	_adsnb._endNr = _eNr[itemNr];
+	_dialogCloseupNextBlock._endNr = _eNr[itemNr];
 
 	if (_dialogResource->hasRestartBit(dialogNum, blockNr, _eNr[itemNr])) {
-		_adsnb._blkNr = 0;
+		_dialogCloseupNextBlock._blkNr = 0;
 
-		_adsStackPtr = 0;
+		_dialogCloseupStackPtr = 0;
 	} else {
 		const uint8 nextBlock = _dialogResource->getNextBlock(dialogNum, blockNr, _eNr[itemNr]);
 		if (nextBlock) {
-			_adsnb._blkNr = nextBlock;
+			_dialogCloseupNextBlock._blkNr = nextBlock;
 
-			int16 anzahl = 0;
-			while (!anzahl && _adsnb._blkNr != -1) {
+			int16 option = 0;
+			while (!option && _dialogCloseupNextBlock._blkNr != -1) {
 
-				anzahl = 0;
-				ads_item_ptr(dialogNum, _adsnb._blkNr, &anzahl);
-				if (!anzahl) {
-					_adsnb._blkNr = return_block(dialogNum);
+				option = 0;
+				dialogCloseupItemPtr(dialogNum, _dialogCloseupNextBlock._blkNr, &option);
+				if (!option) {
+					_dialogCloseupNextBlock._blkNr = getDialogCloseupBlock(dialogNum);
 				}
 			}
 		} else {
-			_adsnb._blkNr = return_block(dialogNum);
+			_dialogCloseupNextBlock._blkNr = getDialogCloseupBlock(dialogNum);
 		}
 	}
-	_adsStack[_adsStackPtr] = _adsnb._blkNr;
-	++_adsStackPtr;
+	_dialogCloseupStack[_dialogCloseupStackPtr] = _dialogCloseupNextBlock._blkNr;
+	++_dialogCloseupStackPtr;
 
-	return &_adsnb;
+	return &_dialogCloseupNextBlock;
 }
 
-int16 Atdsys::return_block(uint16 dialogNum) {
-	_adsStackPtr -= 1;
+int16 Atdsys::getDialogCloseupBlock(uint16 dialogNum) {
+	_dialogCloseupStackPtr -= 1;
 	int16 ret = -1;
-	bool ende = false;
-	while (_adsStackPtr >= 0 && !ende) {
-		short blk_nr = _adsStack[_adsStackPtr];
-		int16 anz;
-		ads_item_ptr(dialogNum, blk_nr, &anz);
-		if (anz) {
+	bool end = false;
+	while (_dialogCloseupStackPtr >= 0 && !end) {
+		short blk_nr = _dialogCloseupStack[_dialogCloseupStackPtr];
+		int16 option;
+		dialogCloseupItemPtr(dialogNum, blk_nr, &option);
+		if (option) {
 			ret = blk_nr;
-			ende = true;
+			end = true;
 		} else {
-			--_adsStackPtr;
+			--_dialogCloseupStackPtr;
 		}
 	}
 
-	++_adsStackPtr;
+	++_dialogCloseupStackPtr;
 	return ret;
 }
 
-void Atdsys::ads_search_block(int16 blockNr, char **ptr) {
+void Atdsys::dialogCloseupSearchBlock(int16 blockNr, char **ptr) {
 	char *start_ptr = *ptr;
-	bool ende = false;
-	while (!ende) {
+	bool end = false;
+	while (!end) {
 		if (*start_ptr == (char)blockNr) {
-			ende = true;
+			end = true;
 			*ptr = start_ptr;
 		} else {
 			start_ptr += 2 + sizeof(AadStrHeader);
 			while (*start_ptr++ != ATDS_END_BLOCK) {}
 			if (start_ptr[0] == ATDS_END &&
 			        start_ptr[1] == ATDS_END) {
-				ende = true;
+				end = true;
 				*ptr = nullptr;
 			}
 		}
 	}
 }
 
-void Atdsys::ads_search_item(int16 itemNr, char **blkAdr) {
+void Atdsys::dialogCloseupSearchItem(int16 itemNr, char **blkAdr) {
 	char *start_ptr = *blkAdr + 1;
-	bool ende = false;
-	while (!ende) {
+	bool end = false;
+	while (!end) {
 		if (*start_ptr == itemNr) {
-			ende = true;
+			end = true;
 			*blkAdr = start_ptr + 1;
 		} else {
 			start_ptr += 1 + sizeof(AadStrHeader);
 			while (*start_ptr++ != ATDS_END_ENTRY) {}
 			if (*start_ptr == ATDS_END_BLOCK) {
-				ende = true;
+				end = true;
 				*blkAdr = nullptr;
 			}
 		}
 	}
 }
 
-int16 Atdsys::start_ads_auto_dia(char *itemAdr) {
+int16 Atdsys::startAutoDialogCloseup(char *itemAdr) {
 	_aadv._dialog = false;
 	if (itemAdr) {
-		_aadv._person = _adsv._person;
+		_aadv._person = _dialogCloseup._person;
 		_aadv._ptr = itemAdr;
 		_aadv._dialog = true;
 		_aadv._strNr = 0;
@@ -991,7 +908,7 @@ int16 Atdsys::start_ads_auto_dia(char *itemAdr) {
 		int16 txt_len;
 		aad_get_zeilen(_aadv._ptr, &txt_len);
 		_aadv._delayCount = get_delay(txt_len);
-		_atdsv._diaNr = _adsv._txtHeader._diaNr + 10000;
+		_atdsv._diaNr = _dialogCloseup._txtHeader._diaNr + 10000;
 
 		if (_atdsv.aad_str != nullptr)
 			_atdsv.aad_str(_atdsv._diaNr, 0, _aadv._strHeader->_akPerson, AAD_STR_START);
@@ -1004,11 +921,11 @@ int16 Atdsys::start_ads_auto_dia(char *itemAdr) {
 	return _aadv._dialog;
 }
 
-void Atdsys::hide_item(int16 diaNr, int16 blockNr, int16 itemNr) {
+void Atdsys::hideDialogCloseupItem(int16 diaNr, int16 blockNr, int16 itemNr) {
 	_dialogResource->setItemShown(diaNr, blockNr, itemNr, false);
 }
 
-void Atdsys::show_item(int16 diaNr, int16 blockNr, int16 itemNr) {
+void Atdsys::showDialogCloseupItem(int16 diaNr, int16 blockNr, int16 itemNr) {
 	_dialogResource->setItemShown(diaNr, blockNr, itemNr, true);
 }
 
@@ -1023,7 +940,7 @@ int16 Atdsys::calc_inv_no_use(int16 curInv, int16 testNr) {
 }
 
 int8 Atdsys::getStereoPos(int16 x) {
-	return floor(x / 2.5) * 2 - 127;
+	return floor(x / 2.5);
 }
 
 void Atdsys::saveAtdsStream(Common::WriteStream *stream) {
@@ -1039,7 +956,13 @@ uint32 Atdsys::getAtdsStreamSize() const {
 }
 
 Common::StringArray Atdsys::getTextArray(uint dialogNum, uint entryNum, int type, int subEntry) {
-	if (!getControlBit(entryNum, ATS_ACTIVE_BIT))
+	if (dialogNum == 45 && entryNum == 295 && type == 1 && subEntry == -1 &&
+			g_engine->getLanguage() == Common::EN_ANY) {
+		// WORKAROUND: Taxi hotspot in room 45 (Big City)
+		Common::StringArray results;
+		results.push_back("Taxi");
+		return results;
+	} else if (!getControlBit(entryNum, ATS_ACTIVE_BIT))
 		return _text->getTextArray(dialogNum, entryNum, type, subEntry);
 	else
 		return Common::StringArray();
@@ -1050,6 +973,10 @@ Common::String Atdsys::getTextEntry(uint dialogNum, uint entryNum, int type, int
 		return _text->getTextEntry(dialogNum, entryNum, type, subEntry);
 	else
 		return Common::String();
+}
+
+int16 Atdsys::getLastSpeechId() {
+	return _text->getLastSpeechId();
 }
 
 } // namespace Chewy

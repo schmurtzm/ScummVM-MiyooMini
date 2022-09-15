@@ -26,7 +26,7 @@
 #include "ags/engine/ac/audio_channel.h"
 #include "ags/engine/ac/button.h"
 #include "ags/engine/ac/character.h"
-#include "ags/shared/ac/dialog_topic.h"
+#include "ags/engine/ac/dialog.h"
 #include "ags/engine/ac/draw.h"
 #include "ags/engine/ac/dynamic_sprite.h"
 #include "ags/engine/ac/event.h"
@@ -325,12 +325,16 @@ void restore_game_dialog() {
 		_G(curscript)->queue_action(ePSARestoreGameDialog, 0, "RestoreGameDialog");
 		return;
 	}
+	do_restore_game_dialog();
+}
+
+bool do_restore_game_dialog() {
 	setup_for_dialog();
 	int toload = loadgamedialog();
 	restore_after_dialog();
-	if (toload >= 0) {
+	if (toload >= 0)
 		try_restore_save(toload);
-	}
+	return toload >= 0;
 }
 
 void save_game_dialog() {
@@ -342,11 +346,16 @@ void save_game_dialog() {
 		_G(curscript)->queue_action(ePSASaveGameDialog, 0, "SaveGameDialog");
 		return;
 	}
+	do_save_game_dialog();
+}
+
+bool do_save_game_dialog() {
 	setup_for_dialog();
 	int toload = savegamedialog();
 	restore_after_dialog();
 	if (toload >= 0)
 		save_game(toload, get_gui_dialog_buffer());
+	return toload >= 0;
 }
 
 void free_do_once_tokens() {
@@ -355,13 +364,11 @@ void free_do_once_tokens() {
 
 
 // Free all the memory associated with the game
-// TODO: call this when exiting the game (currently only called in RunAGSGame)
 void unload_game_file() {
 	close_translation();
 
 	_GP(play).FreeViewportsAndCameras();
 
-	_GP(characterScriptObjNames).clear();
 	_GP(charextra).clear();
 	_GP(mls).clear();
 
@@ -371,16 +378,10 @@ void unload_game_file() {
 	delete _G(gameinst);
 	_G(gameinstFork) = nullptr;
 	_G(gameinst) = nullptr;
-
 	_GP(gamescript).reset();
 
-	if ((_G(dialogScriptsInst) != nullptr) && (_G(dialogScriptsInst)->pc != 0)) {
-		quit("Error: unload_game called while dialog script still running");
-	} else if (_G(dialogScriptsInst) != nullptr) {
-		delete _G(dialogScriptsInst);
-		_G(dialogScriptsInst) = nullptr;
-	}
-
+	delete _G(dialogScriptsInst);
+	_G(dialogScriptsInst) = nullptr;
 	_GP(dialogScriptsScript).reset();
 
 	for (size_t i = 0; i < _G(numScriptModules); ++i) {
@@ -401,6 +402,7 @@ void unload_game_file() {
 	_GP(runDialogOptionKeyPressHandlerFunc).moduleHasFunction.resize(0);
 	_GP(runDialogOptionTextInputHandlerFunc).moduleHasFunction.resize(0);
 	_GP(runDialogOptionRepExecFunc).moduleHasFunction.resize(0);
+	_GP(runDialogOptionCloseFunc).moduleHasFunction.resize(0);
 	_G(numScriptModules) = 0;
 
 	_GP(views).clear();
@@ -416,25 +418,22 @@ void unload_game_file() {
 		_G(curLipLine) = -1;
 	}
 
-	for (int i = 0; i < _GP(game).numdialog; ++i) {
-		if (_G(dialog)[i].optionscripts != nullptr)
-			free(_G(dialog)[i].optionscripts);
-		_G(dialog)[i].optionscripts = nullptr;
+	for (auto &dlg : _G(dialog)) {
+		if (dlg.optionscripts != nullptr)
+			free(dlg.optionscripts);
 	}
-	free(_G(dialog));
-	_G(dialog) = nullptr;
+	_G(dialog).clear();
 	delete[] _G(scrDialog);
 	_G(scrDialog) = nullptr;
 
-	_GP(guiScriptObjNames).clear();
 	_GP(guis).clear();
 	free(_G(scrGui));
 
 	free_all_fonts();
 
-	pl_stop_plugins();
 	ccRemoveAllSymbols();
 	ccUnregisterAllObjects();
+	pl_stop_plugins();
 
 	free_do_once_tokens();
 	_GP(play).gui_draw_order.clear();
@@ -666,6 +665,7 @@ int Game_ChangeTranslation(const char *newFilename) {
 	if ((newFilename == nullptr) || (newFilename[0] == 0)) { // switch back to default translation
 		close_translation();
 		_GP(usetup).translation = "";
+		GUI::MarkForTranslationUpdate();
 		return 1;
 	}
 
@@ -674,6 +674,7 @@ int Game_ChangeTranslation(const char *newFilename) {
 		return 0; // failed, kept previous translation
 
 	_GP(usetup).translation = newFilename;
+	GUI::MarkForTranslationUpdate();
 	return 1;
 }
 
@@ -865,7 +866,8 @@ void save_game(int slotn, const char *descript) {
 	can_run_delayed_command();
 
 	if (_G(inside_script)) {
-		strcpy(_G(curscript)->postScriptSaveSlotDescription[_G(curscript)->queue_action(ePSASaveGame, slotn, "SaveGameSlot")], descript);
+		snprintf(_G(curscript)->postScriptSaveSlotDescription[_G(curscript)->queue_action(ePSASaveGame, slotn, "SaveGameSlot")],
+					 MAX_QUEUED_ACTION_DESC, "%s", descript);
 		return;
 	}
 
@@ -1189,6 +1191,7 @@ int __GetLocationType(int xxx, int yyy, int allowHotspot0) {
 
 // Called whenever game looses input focus
 void display_switch_out() {
+	Debug::Printf("Switching out from the game");
 	_G(switched_away) = true;
 	ags_clear_input_state();
 	// Always unlock mouse when switching out from the game
@@ -1197,6 +1200,7 @@ void display_switch_out() {
 
 // Called when game looses input focus and must pause until focus is returned
 void display_switch_out_suspend() {
+	Debug::Printf("Suspending the game on switch out");
 	_G(switching_away_from_game)++;
 	_G(game_update_suspend)++;
 	display_switch_out();
@@ -1215,14 +1219,12 @@ void display_switch_out_suspend() {
 		}
 	}
 
-	// restore the callbacks
-	SetMultitasking(0);
-
 	_G(switching_away_from_game)--;
 }
 
 // Called whenever game gets input focus
 void display_switch_in() {
+	Debug::Printf("Switching back into the game");
 	ags_clear_input_state();
 	// If auto lock option is set, lock mouse to the game window
 	if (_GP(usetup).mouse_auto_lock && _GP(scsystem).windowed)
@@ -1232,6 +1234,7 @@ void display_switch_in() {
 
 // Called when game gets input focus and must resume after pause
 void display_switch_in_resume() {
+	Debug::Printf("Resuming the game on switch in");
 	display_switch_in();
 
 	// Resume all the sounds
@@ -1282,7 +1285,7 @@ void replace_tokens(const char *srcmes, char *destm, int maxlen) {
 					quit("!Display: invalid global int index speicifed in @GI@");
 				snprintf(tval, sizeof(tval), "%d", GetGlobalInt(inx));
 			}
-			strcpy(destp, tval);
+			snprintf(destp, maxlen, "%s", tval);
 			indxdest += strlen(tval);
 		} else {
 			destp[0] = srcp[0];
@@ -1340,30 +1343,40 @@ bool unserialize_audio_script_object(int index, const char *objectType, Stream *
 }
 
 void game_sprite_updated(int sprnum) {
+	// update the shared texture (if exists)
+	_G(gfxDriver)->UpdateSharedDDB(sprnum, _GP(spriteset)[sprnum], (_GP(game).SpriteInfos[sprnum].Flags & SPF_ALPHACHANNEL) != 0, false);
+
 	// character and object draw caches
 	reset_objcache_for_sprite(sprnum);
 
 	// gui backgrounds
-	for (size_t i = 0; i < (size_t)_GP(game).numgui; ++i) {
-		if (_GP(guis)[i].BgImage == sprnum) {
-			_GP(guis)[i].MarkChanged();
+	for (auto &gui : _GP(guis)) {
+		if (gui.BgImage == sprnum) {
+			gui.MarkChanged();
 		}
 	}
 	// gui buttons
-	for (size_t i = 0; i < (size_t)_G(numguibuts); ++i) {
-		if (_GP(guibuts)[i].CurrentImage == sprnum) {
-			_GP(guibuts)[i].MarkChanged();
+	for (auto &but : _GP(guibuts)) {
+		if (but.CurrentImage == sprnum) {
+			but.MarkChanged();
 		}
 	}
 	// gui sliders
-	for (size_t i = 0; i < (size_t)_G(numguislider); ++i) {
-		if ((_GP(guislider)[i].BgImage == sprnum) || (_GP(guislider)[i].HandleImage == sprnum)) {
-			_GP(guislider)[i].MarkChanged();
+	for (auto &slider : _GP(guislider)) {
+		if ((slider.BgImage == sprnum) || (slider.HandleImage == sprnum)) {
+			slider.MarkChanged();
 		}
+	}
+	// overlays
+	for (auto &over : _GP(screenover)) {
+		if (over.GetSpriteNum() == sprnum)
+			over.MarkChanged();
 	}
 }
 
 void game_sprite_deleted(int sprnum) {
+	// clear from texture cache
+	_G(gfxDriver)->ClearSharedDDB(sprnum);
 	// character and object draw caches
 	reset_objcache_for_sprite(sprnum);
 	// room object graphics
@@ -1381,27 +1394,27 @@ void game_sprite_deleted(int sprnum) {
 		}
 	}
 	// gui buttons
-	for (size_t i = 0; i < (size_t)_G(numguibuts); ++i) {
-		if (_GP(guibuts)[i].Image == sprnum)
-			_GP(guibuts)[i].Image = 0;
-		if (_GP(guibuts)[i].MouseOverImage == sprnum)
-			_GP(guibuts)[i].MouseOverImage = 0;
-		if (_GP(guibuts)[i].PushedImage == sprnum)
-			_GP(guibuts)[i].PushedImage = 0;
+	for (auto &but : _GP(guibuts)) {
+		if (but.Image == sprnum)
+			but.Image = 0;
+		if (but.MouseOverImage == sprnum)
+			but.MouseOverImage = 0;
+		if (but.PushedImage == sprnum)
+			but.PushedImage = 0;
 
-		if (_GP(guibuts)[i].CurrentImage == sprnum) {
-			_GP(guibuts)[i].CurrentImage = 0;
-			_GP(guibuts)[i].MarkChanged();
+		if (but.CurrentImage == sprnum) {
+			but.CurrentImage = 0;
+			but.MarkChanged();
 		}
 	}
 	// gui sliders
-	for (size_t i = 0; i < (size_t)_G(numguislider); ++i) {
-		if ((_GP(guislider)[i].BgImage == sprnum) || (_GP(guislider)[i].HandleImage == sprnum))
-			_GP(guislider)[i].MarkChanged();
-		if (_GP(guislider)[i].BgImage == sprnum)
-			_GP(guislider)[i].BgImage = 0;
-		if (_GP(guislider)[i].HandleImage == sprnum)
-			_GP(guislider)[i].HandleImage = 0;
+	for (auto &slider : _GP(guislider)) {
+		if ((slider.BgImage == sprnum) || (slider.HandleImage == sprnum))
+			slider.MarkChanged();
+		if (slider.BgImage == sprnum)
+			slider.BgImage = 0;
+		if (slider.HandleImage == sprnum)
+			slider.HandleImage = 0;
 	}
 	// views
 	for (size_t v = 0; v < (size_t)_GP(game).numviews; ++v) {
@@ -1411,6 +1424,11 @@ void game_sprite_deleted(int sprnum) {
 					_GP(views)[v].loops[l].frames[f].pic = 0;
 			}
 		}
+	}
+	// overlays
+	for (auto &over : _GP(screenover)) {
+		if (over.GetSpriteNum() == sprnum)
+			over.SetSpriteNum(0);
 	}
 }
 

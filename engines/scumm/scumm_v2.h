@@ -53,6 +53,10 @@ public:
 	void redrawV2Inventory();
 
 protected:
+	byte _hiLiteColorVerbArrow = 0x0E;
+	byte _hiLiteColorInvSentence = 0x0E;
+
+protected:
 	void setupOpcodes() override;
 
 	void setupScummVars() override;
@@ -90,6 +94,9 @@ protected:
 
 	void resetSentence() override;
 	void setUserState(byte state);
+
+	void beginCutscene(int *args) override { o2_cutscene(); }
+	void endCutscene() override { o2_endCutscene(); }
 
 	void handleMouseOver(bool updateInventory) override;
 	void checkExecVerbs() override;

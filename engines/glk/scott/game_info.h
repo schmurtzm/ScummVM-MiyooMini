@@ -19,16 +19,26 @@
  *
  */
 
-#ifndef GLK_SCOTT_GAMEINFO
-#define GLK_SCOTT_GAMEINFO
+/*
+ * Based on ScottFree interpreter version 1.14 developed by Swansea
+ * University Computer Society without disassembly of any other game
+ * drivers, only of game databases as permitted by EEC law (for purposes
+ * of compatibility).
+ *
+ * Licensed under GPLv2
+ *
+ * https://github.com/angstsmurf/spatterlight/tree/master/terps/scott
+ */
 
-#include "glk/scott/definitions.h"
+#ifndef GLK_SCOTT_GAMEINFO_H
+#define GLK_SCOTT_GAMEINFO_H
+
 #include "common/array.h"
+#include "glk/scott/definitions.h"
 
 namespace Glk {
 namespace Scott {
 
-extern GameInfo g_games[];
 extern const char *g_sysDict[];
 extern const char *g_sysDictIAm[];
 extern const char *g_sysDictZX[];

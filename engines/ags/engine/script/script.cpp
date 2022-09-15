@@ -251,9 +251,7 @@ int create_global_script() {
 }
 
 void cancel_all_scripts() {
-	int aa;
-
-	for (aa = 0; aa < _G(num_scripts); aa++) {
+	for (int aa = 0; aa < _G(num_scripts); aa++) {
 		if (_G(scripts)[aa].forked)
 			_G(scripts)[aa].inst->AbortAndDestroy();
 		else
@@ -261,8 +259,10 @@ void cancel_all_scripts() {
 		_G(scripts)[aa].numanother = 0;
 	}
 	_G(num_scripts) = 0;
-	/*  if (_G(gameinst)!=NULL) ->Abort(_G(gameinst));
-	if (_G(roominst)!=NULL) ->Abort(_G(roominst));*/
+	// in case the script is running on non-blocking thread (rep-exec-always etc)
+	auto inst = ccInstance::GetCurrentInstance();
+	if (inst)
+		inst->Abort();
 }
 
 ccInstance *GetScriptInstanceByType(ScriptInstType sc_inst) {
@@ -343,13 +343,21 @@ static int PrepareTextScript(ccInstance *sci, const char **tsname) {
 
 int RunScriptFunction(ccInstance *sci, const char *tsname, size_t numParam, const RuntimeScriptValue *params) {
 	int oldRestoreCount = _G(gameHasBeenRestored);
+	// TODO: research why this is really necessary, and refactor to avoid such hacks!
+	// First, save the current ccError state
+	// This is necessary because we might be attempting
+	// to run Script B, while Script A is still running in the
+	// background.
+	// If CallInstance here has an error, it would otherwise
+	// also abort Script A because ccError is a global variable.
+	ScriptError cachedCcError = cc_get_error();
 
 	cc_clear_error();
 	int toret = PrepareTextScript(sci, &tsname);
 	if (toret) {
+		cc_error(cachedCcError);
 		return -18;
 	}
-
 	cc_clear_error();
 	toret = _G(curscript)->inst->CallScriptFunction(tsname, numParam, params);
 
@@ -366,6 +374,9 @@ int RunScriptFunction(ccInstance *sci, const char *tsname, size_t numParam, cons
 	post_script_cleanup();
 
 	_G(post_script_cleanup_stack)--;
+
+	// restore cached error state
+	cc_error(cachedCcError);
 
 	// if the game has been restored, ensure that any further scripts are not run
 	if ((oldRestoreCount != _G(gameHasBeenRestored)) && (_G(eventClaimed) == EVENT_INPROGRESS))
@@ -470,10 +481,14 @@ void post_script_cleanup() {
 	// should do any post-script stuff here, like go to new room
 	if (cc_has_error())
 		quit(cc_get_error().ErrorString);
-	ExecutingScript copyof = _G(scripts)[_G(num_scripts) - 1];
-	if (_G(scripts)[_G(num_scripts) - 1].forked)
-		delete _G(scripts)[_G(num_scripts) - 1].inst;
-	_G(num_scripts)--;
+
+	ExecutingScript copyof;
+	if (_G(num_scripts) > 0) {
+		copyof = _G(scripts)[_G(num_scripts) - 1];
+		if (_G(scripts)[_G(num_scripts) - 1].forked)
+			delete _G(scripts)[_G(num_scripts) - 1].inst;
+		_G(num_scripts)--;
+	}
 	_G(inside_script)--;
 
 	if (_G(num_scripts) > 0)
@@ -537,8 +552,7 @@ void post_script_cleanup() {
 	}
 
 
-	int jj;
-	for (jj = 0; jj < copyof.numanother; jj++) {
+	for (int jj = 0; jj < copyof.numanother; jj++) {
 		old_room_number = _G(displayed_room);
 		QueuedScript &script = copyof.ScFnQueue[jj];
 		RunScriptFunctionAuto(script.Instance, script.FnName.GetCStr(), script.ParamCount, script.Params);

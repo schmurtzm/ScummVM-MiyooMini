@@ -19,7 +19,10 @@
  *
  */
 
+#include "common/config-manager.h"
+#include "common/fs.h"
 #include "graphics/macgui/macbutton.h"
+#include "graphics/macgui/macmenu.h"
 
 #include "director/director.h"
 #include "director/cast.h"
@@ -377,7 +380,8 @@ Datum Lingo::getTheEntity(int entity, Datum &id, int field) {
 		d = g_lingo->_actorList;
 		break;
 	case kTheBeepOn:
-		getTheEntitySTUB(kTheBeepOn);
+		d.type = INT;
+		d.u.i = (int)g_director->getCurrentMovie()->_isBeepOn;
 		break;
 	case kTheButtonStyle:
 		d.type = INT;
@@ -387,7 +391,8 @@ Datum Lingo::getTheEntity(int entity, Datum &id, int field) {
 		d = getTheCast(id, field);
 		break;
 	case kTheCastMembers:
-		warning("STUB: Lingo::getTheEntity(): Unprocessed getting field %s of entity %s", field2str(field), entity2str(entity));
+		d.type = INT;
+		d.u.i = movie->getCast()->getCastSize() + (movie->_sharedCast ? movie->_sharedCast->getCastSize() : 0);
 		break;
 	case kTheCenterStage:
 		d.type = INT;
@@ -449,7 +454,8 @@ Datum Lingo::getTheEntity(int entity, Datum &id, int field) {
 		d = getTheField(id, field);
 		break;
 	case kTheFixStageSize:
-		getTheEntitySTUB(kTheFixStageSize);
+		d.type = INT;
+		d.u.i = (int)g_director->_fixStageSize;
 		break;
 	case kTheFloatPrecision:
 		d.type = INT;
@@ -596,13 +602,63 @@ Datum Lingo::getTheEntity(int entity, Datum &id, int field) {
 		d.u.i = 32 * 1024 * 1024;	// Let's have 32 Mbytes
 		break;
 	case kTheMenu:
-		getTheEntitySTUB(kTheMenu);
+		d.type = STRING;
+		Graphics::MacMenuItem *menuRef;
+		menuRef = nullptr;
+
+		if (id.u.menu->menuIdNum == -1) {
+			menuRef = g_director->_wm->getMenu()->getMenuItem(*id.u.menu->menuIdStr);
+		} else {
+			menuRef = g_director->_wm->getMenu()->getMenuItem(id.u.menu->menuIdNum - 1);
+		}
+		d.u.s = new Common::String();
+		*d.u.s = g_director->_wm->getMenu()->getName(menuRef);
 		break;
 	case kTheMenuItem:
-		getTheEntitySTUB(kTheMenuItem);
+		Graphics::MacMenuItem *menu, *menuItem;
+		menu = nullptr, menuItem = nullptr;
+
+		if (id.u.menu->menuIdNum == -1) {
+			menu = g_director->_wm->getMenu()->getMenuItem(*id.u.menu->menuIdStr);
+		} else {
+			menu = g_director->_wm->getMenu()->getMenuItem(id.u.menu->menuIdNum - 1);
+		}
+		if (id.u.menu->menuItemIdNum == -1) {
+			menuItem = g_director->_wm->getMenu()->getSubMenuItem(menu, *id.u.menu->menuItemIdStr);
+		} else {
+			menuItem = g_director->_wm->getMenu()->getSubMenuItem(menu, id.u.menu->menuItemIdNum - 1);
+		}
+
+		switch (field) {
+		case kTheCheckMark:
+			d.type = INT;
+			d.u.i = g_director->_wm->getMenuItemCheckMark(menuItem);
+			break;
+		case kTheEnabled:
+			d.type = INT;
+			d.u.i = g_director->_wm->getMenuItemEnabled(menuItem);
+			break;
+		case kTheName:
+			d.type = STRING;
+			d.u.s = new Common::String;
+			*(d.u.s) = g_director->_wm->getMenuItemName(menuItem);
+			break;
+		case kTheScript:
+			d.type = INT;
+			d.u.i = g_director->_wm->getMenuItemAction(menuItem);
+			break;
+		default:
+			warning("Lingo::getTheEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
+			break;
+		}
 		break;
 	case kTheMenuItems:
-		getTheEntitySTUB(kTheMenuItems);
+		d.type = INT;
+		d.u.i = getMenuItemsNum(id);
+		break;
+	case kTheMenus:
+		d.type = INT;
+		d.u.i = getMenuNum();
 		break;
 	case kTheMouseCast:
 		{
@@ -711,7 +767,8 @@ Datum Lingo::getTheEntity(int entity, Datum &id, int field) {
 		d.u.i = (movie->_keyFlags & Common::KBD_ALT) ? 1 : 0;
 		break;
 	case kThePauseState:
-		getTheEntitySTUB(kThePauseState);
+		d.type = INT;
+		d.u.i = (int) g_director->_playbackPaused;
 		break;
 	case kThePerFrameHook:
 		d = _perFrameHook;
@@ -740,20 +797,26 @@ Datum Lingo::getTheEntity(int entity, Datum &id, int field) {
 		d = g_lingo->_theResult;
 		break;
 	case kTheRightMouseDown:
-		getTheEntitySTUB(kTheRightMouseDown);
+		d.type = INT;
+		d.u.i = g_system->getEventManager()->getButtonState() & (1 << Common::MOUSE_BUTTON_RIGHT) ? 1 : 0;
 		break;
 	case kTheRightMouseUp:
-		getTheEntitySTUB(kTheRightMouseUp);
+		d.type = INT;
+		d.u.i = g_system->getEventManager()->getButtonState() & (1 << Common::MOUSE_BUTTON_RIGHT) ? 0 : 1;
 		break;
 	case kTheRomanLingo:
-		getTheEntitySTUB(kTheRomanLingo);
+		d.type = INT;
+		d.u.i = g_lingo->_romanLingo;
+		warning("BUILDBOT: the romanLingo is get, value is %d", g_lingo->_romanLingo);
 		break;
 	case kTheScummvmVersion:
 		d.type = INT;
 		d.u.i = _vm->getVersion();
 		break;
 	case kTheSearchCurrentFolder:
-		getTheEntitySTUB(kTheSearchCurrentFolder);
+		//We always allow searching in current folder
+		warning("BUILDBOT: SearchCurrentFolder is queried");
+		d = Datum(1);
 		break;
 	case kTheSearchPath:
 		d = g_lingo->_searchPath;
@@ -764,7 +827,7 @@ Datum Lingo::getTheEntity(int entity, Datum &id, int field) {
 
 			if (channel->_widget) {
 				d.type = STRING;
-				d.u.s = new Common::String(Common::convertFromU32String(((Graphics::MacText *)channel->_widget)->getSelection()));
+				d.u.s = new Common::String(Common::convertFromU32String(((Graphics::MacText *)channel->_widget)->getSelection(false, false)));
 			}
 		}
 		break;
@@ -821,7 +884,9 @@ Datum Lingo::getTheEntity(int entity, Datum &id, int field) {
 		d.u.i = _vm->getCurrentWindow()->getSurface()->h;
 		break;
 	case kTheStageColor:
-		getTheEntitySTUB(kTheStageColor);
+		d.type = INT;
+		// TODO: Provide proper reverse transform for non-indexed color
+		d.u.i = (int)g_director->transformColor(g_director->getCurrentWindow()->getStageColor());
 		break;
 	case kTheStageLeft:
 		d.type = INT;
@@ -881,14 +946,16 @@ Datum Lingo::getTheEntity(int entity, Datum &id, int field) {
 		d.u.i = _vm->getMacTicks() - movie->_lastTimerReset;
 		break;
 	case kTheTrace:
-		getTheEntitySTUB(kTheTrace);
+		d.type = INT;
+		d.u.i = (int) g_lingo->_trace;
 		break;
 	case kTheTraceLoad:
 		d.type = INT;
 		d.u.i = g_lingo->_traceLoad;
 		break;
 	case kTheTraceLogFile:
-		getTheEntitySTUB(kTheTraceLogFile);
+		d.type = STRING;
+		d.u.s = new Common::String(g_director->_traceLogFile);
 		break;
 	case kTheUpdateMovieEnabled:
 		d.type = INT;
@@ -929,13 +996,13 @@ void Lingo::setTheEntity(int entity, Datum &id, int field, Datum &d) {
 		g_lingo->_actorList = d;
 		break;
 	case kTheBeepOn:
-		setTheEntitySTUB(kTheBeepOn);
+		g_director->getCurrentMovie()->_isBeepOn = (bool)d.u.i;
 		break;
 	case kTheButtonStyle:
 		if (d.asInt())
-			g_director->_wm->_mode = Director::wmMode | Graphics::kWMModeButtonDialogStyle;
+			g_director->_wm->_mode = g_director->_wmMode | Graphics::kWMModeButtonDialogStyle;
 		else
-			g_director->_wm->_mode = Director::wmMode;
+			g_director->_wm->_mode = g_director->_wmMode;
 		break;
 	case kTheCast:
 		setTheCast(id, field, d);
@@ -962,7 +1029,10 @@ void Lingo::setTheEntity(int entity, Datum &id, int field, Datum &d) {
 		g_lingo->_exitLock = bool(d.asInt());
 		break;
 	case kTheFixStageSize:
-		setTheEntitySTUB(kTheFixStageSize);
+		g_director->_fixStageSize = (bool)d.u.i;
+		if (d.u.i) {
+			g_director->_fixStageRect = g_director->getCurrentMovie()->_movieRect;
+		}
 		break;
 	case kTheField:
 		setTheField(id, field, d);
@@ -1006,7 +1076,55 @@ void Lingo::setTheEntity(int entity, Datum &id, int field, Datum &d) {
 		setTheEntitySTUB(kTheMenu);
 		break;
 	case kTheMenuItem:
-		setTheEntitySTUB(kTheMenuItem);
+		Graphics::MacMenuItem *menu, *menuItem;
+		menu = nullptr, menuItem = nullptr;
+
+		if (!g_director->_wm->getMenu()) {
+			warning("Lingo::setTheEntity() : Menu does not exist!");
+			break;
+		}
+
+		if (id.u.menu->menuIdNum == -1) {
+			menu = g_director->_wm->getMenu()->getMenuItem(*id.u.menu->menuIdStr);
+		} else {
+			menu = g_director->_wm->getMenu()->getMenuItem(id.u.menu->menuIdNum - 1);
+		}
+
+		if (id.u.menu->menuItemIdNum == -1) {
+			menuItem = g_director->_wm->getMenu()->getSubMenuItem(menu, *id.u.menu->menuItemIdStr);
+		} else {
+			menuItem = g_director->_wm->getMenu()->getSubMenuItem(menu, id.u.menu->menuItemIdNum - 1);
+		}
+
+		if (!menuItem) {
+			warning("Wrong menuItem!");
+			break;
+		}
+		switch (field) {
+		case kTheCheckMark:
+			g_director->_wm->setMenuItemCheckMark(menuItem, d.asInt());
+			break;
+		case kTheEnabled:
+			g_director->_wm->setMenuItemEnabled(menuItem, d.asInt());
+			break;
+		case kTheName:
+			g_director->_wm->setMenuItemName(menuItem, d.asString());
+			break;
+		case kTheScript:
+		{
+			LingoArchive *mainArchive = g_director->getCurrentMovie()->getMainLingoArch();
+			int commandId = 100;
+			while (mainArchive->getScriptContext(kEventScript, commandId))
+				commandId++;
+			mainArchive->replaceCode(d.asString(), kEventScript, commandId);
+
+			g_director->_wm->setMenuItemAction(menuItem, commandId);
+		}
+		break;
+		default:
+			warning("Lingo::setTheEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
+			break;
+		}
 		break;
 	case kTheMouseDownScript:
 		movie->setPrimaryEventHandler(kEventMouseDown, d.asString());
@@ -1027,11 +1145,16 @@ void Lingo::setTheEntity(int entity, Datum &id, int field, Datum &d) {
 		g_director->_rnd.setSeed(d.asInt());
 		break;
 	case kTheRomanLingo:
+		g_lingo->_romanLingo = bool(d.asInt());
+		warning("BUILDBOT: the romanLingo is set to %d", g_lingo->_romanLingo);
 		setTheEntitySTUB(kTheRomanLingo);
 		break;
 	case kTheScummvmVersion:
 		// Allow director version change: used for testing version differences via the lingo tests.
 		_vm->setVersion(d.asInt());
+		break;
+	case kTheSearchCurrentFolder:
+		warning("BUILDBOT: Trying to set SearchCurrentFolder lingo property");
 		break;
 	case kTheSelEnd:
 		g_director->getCurrentMovie()->_selEnd = d.asInt();
@@ -1073,7 +1196,7 @@ void Lingo::setTheEntity(int entity, Datum &id, int field, Datum &d) {
 		break;
 	case kTheSoundLevel:
 		// setting all of the channel for now
-		_vm->getCurrentWindow()->getSoundManager()->setSouldLevel(-1, d.asInt());
+		_vm->getCurrentWindow()->getSoundManager()->setSoundLevel(-1, d.asInt());
 		break;
 	case kTheSprite:
 		setTheSprite(id, field, d);
@@ -1082,7 +1205,7 @@ void Lingo::setTheEntity(int entity, Datum &id, int field, Datum &d) {
 		setTheEntitySTUB(kTheStage);
 		break;
 	case kTheStageColor:
-		g_director->getCurrentWindow()->setStageColor(d.asInt());
+		g_director->getCurrentWindow()->setStageColor(g_director->transformColor(d.asInt()));
 
 		// Queue an immediate update of the stage
 		if (!score->getNextFrame())
@@ -1096,7 +1219,12 @@ void Lingo::setTheEntity(int entity, Datum &id, int field, Datum &d) {
 		break;
 	case kTheTimeoutLapsed:
 		// timeOutLapsed can be set in D4, but can't in D3. see D3.1 interactivity manual p312 and D4 dictionary p296.
-		setTheEntitySTUB(kTheTimeoutLapsed);
+		if (g_director->getVersion() >= 400 && (d.type == INT || d.type == FLOAT)) {
+			g_director->_tickBaseline = g_director->getMacTicks() - d.asInt();
+		}
+		if (d.type != INT) {
+			warning("Lingo::setTheEntity() : Wrong DatumType %d for setting of Lingo Property timeOutLapsed", d.type);
+		}
 		break;
 	case kTheTimeoutLength:
 		g_director->getCurrentMovie()->_timeOutLength = d.asInt();
@@ -1115,13 +1243,26 @@ void Lingo::setTheEntity(int entity, Datum &id, int field, Datum &d) {
 		movie->_lastTimerReset = _vm->getMacTicks() - d.asInt();
 		break;
 	case kTheTrace:
-		setTheEntitySTUB(kTheTrace);
+		g_lingo->_trace = (bool) d.asInt();
 		break;
 	case kTheTraceLoad:
 		g_lingo->_traceLoad = d.asInt();
 		break;
 	case kTheTraceLogFile:
-		setTheEntitySTUB(kTheTraceLogFile);
+	{
+		if (d.asString().size()) {
+			Common::String logPath = ConfMan.get("path") + "/" + d.asString();
+			Common::FSNode out(logPath);
+			if (!out.exists())
+				out.createWriteStream();
+			if (out.isWritable())
+				g_director->_traceLogFile = logPath;
+			else
+				warning("traceLogFile '%s' is not writeable", logPath.c_str());
+		} else {
+			g_director->_traceLogFile.clear();
+		}
+	}
 		break;
 	case kTheUpdateMovieEnabled:
 		g_lingo->_updateMovieEnabled = bool(d.asInt());
@@ -1143,106 +1284,29 @@ void Lingo::setTheEntity(int entity, Datum &id, int field, Datum &d) {
 	}
 }
 
-Datum Lingo::getTheMenuItemEntity(int entity, Datum &menuId, int field, Datum &menuItemId) {
-	Datum d;
-
-	switch(field) {
-	case kTheCheckMark:
-		if (menuId.type == STRING && menuItemId.type == STRING) {
-			d.type = INT;
-			d.u.i = g_director->_wm->getMenuItemCheckMark(menuId.asString(), menuItemId.asString());
-		} else if (menuId.type == INT && menuItemId.type == INT) {
-			d.type = INT;
-			d.u.i = g_director->_wm->getMenuItemCheckMark(menuId.asInt(), menuItemId.asInt());
-		} else
-			warning("Lingo::getTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		break;
-	case kTheEnabled:
-		if (menuId.type == STRING && menuItemId.type == STRING) {
-			d.type = INT;
-			d.u.i = g_director->_wm->getMenuItemEnabled(menuId.asString(), menuItemId.asString());
-		} else if (menuId.type == INT && menuItemId.type == INT) {
-			d.type = INT;
-			d.u.i = g_director->_wm->getMenuItemEnabled(menuId.asInt(), menuItemId.asInt());
-		} else
-			warning("Lingo::getTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		break;
-	case kTheName:
-		if (menuId.type == STRING && menuItemId.type == STRING) {
-			d.type = STRING;
-			d.u.s = new Common::String;
-			*(d.u.s) = g_director->_wm->getMenuItemName(menuId.asString(), menuItemId.asString());
-		} else if (menuId.type == INT && menuItemId.type == INT) {
-			d.type = STRING;
-			d.u.s = new Common::String;
-			*(d.u.s) = g_director->_wm->getMenuItemName(menuId.asInt(), menuItemId.asInt());
-		} else
-			warning("Lingo::getTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		break;
-	case kTheScript:
-		if (menuId.type == STRING && menuItemId.type == STRING) {
-			d.type = INT;
-			d.u.i = g_director->_wm->getMenuItemAction(menuId.asString(), menuItemId.asString());
-		} else if (menuId.type == INT && menuItemId.type == INT) {
-			d.type = INT;
-			d.u.i = g_director->_wm->getMenuItemAction(menuId.asInt(), menuItemId.asInt());
-		} else
-			warning("Lingo::getTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		break;
-	default:
-		warning("Lingo::getTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		break;
-	}
-
-	return d;
+int Lingo::getMenuNum() {
+	return g_director->_wm->getMenu()->numberOfMenus();
 }
 
-void Lingo::setTheMenuItemEntity(int entity, Datum &menuId, int field, Datum &menuItemId, Datum &d) {
-	switch(field) {
-	case kTheCheckMark:
-		if (menuId.type == STRING && menuItemId.type == STRING)
-			g_director->_wm->setMenuItemCheckMark(menuId.asString(), menuItemId.asString(), d.asInt());
-		else if (menuId.type == INT && menuItemId.type == INT)
-			g_director->_wm->setMenuItemCheckMark(menuId.asInt() - 1, menuItemId.asInt() - 1, d.asInt());
-		else
-			warning("Lingo::setTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		break;
-	case kTheEnabled:
-		if (menuId.type == STRING && menuItemId.type == STRING)
-			g_director->_wm->setMenuItemEnabled(menuId.asString(), menuItemId.asString(), d.asInt());
-		else if (menuId.type == INT && menuItemId.type == INT)
-			g_director->_wm->setMenuItemEnabled(menuId.asInt() - 1, menuItemId.asInt() - 1, d.asInt());
-		else
-			warning("Lingo::setTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		break;
-	case kTheName:
-		if (menuId.type == STRING && menuItemId.type == STRING)
-			g_director->_wm->setMenuItemName(menuId.asString(), menuItemId.asString(), d.asString());
-		else if (menuId.type == INT && menuItemId.type == INT)
-			g_director->_wm->setMenuItemName(menuId.asInt() - 1, menuItemId.asInt() - 1, d.asString());
-		else
-			warning("Lingo::setTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		break;
-	case kTheScript:
-		{
-			LingoArchive *mainArchive = g_director->getCurrentMovie()->getMainLingoArch();
-			int commandId = 100;
-			while (mainArchive->getScriptContext(kEventScript, commandId))
-				commandId++;
-			mainArchive->replaceCode(d.asString(), kEventScript, commandId);
-
-			if (menuId.type == STRING && menuItemId.type == STRING)
-				g_director->_wm->setMenuItemAction(menuId.asString(), menuItemId.asString(), commandId);
-			else if (menuId.type == INT && menuItemId.type == INT)
-				g_director->_wm->setMenuItemAction(menuId.asInt() - 1, menuItemId.asInt() - 1, commandId);
-			else
-				warning("Lingo::setTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		}
-		break;
-	default:
-		warning("Lingo::setTheMenuItemEntity(): Unprocessed setting field \"%s\" of entity %s", field2str(field), entity2str(entity));
-		break;
+int Lingo::getMenuItemsNum(Datum &d) {
+	if (d.type != MENUREF) {
+		warning("Datum of wrong type: Expected MENUREF, got '%d'", d.type);
+		return 0;
 	}
+
+	Graphics::MacMenuItem *menu = nullptr;
+
+	if (!g_director->_wm->getMenu()) {
+		warning("Lingo::getMenuItemsNum() : Menu does not exist!");
+		return 0;
+	}
+
+	if (d.u.menu->menuIdNum == -1) {
+		menu = g_director->_wm->getMenu()->getMenuItem(*d.u.menu->menuIdStr);
+	} else {
+		menu = g_director->_wm->getMenu()->getMenuItem(d.u.menu->menuIdNum);
+	}
+	return g_director->_wm->getMenu()->numberOfMenuItems(menu);
 }
 
 Datum Lingo::getTheSprite(Datum &id1, int field) {
@@ -1274,7 +1338,8 @@ Datum Lingo::getTheSprite(Datum &id1, int field) {
 
 	switch (field) {
 	case kTheBackColor:
-		d.u.i = sprite->_backColor;
+		// TODO: Provide proper reverse transform for non-indexed color
+		d.u.i = (int)g_director->transformColor(sprite->_backColor);
 		break;
 	case kTheBlend:
 		d.u.i = sprite->_blend;
@@ -1296,7 +1361,8 @@ Datum Lingo::getTheSprite(Datum &id1, int field) {
 		d.u.i = sprite->_editable;
 		break;
 	case kTheForeColor:
-		d.u.i = sprite->_foreColor;
+		// TODO: Provide proper reverse transform for non-indexed color
+		d.u.i = (int)g_director->transformColor(sprite->_foreColor);
 		break;
 	case kTheHeight:
 		d.u.i = channel->_height;
@@ -1356,10 +1422,12 @@ Datum Lingo::getTheSprite(Datum &id1, int field) {
 		d.u.i = channel->getBbox().right;
 		break;
 	case kTheScoreColor:
-		warning("STUB: Lingo::getTheSprite(): Unprocessed getting field \"%s\" of sprite", field2str(field));
+		//Check the last 3 bits of the _colorcode byte as value lies in 0 to 5
+		d.u.i = (int)(sprite->_colorcode & 0x7);
 		break;
 	case kTheScriptNum:
-		warning("STUB: Lingo::getTheSprite(): Unprocessed getting field \"%s\" of sprite", field2str(field));
+		d.type = INT;
+		d.u.i = sprite->_scriptId.member;
 		break;
 	case kTheStartTime:
 		d.u.i = channel->_startTime;
@@ -1398,18 +1466,11 @@ Datum Lingo::getTheSprite(Datum &id1, int field) {
 }
 
 void Lingo::setTheSprite(Datum &id1, int field, Datum &d) {
-	int id = 0;
+	int id = id1.asInt();
 	Score *score = _vm->getCurrentMovie()->getScore();
 
 	if (!score) {
 		warning("Lingo::setTheSprite(): The sprite %d field \"%s\" setting over non-active score", id, field2str(field));
-		return;
-	}
-
-	if (id1.type == INT) {
-		id = id1.u.i;
-	} else {
-		warning("Lingo::setTheSprite(): Unknown the sprite id type: %s", id1.type2str());
 		return;
 	}
 
@@ -1426,9 +1487,12 @@ void Lingo::setTheSprite(Datum &id1, int field, Datum &d) {
 
 	switch (field) {
 	case kTheBackColor:
-		if ((uint32)d.asInt() != sprite->_backColor) {
-			sprite->_backColor = d.asInt();
-			channel->_dirty = true;
+		{
+			uint32 newColor = g_director->transformColor(d.asInt());
+			if (newColor != sprite->_backColor) {
+				sprite->_backColor = newColor;
+				channel->_dirty = true;
+			}
 		}
 		break;
 	case kTheBlend:
@@ -1498,9 +1562,12 @@ void Lingo::setTheSprite(Datum &id1, int field, Datum &d) {
 		channel->_sprite->_editable = d.asInt();
 		break;
 	case kTheForeColor:
-		if ((uint32)d.asInt() != sprite->_foreColor) {
-			sprite->_foreColor = d.asInt();
-			channel->_dirty = true;
+		{
+			uint32 newColor = g_director->transformColor(d.asInt());
+			if (newColor != sprite->_foreColor) {
+				sprite->_foreColor = newColor;
+				channel->_dirty = true;
+			}
 		}
 		break;
 	case kTheHeight:
@@ -1559,7 +1626,7 @@ void Lingo::setTheSprite(Datum &id1, int field, Datum &d) {
 		break;
 	case kTheMovieRate:
 		channel->_movieRate = d.asFloat();
-		if (sprite->_cast->_type == kCastDigitalVideo)
+		if (sprite->_cast && sprite->_cast->_type == kCastDigitalVideo)
 			((DigitalVideoCastMember *)sprite->_cast)->setMovieRate(channel->_movieRate);
 		else
 			warning("Setting movieTime for non-digital video");
@@ -1582,6 +1649,15 @@ void Lingo::setTheSprite(Datum &id1, int field, Datum &d) {
 		if (!d.asInt()) {
 			// TODO: Properly reset sprite properties after puppet disabled.
 			sprite->_moveable = false;
+		}
+		break;
+	case kTheRect:
+		if (d.type == RECT || (d.type == ARRAY && d.u.farr->arr.size() >= 4)) {
+			score->renderSprites(score->getCurrentFrame(), kRenderForceUpdate);
+			channel->_currentPoint = Common::Point(d.u.farr->arr[0].u.i, d.u.farr->arr[1].u.i);
+			sprite->_width = d.u.farr->arr[2].u.i - d.u.farr->arr[0].u.i;
+			sprite->_height = d.u.farr->arr[3].u.i - d.u.farr->arr[1].u.i;
+			channel->_dirty = true;
 		}
 		break;
 	case kTheStartTime:

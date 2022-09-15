@@ -54,9 +54,11 @@ struct CharacterExtras {
 	int8  process_idle_this_time = 0;
 	int8  slow_move_counter = 0;
 	short animwait = 0;
+	int   anim_volume = 100; // default animation volume (relative factor)
+	int   cur_anim_volume = 100; // current animation sound volume (relative factor)
 
-	void ReadFromFile(Shared::Stream *in);
-	void WriteToFile(Shared::Stream *out);
+	void ReadFromSavegame(Shared::Stream *in, int save_ver);
+	void WriteToSavegame(Shared::Stream *out);
 };
 
 } // namespace AGS3

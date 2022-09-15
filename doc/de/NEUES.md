@@ -1,7 +1,60 @@
 Umfangreichere Informationen über die Änderungen des aktuellen Codes findest Du unter:
         https://github.com/scummvm/scummvm/commits/
 
-#### 2.6.0 (DD.MM.YYYY)
+#### 2.7.0 (DD.MM.YYYY)
+
+ Neue Spiele:
+   - Unterstützung für Soldier Boyz hinzugefügt.
+   - Unterstützung für die C64- und ZX Spectrum-Versionen der GLK Scott Adams Interactive Fiction-Spiele
+     hinzugefügt.
+   - Unterstützung für die TI99/4A-Versionen der GLK Scott Adams-Spiele 1-12 hinzugefügt.
+   - Unterstützung für Obsidian hinzugefügt.
+
+ Allgemein:
+   - Anzahl an falsch-positiven Einträgen reduziert, wenn das Gerät nach Spielen durchsucht wird.
+   - Code der Roland MT-32-Emulation auf Munt mt32emu 2.7.0 aktualisiert.
+
+ AGOS:
+   - Option hinzugefügt, mit der die Ausblende-Effekte bei einem Raum-Wechsel in Simon 1 und 2
+     deaktiviert werden können.
+
+ Kyra:
+   - Unterstützung für die koreanische Version von Legend of Kyrandia 1 hinzugefügt.
+   - Unterstützung für die hebräische Version von Legend of Kyrandia 3 hinzugefügt.
+
+ SCUMM:
+   - Unterstützung von CGA-, CGA Composite-, CGA schwarz/weiß- und Herkules-Grafikmodi
+     für die SCUMM 1-Versionen von Zak McKracken und Maniac Mansion hinzugefügt.
+   - Die Genauigkeit der CGA- und Hercules-Modi der SCUMM 2-Versionen von
+     Zak McKracken und Maniac Mansion wurde verbessert.
+   - Verbesserte Genauigkeit der Darstekkzbg von CGA- und Hercules-Grafikmodi
+     in der EGA-Version von Monkey Island 1 (die VGA-Version unterstützt weder CGA noch Hercules).
+   - Einige Grafik-Fehler im CGA-Modus von Loom wurden korrigiert.
+   - EGA-Dithering-Modus für die VGA-Versionen von Loom, Monkey Island 1 und 2
+     sowie für Indiana Jones 4 hinzugefügt.
+   - Mögliche Sackgasse in der Ultimate Talkie Edition von Monkey Island 2 korrigiert.
+     Diese ist immer dann aufgetreten, wenn der Spieler am Ende von Part II
+     das Modell des Leuchtturms nicht aufhebt, bevor Captain Dread Guybrush
+     zurück zu Scabb Island bringt.
+   - Unterstützung für die originale Benutzeroberfläche von COMI hinzugefügt.
+   - Verbesserte Dekodierung einiger westeuropäischen Zeichenketten, wenn diese über
+     die ScummVM-Oberfläche dargestellt werden - beispielsweise, wenn ein Spiel pausiert wird.
+
+ Toon:
+   - Die Spiel-Menüs verhalten sich nun wie das Original.
+
+ TwinE:
+   - Darstellungsfehler bei Türen behoben.
+   - Fehlerhafte Musikwiedergabe in dem Verhaltens- und Inventarmenü korrigiert.
+   - Kashes werden nun statt Herzen als Fallback ausgegeben.
+   - Items flackern nicht mehr, wenn sie erscheinen werden.
+   - Der Meca-Pinguin spawnt nun im korrekten Winkel.
+   - Hintergründe werden nun korrekt dargestellt, wenn Zwischenszenen im Fernseher angesehen werden.
+   - Der Bildschirm wird nun nicht mehr zentriert, wenn ein Inventar-Item aktiviert wird.
+   - Wenn man W drückt, um mit Leuten zu sprechen, springt man nicht mehr automatisch.
+
+
+#### 2.6.0 "Insane Escapism" (2022-08-01)
 
  Neue Spiele:
    - Unterstützung für Sanitarium hinzugefügt.
@@ -11,17 +64,45 @@ Umfangreichere Informationen über die Änderungen des aktuellen Codes findest D
    - Unterstützung für Clandestiny hinzugefügt.
    - Unterstützung für Tender Loving Care (CD-ROM-Versionen) hinzugefügt.
    - Unterstützung für Uncle Henry's Playhouse hinzugefügt.
+   - Unterstützung für Wetlands hinzugefügt.
+   - Unterstützung für Chewy: ESC von F5 hinzugefügt.
 
  Allgemein:
    - Die Lizenz des Projektes wurde auf GPLv3+ aktualisiert.
    - ScummVM benötigt nun C++11, um gebaut werden zu können.
+   - Unterstützung für VS2008 entfernt, da dieses keine Unterstützung für C++11 anbietet.
    - Unterstützung für verbesserte Filter in der Such-Box hinzugefügt.
      Weitere Informationen findest Du in der Dokumentation unnter "Unterstanding the search box".
    - Icon-Ansicht zur Benutzeroberfläche hinzugefügt [GSoC-Aufgabe].
    - Unterstützung für die RetroWave OPL3-Soundkarte hinzugefügt.
+   - Portierung auf eine Beta-Version von OpenDingux hinzugefügt.
+   - Die Portierung auf Symbian wurde eingestellt.
+   - create_engine-Tool hinzugefügt, um die Erstellung einer neuen Engine zu erleichtern.
+   - Die Maus-Erfassung im HiDPI-Modus wurde korrigiert.
+   - Der Optionen-Dialog markiert Einstellungen, die über die Kommandozeile überschrieben wurden, in Rot.
+   - Im Launcher können Spiele nun nach bestimmten Kategorien gruppiert werden.
+   - Für den Launcher wurde eine neue Ansicht hinzugefügt, die Spiele als Icons darstellt.
 
  AGI:
    - Unterstützung für die Macintosh-Versionen von Manhunter 1 und 2 hinzugefügt.
+
+ AGS:
+   - Synchronisation mit dem Upstream-Code des AGS-Projektes durchgeführt.
+
+ AGOS:
+   - Elvira 1: Unterstützung für Casio MT-540/CT-460/CSM1 und CMS/GameBlaster hinzugefügt.
+   - Elvira 1 & 2, Waxworks, Simon the Sorcerer: Unterstützung für AdLib OPL3 hinzugefügt.
+     Abhängig von dem gewählten Spiel wird diese Einstellung "abgeschnittene" Noten verhindern sowie
+     zusätzliche Noten und Instrumente sowie Stereo-Unterstützung anbieten.
+   - Elvira 2, Waxworks: Unterstützung für AdLib- und MT-32-Soundeffekte hinzugefügt.
+   - Elvira 2, Waxworks, Simon the Sorcerer (Diskettenversion): Unterstützung für abgemischte MIDI-Wiedergabe
+     (MT-32-Musik mit AdLib-Soundeffekten) hinzugefügt.
+   - Simon the Sorcerer (Diskettenversion): Verbesserung der Genauigkeit von AdLib-Soundeffekten.
+   - Simon the Sorcerer: Die Audio-Wiedergabegeschwindigkeit der DOS-Version ist nun genauer. Sowohl die DOS-
+     als auch die Windows-Version erlauben nun, die genaueren DOS-Geschwindigkeiten oder die schnellere Windows-Wiedergabe
+     auszuwählen.
+   - Simon the Sorcerer 2: Unterstützung für AdLib und General MIDI verbessert.
+   - Simon the Sorcerer 2: Fehlerkorrektur für fehlende MT-32-Audiospuren im Intro.
 
  BBVS:
    - Teilweise fehlerhafte Darstellung der Buttons im Hauptmenü korrigiert.
@@ -43,12 +124,26 @@ Umfangreichere Informationen über die Änderungen des aktuellen Codes findest D
  Dreamweb:
    - Unterstützung für Sprachausgabe in Dialogen und für Objektbeschreibungen hinzugefügt.
 
+ Glk:
+   - Unterstützung für ZX Spectrum-Spiele mit Grafik in der Scott-Sub-Engine hinzugefügt.
+
  Kyra:
    - Unterstützung für die chinesischen Versionen von Legend of Kyrandia 1 - 3 hinzugefügt.
    - Unterstützung für Audio-Ausgabe in der Macintosh-Version von Legend of Kyrandia hinzugefügt.
    - Die Macintosh-Version (ohne Sprachausgabe) von Legend of Kyrandia 1 kann nun direkt von
      den Dateien auf der CD gespielt werden. Das bedeutet, dass Du nicht mehr den Installer
      ausführen musst, um die Dateien zu extrahieren.
+
+ NGI:
+   - Status der Brücke in Szene 13 korrigiert.
+   - Der Spieler bleibt nun nicht mehr stecken, wenn er sich zu dem Fuß in Szene 30 teleportiert.
+   - Inkonsistenten Status des Kaktus korrigiert.
+
+ Private:
+   - Code überarbeitet, sodass die Darstellunbg nun mit der ursprünglichen, aus 256 Farben bestehenden
+     Farbpalette erfolgt.
+   - Endianness-Probleme behoben.
+   - Unterstützung für die koreanische Version hinzugefügt.
 
  Supernova:
    - Unterstützung für Sprachausgabe in Dialogen und für Objektbeschreibungen hinzugefügt.
@@ -60,20 +155,51 @@ Umfangreichere Informationen über die Änderungen des aktuellen Codes findest D
      KQ1, KQ4, KQ5, KQ6, KQ7, LB1, LB2, LIGHTHOUSE, LONGBOW, LSL1, LSL2, LSL3,
      LSL5, LSL6, LSL6HIRES, LSL7, PEPPER, PHANT2, PQ1, PQ2, PQ3, PQ4, PQSWAT,
      QFG1, QFG1VGA, QFG2, QFG3, QFG4, SHIVERS, SQ1, SQ3, SQ4, SQ5, SQ6, TORIN.
+   - Korrektur zahlreicher Skript-Fehler in KQ6, KQ7, GK2, QFG3, QFG4 und Hoyle4.
+   - Automatisch gespeicherte Spielstände in Shivers und Phantasmagoria 2 werden nun korrekt geladen.
+   - Unterstützung für die koreanische Fan-Übersetzungen des scummkor-Projektes hinzugefügt:
+     EcoQuest 2 und Gabriel Knight 2.
 
  SCUMM:
-   - Neue Digital iMUSE-Engine hinzugefügt.
+   - Neue Digital iMUSE-Engine hinzugefügt. Die Unterstützung für re-komprimierte Audio-Dateien in
+     Full Throttle, The Dig und The Curse of Monkey Island ist entfallen.
    - Der Musik-Player der Amiga-Versionen von Indy3 und Loom wurde neu entworfen, um dem Original-Code genauer zu entsprechen.
    - Fehlender Cursor nach dem Laden eines gespeicherten Spielstands in der 16-Farben-Version (Macintosh)
      in Loom und Indiana Jones and the Last Crusade behoben.
    - Es ist nun möglich, die Musik in den Disketten-Versionen von Loom durch eigene Audio-Tracks
-     zu ersetzen. Im ScummVM-Wiki findest Du eine Liste, welche Teile von Schwanensee im Spiel verwendet werden.
-   - Einige Verbesserungen, die ScummVM zu Spielen hinzufügt, können jetzt
-     in den Spiel-Einstellungen deaktiviert werden. Die Option zur Korrektur des Zeichen-
-     Abstands in den 16-Farben-Versionen für Macintosh von Indiana Jones and the Last Crusade
-     findest du jetzt dort.
+     zu ersetzen. Im ScummVM-Wiki findest Du unter <https://wiki.scummvm.org/index.php/Loom>
+     eine Liste, welche Teile von Schwanensee im Spiel verwendet werden.
    - Fehler bei der Wiedergabe von MIDI-Musik in der EGA/VGA-Diskettenversion von The Secret of Monkey Island behoben.
+   - In der VGA-Diskettenversion von The Secret of Monkey Island fließt die Lava nun nicht mehr in die falsche Richtung.
    - Fehlerhafte Grafik-Darstellung in Full Throttle korrigiert, die auftritt, wenn Ben am Eingang von Corley Motors vorbeiläuft.
+   - Auflöse-Effekt sowie die Darstellung von Bobbins Palette, wenn er das abgedunkelte Zelt verlässt,
+     in der TurboGrafx-16-Version von Loom korrigiert. Das Verhalten entspricht nun dem Originalspiel.
+   - Fehlerhafte Farben in der NES-Version von Maniac Mansion auf Plattformen mit striktem Aligment wie Dreamcast,
+     Apple Silicon und diversen Handheld-Geräten korrigiert.
+   - Die Text-Rendering-Routinen für Full Throttle, The Dig und The Curse of Monkey Island wurden entsprechend
+     der originalen Interpreter angepasst.
+   - Die Timing-Routinen wurden angepasst, um das ursprüngliche Hardware-Verhalten und die Eigenheiten des originalen
+     Interpreters besser abzubilden.
+   - Lippensynchronisation in Backyard Baseball 2003 korrigiert.
+   - Verschiedene Fehler, die in den Original-Versionen der meisten LucasArts-Spielen vorhanden sind,
+     wurden korrigiert: <https://wiki.scummvm.org/index.php?title=SCUMM/Game_Enhancements>.
+     Die meisten dieser Verbesserungen können nun in den Spiel-Einstellungen deaktiviert werden,
+     falls Du das originale Spiel-Verhalten bevorzugst.
+   - Die Wiedergabe der CD-Audiospuren im Intro von Monkey Island 1 sowie in der CD-Version von Loom im Allgemeinen
+     kann nun über einen Schieberegler angepasst werden. Loom ist auf eine korrekte Wiedergabe der "stillen" Sequenzen
+     am Beginn einer Audiospur angewiesen, während die CD-Version von Monkey Island 1 die Intro-Musik
+     nicht so genau synchronisiert, wie frühere Versionen. Weitere Details findest Du in unserem Wiki.
+   - Die von Limited Run Games in der Monkey Island 30th Anniversary Anthology verkaufte
+     EGA-Diskettenversion von Monkey Island 1 wird nun korrekt erkannt und zurückgewiesen, da
+     das enthaltene Abbild von DISK4 defekt ist. Es ist möglich, ein funktionierendes Image
+     anhand der bereitgestellten KryoFlux-Dumps zu erzeugen.
+   - Fehlerhafter Zufallsgenerator in Backyard Baseball korrigiert.
+   - Ein Workaround in der FM-Towns-Version von Monkey Island 2 ist jetzt als
+     Verbesserung gekennzeichnet. Dieser Workaround hat ursprünglich einen
+     Abschnitt im Karten-Puzzle auf Booty Island, welche in der FM-Towns-Version
+     des Spiels entfernt wurde, wiederhergestellt.
+   - Dialog-Zeilen können nun wie im Handbuch beschrieben bedient werden. Du kannst beispielsweise
+     auf die Dialog-Zeile klicken, um den jeweiligen Befehl auszuführen.
 
  Sherlock:
    - Fehler in der Wiedergabegeschwindigkeit im Intro von Serrated Scalpel behoben, der auftritt,
@@ -91,6 +217,10 @@ Umfangreichere Informationen über die Änderungen des aktuellen Codes findest D
    - Falsche Schussrichtung einiger Charaktere korrigiert.
    - Tür-Bewegungen in einigen Situationen korrigiert.
 
+ Android-Portierung:
+   - Hardwareunterstützunge Beschleunigung für 3D-Grafik hinzugefügt.
+   - Verbesserung der Touch-Eingabe.
+
  macOS-Port:
    - Unterstützung für die Anzeige von OSD-Nachrichten in der Touch Bar hinzugefügt.
 
@@ -98,6 +228,15 @@ Umfangreichere Informationen über die Änderungen des aktuellen Codes findest D
    - "Portabler Modus" hinzugefügt, der die von ScummVM erstellten Dateien (Spielstände, Screenshots...)
      nicht wie üblich im Benutzerprofil-Ordner, sondern in dem Verzeichnis ablegt, in welchem sich
      die ScummVM-Programmdatei befindet, sofern dort eine scummvm.ini-Datei existiert.
+   - Die Erkennung des AppData-Verzeichnisses unter Windows 95/98/ME wurde korrigiert.
+
+ RISC OS-Portierung:
+   - Unterstützung für dynamische Plugins hinzugefügt.
+   - Nativer MIDI-Driver hinzugefügt.
+
+ Nintendo DS-Portierung:
+   - Der Bildschirm wird nun in Lade- und Speicher-Dialogen korrekt gescrollt.
+
 
 #### 2.5.1 (02.01.2022)
 

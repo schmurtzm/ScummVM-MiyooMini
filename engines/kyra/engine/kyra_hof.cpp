@@ -169,7 +169,8 @@ void KyraEngine_HoF::pauseEngineIntern(bool pause) {
 		_pauseStart = 0;
 
 		_nextIdleAnim += pausedTime;
-		_tim->refreshTimersAfterPause(pausedTime);
+		if (_tim)
+			_tim->refreshTimersAfterPause(pausedTime);
 	}
 }
 
@@ -377,6 +378,7 @@ void KyraEngine_HoF::startup() {
 	loadNPCScript();
 
 	if (_gameToLoad == -1) {
+		restartPlayTimerAt(0);
 		snd_playWanderScoreViaMap(52, 1);
 		enterNewScene(_mainCharacter.sceneId, _mainCharacter.facing, 0, 0, 1);
 		saveGameStateIntern(0, "New Game", nullptr);
@@ -446,6 +448,7 @@ void KyraEngine_HoF::runLoop() {
 		removeInputTop();
 
 		update();
+		updatePlayTimer();
 
 		if (inputFlag == 198 || inputFlag == 199) {
 			_savedMouseState = _mouseState;

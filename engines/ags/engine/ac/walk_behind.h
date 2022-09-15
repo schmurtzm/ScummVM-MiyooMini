@@ -40,6 +40,12 @@ enum WalkBehindMethodEnum {
 	DrawAsSeparateSprite
 };
 
+// An info on vertical column of walk-behind mask, which may contain WB area
+struct WalkBehindColumn {
+	bool Exists = false; // whether any WB area is in this column
+	int Y1 = 0, Y2 = 0; // WB top and bottom Y coords
+};
+
 namespace AGS { namespace Shared { class Bitmap; } }
 using namespace AGS; // FIXME later
 
@@ -49,7 +55,7 @@ void walkbehinds_recalc();
 void walkbehinds_generate_sprites();
 // Edits the given game object's sprite, cutting out pixels covered by walk-behinds;
 // returns whether any pixels were updated
-bool walkbehinds_cropout(Shared::Bitmap *sprit, int sprx, int spry, int basel, int zoom = 100);
+bool walkbehinds_cropout(Shared::Bitmap *sprit, int sprx, int spry, int basel);
 
 } // namespace AGS3
 

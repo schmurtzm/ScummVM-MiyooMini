@@ -63,6 +63,8 @@ struct RoomCameraDrawData {
 // ObjTexture is a helper struct that pairs a raw bitmap with
 // a renderer's texture and an optional position
 struct ObjTexture {
+	// Sprite ID
+	uint32_t SpriteID = UINT32_MAX;
 	// Raw bitmap
 	std::unique_ptr<Shared::Bitmap> Bmp;
 	// Corresponding texture, created by renderer
@@ -77,7 +79,6 @@ struct ObjTexture {
 	ObjTexture(Shared::Bitmap *bmp, Engine::IDriverDependantBitmap *ddb, int x, int y, int xoff = 0, int yoff = 0)
 		: Bmp(bmp), Ddb(ddb), Pos(x, y), Off(xoff, yoff) {
 	}
-	ObjTexture(const ObjTexture &) = default;
 	ObjTexture(ObjTexture &&o);
 	~ObjTexture();
 
@@ -150,7 +151,10 @@ void mark_current_background_dirty();
 // Avoid freeing and reallocating the memory if possible
 Shared::Bitmap *recycle_bitmap(Shared::Bitmap *bimp, int coldep, int wid, int hit, bool make_transparent = false);
 void recycle_bitmap(std::unique_ptr<Shared::Bitmap> &bimp, int coldep, int wid, int hit, bool make_transparent = false);
-Engine::IDriverDependantBitmap *recycle_ddb_bitmap(Engine::IDriverDependantBitmap *ddb, Shared::Bitmap *source, bool has_alpha = false, bool opaque = false);
+Engine::IDriverDependantBitmap* recycle_ddb_sprite(Engine::IDriverDependantBitmap *ddb, uint32_t sprite_id, Shared::Bitmap *source, bool has_alpha = false, bool opaque = false);
+inline Engine::IDriverDependantBitmap* recycle_ddb_bitmap(Engine::IDriverDependantBitmap *ddb, Shared::Bitmap *source, bool has_alpha = false, bool opaque = false) {
+	return recycle_ddb_sprite(ddb, UINT32_MAX, source, has_alpha, opaque);
+}
 // Draw everything
 void render_graphics(Engine::IDriverDependantBitmap *extraBitmap = nullptr, int extraX = 0, int extraY = 0);
 // Construct game scene, scheduling drawing list for the renderer
@@ -180,7 +184,7 @@ void draw_gui_sprite(Shared::Bitmap *ds, bool use_alpha, int xpos, int ypos,
 // * if transformation is necessary - writes into dst and returns dst;
 // * if no transformation is necessary - simply returns src;
 Shared::Bitmap *transform_sprite(Shared::Bitmap *src, bool src_has_alpha, std::unique_ptr<Shared::Bitmap> &dst,
-	const Size dst_sz, Shared::BitmapFlip flip = Shared::kBitmap_NoFlip);
+	const Size dst_sz, Shared::GraphicFlip flip = Shared::kFlip_None);
 // Render game on screen
 void render_to_screen();
 // Callbacks for the graphics driver

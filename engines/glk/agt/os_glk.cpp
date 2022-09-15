@@ -30,7 +30,7 @@ namespace AGT {
  * Glk interface for AGiliTy 1.1.1.1
  * -------------------------------
  *
- * This module contains the the Glk porting layer for AGiliTy.  It
+ * This module contains the Glk porting layer for AGiliTy.  It
  * defines the Glk arguments list structure, the entry points for the
  * Glk library framework to use, and all platform-abstracted I/O to
  * link to Glk's I/O.
@@ -3238,7 +3238,7 @@ static void gagt_display_debug() {
 		        paragraph ? paragraph->id + 1 : 0,
 		        paragraph ? paragraph->line_count : 0,
 		        paragraph && paragraph->special
-		        ? paragraph->special - GAGT_SPECIALS + 1 : 0,
+		        ? long(paragraph->special - GAGT_SPECIALS + 1) : 0,
 		        line->buffer.allocation, line->buffer.length,
 		        line->indent, line->outdent,
 		        line->real_length,
