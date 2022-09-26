@@ -4,4 +4,4 @@
 	branch = prince-and-the-coward
 [submodule "backends/platform/libretro"]
 	path = backends/platform/libretro
-	url = https://github.com/StupidHoroscope/libretro-scummvm-miyoo-backend.git
+	url = https://github.com/schmurtzm/libretro-scummvm-miyoo-backend.git
