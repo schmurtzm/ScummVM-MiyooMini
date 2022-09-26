@@ -283,7 +283,9 @@ ScummEngine::ScummEngine(OSystem *syst, const DetectorResult &dr)
 		break;
 
 	case Common::kRenderAmiga:
-		if (_game.platform != Common::kPlatformAmiga)
+		// Allow v2 games to be rendered in forced Amiga mode; this works, and
+		// doing this to avoid the "sunburn effect" in MM/Zak is popular.
+		if (_game.platform != Common::kPlatformAmiga && _game.version != 2)
 			_renderMode = Common::kRenderDefault;
 		break;
 
@@ -2129,11 +2131,13 @@ void ScummEngine::syncSoundSettings() {
 				VAR(VAR_CHARINC) = 9 - _defaultTextSpeed;
 		}
 
+#ifdef ENABLE_SCUMM_7_8
 		if (_game.version >= 7 && _imuseDigital) {
 			_imuseDigital->diMUSESetMusicGroupVol(ConfMan.getInt("music_volume") / 2);
 			_imuseDigital->diMUSESetVoiceGroupVol(ConfMan.getInt("speech_volume") / 2);
 			_imuseDigital->diMUSESetSFXGroupVol(ConfMan.getInt("sfx_volume") / 2);
 		}
+#endif
 		return;
 	}
 

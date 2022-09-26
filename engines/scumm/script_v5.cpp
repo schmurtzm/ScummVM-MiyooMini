@@ -642,6 +642,27 @@ void ScummEngine_v5::o5_setClass() {
 	while ((_opcode = fetchScriptByte()) != 0xFF) {
 		cls = getVarOrDirectWord(PARAM_1);
 
+		// WORKAROUND: In the CD versions of Monkey 1 with the full 256-color
+		// inventory, going at Stan's messes up the color of some objects, such
+		// as the "striking yellow color" of the flower from the forest, the
+		// rubber chicken, or Guybrush's trousers. The following palette fixes
+		// are taken from the Ultimate Talkie Edition.
+		if (_game.id == GID_MONKEY && _game.platform != Common::kPlatformFMTowns &&
+		    _game.platform != Common::kPlatformSegaCD && _roomResource == 59 &&
+		    vm.slot[_currentScript].number == 10002 && obj == 915 && cls == 6 &&
+		    _currentPalette[251 * 3] == 0 && _enableEnhancements &&
+		    strcmp(_game.variant, "SE Talkie") != 0) {
+			// True as long as Guybrush isn't done with the voodoo recipe on the
+			// Sea Monkey. The Ultimate Talkie Edition probably does this as a way
+			// to limit this palette override to Part One; just copy this behavior.
+			if (_scummVars[260] < 8) {
+				setPalColor(245,  68,  68, 68); // gray
+				setPalColor(247, 252, 244,  0); // yellow
+				setPalColor(249, 112, 212,  0); // lime
+			}
+			setPalColor(251, 32, 84, 0); // green
+		}
+
 		// WORKAROUND bug #3099: Due to a script bug, the wrong opcode is
 		// used to test and set the state of various objects (e.g. the inside
 		// door (object 465) of the of the Hostel on Mars), when opening the
@@ -3408,6 +3429,19 @@ void ScummEngine_v5::decodeParseStringTextString(int textSlot) {
 		// Fix this while making sure that it doesn't apply to Elaine saying
 		// "I heard that!" offscreen.
 		_string[textSlot].color = 0xF9;
+		printString(textSlot, _scriptPointer);
+	} else if (_game.id == GID_MONKEY && _game.platform != Common::kPlatformSegaCD &&
+			(vm.slot[_currentScript].number == 140 || vm.slot[_currentScript].number == 294) &&
+			_actorToPrintStrFor == 255 && _string[textSlot].color == 0x06 &&
+			strcmp(_game.variant, "SE Talkie") != 0 && _enableEnhancements) {
+		// WORKAROUND: In MI1 CD, the colors when the navigator head speaks are
+		// not the intended ones (dark purple instead of brown), because the
+		// original `Color(6)` parameter was kept without adjusting it for the
+		// v5 palette changes (a common oversight in that version). The verb
+		// options may also look wrong in that scene, but we don't fix that, as
+		// this font in displayed in green, white or purple between the
+		// different releases and scenes, so we don't know the original intent.
+		_string[textSlot].color = 0xEA;
 		printString(textSlot, _scriptPointer);
 	} else if (_game.id == GID_MONKEY && _roomResource == 25 && vm.slot[_currentScript].number == 205) {
 		printPatchedMI1CannibalString(textSlot, _scriptPointer);

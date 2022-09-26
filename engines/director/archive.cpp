@@ -242,6 +242,7 @@ void Archive::dumpChunk(Resource &res, Common::DumpFile &out) {
 	}
 
 	delete resStream;
+	free(data);
 }
 
 // Mac Archive code
@@ -291,7 +292,7 @@ bool MacArchive::openStream(Common::SeekableReadStream *stream, uint32 startOffs
 	_resFork = new Common::MacResManager();
 	stream->seek(startOffset);
 
-	if (!_resFork->loadFromMacBinary(*stream)) {
+	if (!_resFork->loadFromMacBinary(stream)) {
 		warning("MacArchive::openStream(): Error loading Mac Binary");
 		close();
 		return false;
@@ -495,6 +496,7 @@ bool RIFXArchive::openStream(Common::SeekableReadStream *stream, uint32 startOff
 			MacArchive *macArchive = new MacArchive();
 			if (!macArchive->openStream(macStream)) {
 				delete macArchive;
+				delete macStream;
 			} else {
 				g_director->getCurrentWindow()->probeMacBinary(macArchive);
 			}
@@ -796,7 +798,7 @@ bool RIFXArchive::readAfterburnerMap(Common::SeekableReadStreamEndian &stream, u
 
 	delete abmpStream;
 
-	// Initial load segment
+	// Handle Initial Load Segment (ILS)
 	if (!resourceMap.contains(2)) {
 		warning("RIFXArchive::readAfterburnerMap(): Map has no entry for ILS");
 		return false;

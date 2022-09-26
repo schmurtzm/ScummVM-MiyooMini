@@ -91,8 +91,8 @@ inline int transpose_clamp(int a, int b, int c) {
 //////////////////////////////////////////////////
 
 struct TimerCallbackInfo {
-	IMuseInternal *imuse;
-	MidiDriver *driver;
+	IMuseInternal *imuse = nullptr;
+	MidiDriver *driver = nullptr;
 };
 
 struct HookDatas {
@@ -354,7 +354,7 @@ struct Part : public Common::Serializable {
 	void allNotesOff();
 
 	void set_param(byte param, int value) { }
-	void init();
+	void init(bool useNativeMT32);
 	void setup(Player *player);
 	void uninit();
 	void off();
