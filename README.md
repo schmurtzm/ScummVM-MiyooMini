@@ -1,3 +1,42 @@
+# ScummVM + libretro core backend For Miyoo Mini
+
+
+This repo is based on [StupidHoroscope/ScummVM-MiyooMini](https://github.com/StupidHoroscope/ScummVM-MiyooMini) which is a fork of the official ScummVM repo.
+
+Coupled with  [schmurtzm/libretro-scummvm-miyoo-backend](https://github.com/schmurtzm/libretro-scummvm-miyoo-backend)  which is a fork of [diablodiab/libretro-scummvm-backend](https://github.com/diablodiab/libretro-scummvm-backend) it allows to generate an up to date Retroarch core from current version of ScummVM (v2.6 stable or v2.7 dev).
+
+[libretro-scummvm-miyoo-backend](https://github.com/schmurtzm/libretro-scummvm-miyoo-backend) has been included as a submodule of this project.
+This ScummVM core is more up to date than the current official libretro core so it supports more games including 2.5D games like Grim Fandango (About 385 in v2.7 vs 298 games for the v2.1.1).
+
+
+Comparing the official ScummVM, this repo contains very few differences : 
+- Disabled SVG rendering in themes 
+- Added libretro-scummvm-miyoo-backend as submodule (the differences for the Miyoo Mini are more in this part)
+
+
+## Compiling
+
+To compile the core, run the following:
+
+```
+git submodule init 
+git submodule update
+cd backends/platform/libretro/build
+make platform=miyoomini -j$(nproc)
+```
+
+When updating ScummVM, it's important to rebuild [scummvm.zip](aux-data/scummvm.zip) so that any auxiliary data is bundled in. The compile the new scummvm.zip, run the following command:
+
+```
+cd backends/platform/libretro/aux-data
+./bundle_aux_data.bash
+```
+These extra files can be unziped in BIOS folder of the Miyoo Mini. 
+This archive contains themes and files required to make some engines work (like kyra.dat for westwood games).
+
+---
+
+
 # [ScummVM README](https://www.scummvm.org/) · [![CI](https://github.com/scummvm/scummvm/actions/workflows/ci.yml/badge.svg)](https://github.com/scummvm/scummvm/actions/workflows/ci.yml) [![Translation status](https://translations.scummvm.org/widgets/scummvm/-/scummvm/svg-badge.svg)](https://translations.scummvm.org/engage/scummvm/?utm_source=widget) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md#pull-requests) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/e06e5b18f8464fef859b5a7f78d10357)](https://www.codacy.com/gh/scummvm/scummvm/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=scummvm/scummvm&amp;utm_campaign=Badge_Grade)
 
 ## About ScummVM
