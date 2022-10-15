@@ -955,13 +955,14 @@ bool Script::playvideofromref(uint32 fileref, bool loopUntilAudioDone) {
 			ResInfo info;
 			_vm->_resMan->getResInfo(fileref, info);
 
-			// Remove the extension and add ".txt"
-			info.filename.deleteLastChar();
-			info.filename.deleteLastChar();
-			info.filename.deleteLastChar();
-			info.filename += "txt";
+			// Prepend the GJD name and remove the extension
+			Common::String subtitleName = _vm->_resMan->getGjdName(info);
+			subtitleName = subtitleName.substr(0, subtitleName.size() - 4);
+			subtitleName.toUppercase();
+			// add the filename without the extension, then add the .txt extension
+			subtitleName += "-" + info.filename.substr(0, info.filename.size() - 3) + "txt";
 
-			_vm->_videoPlayer->loadSubtitles(info.filename.c_str());
+			_vm->_videoPlayer->loadSubtitles(subtitleName.c_str());
 		} else {
 			error("Groovie::Script: Couldn't open file");
 			return true;
@@ -2192,7 +2193,7 @@ void Script::o2_videofromref() {
 	// Skip the 11th Hour intro videos on right mouse click, instead of
 	// fast-forwarding them. This has the same effect as pressing 'p' twice in
 	// the skulls screen after the Groovie logo
-	if (_version == kGroovieT11H && _currentInstruction == 0x0560 && fileref != _videoRef)
+	if (_version == kGroovieT11H && _currentInstruction == 0x0560 && fileref != _videoRef && _scriptFile == "script.grv")
 		_videoSkipAddress = 1417;
 
 	if (_version == kGroovieT11H && fileref != _videoRef && !ConfMan.getBool("originalsaveload")) {

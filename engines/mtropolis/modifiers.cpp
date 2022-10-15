@@ -21,6 +21,9 @@
 
 #include "common/memstream.h"
 
+#include "graphics/managed_surface.h"
+#include "graphics/palette.h"
+
 #include "mtropolis/assets.h"
 #include "mtropolis/audio_player.h"
 #include "mtropolis/miniscript.h"
@@ -63,6 +66,9 @@ bool CompoundVarLoader::readSave(Common::ReadStream *stream, uint32 saveFileVers
 	saveLoad->commitLoad();
 
 	return true;
+}
+
+BehaviorModifier::BehaviorModifier() : _switchable(false), _isEnabled(false) {
 }
 
 bool BehaviorModifier::load(ModifierLoaderContext &context, const Data::BehaviorModifier &data) {
@@ -275,6 +281,34 @@ bool ColorTableModifier::respondsToEvent(const Event &evt) const {
 }
 
 VThreadState ColorTableModifier::consumeMessage(Runtime *runtime, const Common::SharedPtr<MessageProperties> &msg) {
+	if (_applyWhen.respondsTo(msg->getEvent())) {
+		Common::SharedPtr<Asset> ctabAsset = runtime->getProject()->getAssetByID(_assetID).lock();
+		if (ctabAsset) {
+			if (ctabAsset->getAssetType() == kAssetTypeColorTable) {
+				const ColorRGB8 *colors = static_cast<ColorTableAsset *>(ctabAsset.get())->getColors();
+
+				Palette palette(colors);
+
+				if (runtime->getFakeColorDepth() <= kColorDepthMode8Bit) {
+					runtime->setGlobalPalette(palette);
+				} else {
+					Structural *structural = this->findStructuralOwner();
+					if (structural != nullptr && structural->isElement() && static_cast<Element *>(structural)->isVisual()) {
+						static_cast<VisualElement *>(structural)->setPalette(Common::SharedPtr<Palette>(new Palette(palette)));
+					} else {
+						warning("Attempted to apply a color table to a non-element");
+					}
+				}
+			} else {
+				error("Color table modifier applied an asset that wasn't a color table");
+			}
+		} else {
+			warning("Failed to apply color table, asset %u wasn't found", _assetID);
+		}
+
+		return kVThreadReturn;
+	}
+
 	return kVThreadReturn;
 }
 
@@ -371,11 +405,17 @@ VThreadState SaveAndRestoreModifier::consumeMessage(Runtime *runtime, const Comm
 	if (_saveWhen.respondsTo(msg->getEvent())) {
 		CompoundVarSaver saver(obj);
 
+		const Graphics::ManagedSurface *screenshotOverrideManaged = runtime->getSaveScreenshotOverride().get();
+		const Graphics::Surface *screenshotOverride = nullptr;
+
+		if (screenshotOverrideManaged)
+			screenshotOverride = &screenshotOverrideManaged->rawSurface();
+
 		bool succeeded = false;
 		if (isPrompt)
-			succeeded = runtime->getSaveProvider()->promptSave(&saver, runtime->getSaveScreenshotOverride().get());
+			succeeded = runtime->getSaveProvider()->promptSave(&saver, screenshotOverride);
 		else
-			succeeded = runtime->getSaveProvider()->namedSave(&saver, runtime->getSaveScreenshotOverride().get(), _fileName);
+			succeeded = runtime->getSaveProvider()->namedSave(&saver, screenshotOverride, _fileName);
 
 		if (succeeded) {
 			for (const Common::SharedPtr<SaveLoadHooks> &hooks : runtime->getHacks().saveLoadHooks)
@@ -387,9 +427,9 @@ VThreadState SaveAndRestoreModifier::consumeMessage(Runtime *runtime, const Comm
 
 		bool succeeded = false;
 		if (isPrompt)
-			runtime->getLoadProvider()->promptLoad(&loader);
+			succeeded = runtime->getLoadProvider()->promptLoad(&loader);
 		else
-			runtime->getLoadProvider()->namedLoad(&loader, _fileName);
+			succeeded = runtime->getLoadProvider()->namedLoad(&loader, _fileName);
 
 		if (succeeded) {
 			for (const Common::SharedPtr<SaveLoadHooks> &hooks : runtime->getHacks().saveLoadHooks)
@@ -463,6 +503,9 @@ Common::SharedPtr<Modifier> SetModifier::shallowClone() const {
 
 const char *SetModifier::getDefaultName() const {
 	return "Set Modifier";
+}
+
+AliasModifier::AliasModifier() : _aliasID(0) {
 }
 
 bool AliasModifier::load(ModifierLoaderContext &context, const Data::AliasModifier &data) {
@@ -635,6 +678,9 @@ Common::SharedPtr<Modifier> ChangeSceneModifier::shallowClone() const {
 
 const char *ChangeSceneModifier::getDefaultName() const {
 	return "Change Scene Modifier";
+}
+
+SoundEffectModifier::SoundEffectModifier() : _soundType(kSoundTypeBeep), _assetID(0) {
 }
 
 bool SoundEffectModifier::load(ModifierLoaderContext &context, const Data::SoundEffectModifier &data) {
@@ -1388,6 +1434,9 @@ VThreadState IfMessengerModifier::evaluateAndSendTask(const EvaluateAndSendTaskD
 		_sendSpec.sendFromMessenger(taskData.runtime, this, taskData.incomingData, nullptr);
 
 	return kVThreadReturn;
+}
+
+TimerMessengerModifier::TimerMessengerModifier() : _milliseconds(0), _looping(false) {
 }
 
 TimerMessengerModifier::~TimerMessengerModifier() {
@@ -2276,6 +2325,9 @@ const char *CompoundVariableModifier::getDefaultName() const {
 	return "Compound Variable";
 }
 
+BooleanVariableModifier::BooleanVariableModifier() : _value(false) {
+}
+
 bool BooleanVariableModifier::load(ModifierLoaderContext &context, const Data::BooleanVariableModifier &data) {
 	if (!loadTypicalHeader(data.modHeader))
 		return false;
@@ -2346,6 +2398,9 @@ bool BooleanVariableModifier::SaveLoad::loadInternal(Common::ReadStream *stream,
 
 	_value = (b != 0);
 	return true;
+}
+
+IntegerVariableModifier::IntegerVariableModifier() : _value(0) {
 }
 
 bool IntegerVariableModifier::load(ModifierLoaderContext& context, const Data::IntegerVariableModifier& data) {
@@ -2689,6 +2744,9 @@ bool PointVariableModifier::SaveLoad::loadInternal(Common::ReadStream *stream, u
 		return false;
 
 	return true;
+}
+
+FloatingPointVariableModifier::FloatingPointVariableModifier() : _value(0.0) {
 }
 
 bool FloatingPointVariableModifier::load(ModifierLoaderContext &context, const Data::FloatingPointVariableModifier &data) {

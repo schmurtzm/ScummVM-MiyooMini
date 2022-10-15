@@ -638,7 +638,7 @@ bool ActorProto::acceptInsertionAtAction(
 	}
 
 	//  Determine if this object is simply being moved within this actor
-	if (oldLoc.context == dObj) {
+	if (oldLoc._context == dObj) {
 		//  Determine if and where the object is in use by this actor
 		if (a->_leftHandObject == item)
 			inUseType = heldInLeftHand;
@@ -1725,7 +1725,7 @@ ActorAttributes *Actor::getBaseStats() {
 	if (_disposition < dispositionPlayer)
 		return &((ActorProto *)_prototype)->baseStats;
 	else
-		return &g_vm->_playerList[_disposition - dispositionPlayer]->baseStats;
+		return &g_vm->_playerList[_disposition - dispositionPlayer]->_baseStats;
 }
 
 //-----------------------------------------------------------------------
@@ -1928,7 +1928,7 @@ void Actor::attack(GameObject *target) {
 //	Stop all attacks on a specified target
 
 void Actor::stopAttack(GameObject *target) {
-	if (_moveTask && _moveTask->isAttack() && _moveTask->targetObj == target)
+	if (_moveTask && _moveTask->isAttack() && _moveTask->_targetObj == target)
 		_moveTask->finishAttack();
 }
 
@@ -2022,9 +2022,9 @@ void Actor::getColorTranslation(ColorTable map) {
 	//  If actor has color table loaded, then calculate the
 	//  translation table.
 	if (_appearance
-	        &&  _appearance->schemeList) {
+	        &&  _appearance->_schemeList) {
 		buildColorTable(map,
-		                _appearance->schemeList->_schemes[_colorScheme]->bank,
+		                _appearance->_schemeList->_schemes[_colorScheme]->bank,
 		                11);
 	} else memcpy(map, identityColors, 256);
 }
@@ -2509,7 +2509,7 @@ void Actor::updateState() {
 	        &&  isDead()
 	        &&  isInterruptable()
 	        && (_moveTask == nullptr
-	            ||  _moveTask->motionType != MotionTask::motionTypeDie)) {
+	            ||  _moveTask->_motionType != MotionTask::motionTypeDie)) {
 		int16       deadState = isActionAvailable(actionDead)
 		                        ?   actionDead
 		                        :   isActionAvailable(actionDie)
@@ -3115,7 +3115,7 @@ uint8 Actor::evaluateFollowerNeeds(Actor *follower) {
 bool Actor::pathFindState() {
 	if (_moveTask == nullptr)
 		return 0;
-	if (_moveTask->pathFindTask)
+	if (_moveTask->_pathFindTask)
 		return 1;
 	return 2;
 }

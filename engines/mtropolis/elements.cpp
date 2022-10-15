@@ -652,7 +652,7 @@ void MovieElement::render(Window *window) {
 		if (_resizeFilter) {
 			if (!_scaledFrame)
 				_scaledFrame = _resizeFilter->scaleFrame(*_displayFrame, _currentTimestamp);
-			displaySurface = _scaledFrame.get();
+			displaySurface = _scaledFrame->surfacePtr();
 		}
 
 		Graphics::ManagedSurface *target = window->getSurface().get();
@@ -1077,9 +1077,18 @@ void ImageElement::render(Window *window) {
 		if (inkMode == VisualElementRenderProperties::kInkModeInvisible)
 			return;
 
-		Common::SharedPtr<Graphics::Surface> optimized = _cachedImage->optimize(_runtime);
+		Common::SharedPtr<Graphics::ManagedSurface> optimized = _cachedImage->optimize(_runtime);
 		Common::Rect srcRect(optimized->w, optimized->h);
 		Common::Rect destRect(_cachedAbsoluteOrigin.x, _cachedAbsoluteOrigin.y, _cachedAbsoluteOrigin.x + _rect.width(), _cachedAbsoluteOrigin.y + _rect.height());
+
+		if (optimized->format.bytesPerPixel == 1) {
+			const Palette *palette = getPalette().get();
+			if (!palette)
+				palette = &_runtime->getGlobalPalette();
+
+			// FIXME: Pass palette to blit functions instead
+			optimized->setPalette(palette->getPalette(), 0, 256);
+		}
 
 		uint8 alpha = _transitionProps.getAlpha();
 
@@ -1238,13 +1247,21 @@ bool MToonElement::canAutoPlay() const {
 
 void MToonElement::render(Window *window) {
 	if (_cachedMToon) {
-
 		_cachedMToon->optimize(_runtime);
 
 		uint32 frame = _cel - 1;
 		assert(frame < _metadata->frames.size());
 
 		_cachedMToon->getOrRenderFrame(_renderedFrame, frame, _renderSurface);
+
+		if (_renderSurface->format.bytesPerPixel == 1) {
+			const Palette *palette = getPalette().get();
+			if (!palette)
+				palette = &_runtime->getGlobalPalette();
+
+			// FIXME: Should support passing the palette to the blit function instead
+			_renderSurface->setPalette(palette->getPalette(), 0, 256);
+		}
 
 		_renderedFrame = frame;
 

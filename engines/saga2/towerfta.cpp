@@ -258,10 +258,10 @@ TERMINATOR(termDisplayPort) {
 
 INITIALIZER(initPanelSystem) {
 	initPanels(g_vm->_mainPort);
-	if (g_vm->_mainPort.map == nullptr) {
+	if (g_vm->_mainPort._map == nullptr) {
 		gPixelMap *tmap = new gPixelMap;
-		tmap->size = Point16(screenWidth, screenHeight);
-		tmap->data = new uint8[tmap->bytes()];
+		tmap->_size = Point16(screenWidth, screenHeight);
+		tmap->_data = new uint8[tmap->bytes()];
 		g_vm->_mainPort.setMap(tmap);
 	}
 	return true;
@@ -307,7 +307,7 @@ TERMINATOR(termMousePointer) {
 
 INITIALIZER(initDisplay) {
 	g_vm->_mainPort.setColor(0);            //  fill screen with color
-	drawPage = &g_vm->_mainPort.protoPage;
+	drawPage = &g_vm->_mainPort._protoPage;
 	//lightsOut();
 	//g_vm->_mainPort.fillRect( Rect16( 0, 0, screenWidth, screenHeight ) );
 

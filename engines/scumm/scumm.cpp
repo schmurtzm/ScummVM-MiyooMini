@@ -81,6 +81,7 @@
 #include "scumm/imuse/drivers/mac_m68k.h"
 #include "scumm/imuse/drivers/amiga.h"
 #include "scumm/imuse/drivers/fmtowns.h"
+#include "scumm/imuse/drivers/midi.h"
 #include "scumm/detection_steam.h"
 
 #include "backends/audiocd/audiocd.h"
@@ -359,8 +360,8 @@ ScummEngine::ScummEngine(OSystem *syst, const DetectorResult &dr)
 
 	setV1ColorTable(_renderMode);
 
-	_isRTL = (_language == Common::HE_ISR && _game.heversion == 0)
-			&& (_game.id == GID_MANIAC || (_game.version >= 4 && _game.version < 7));
+	_isRTL = (_language == Common::HE_ISR && (_game.heversion == 0 || _game.heversion >= 72)) 
+			&& (_game.id == GID_MANIAC || (_game.version >= 4 && _game.version < 7)) && !(_game.features & GF_HE_NO_BIDI);
 #ifndef DISABLE_HELP
 	// Create custom GMM dialog providing a help subdialog
 	assert(!_mainMenuDialog);
@@ -1435,7 +1436,7 @@ void ScummEngine_v7::setupScumm(const Common::String &macResourceFile) {
 		filesAreCompressed |= _sound->isSfxFileCompressed();
 	}
 
-	_musicEngine = _imuseDigital = new IMuseDigital(this, _mixer);
+	_musicEngine = _imuseDigital = new IMuseDigital(this, _mixer, &_resourceAccessMutex);
 
 	if (filesAreCompressed) {
 		GUI::MessageDialog dialog(_(
@@ -1589,7 +1590,7 @@ void ScummEngine::resetScumm() {
 	_cursor.animate = 1;
 
 	// Allocate and Initialize actors
-	Actor::kInvalidBox = ((_game.features & GF_SMALL_HEADER) ? kOldInvalidBox : kNewInavlidBox);
+	Actor::kInvalidBox = ((_game.features & GF_SMALL_HEADER) ? kOldInvalidBox : kNewInvalidBox);
 	_actors = new Actor * [_numActors];
 	_sortedActors = new Actor * [_numActors];
 	for (i = 0; i < _numActors; ++i) {
@@ -1921,6 +1922,21 @@ void ScummEngine::setupMusic(int midi, const Common::String &macInstrumentFile) 
 		}
 	}
 
+	// WORKAROUND: MT-32 support is broken in the 8-disk French VGA floppy
+	// version of MI1 (the index references an invalid DISK00.LEC file, and the
+	// 'roland' room appears to be completely missing). We can't do much about
+	// this; revert to Adlib so that users don't get confused by the fatal
+	// error about DISK00.LEC.
+	if (_game.id == GID_MONKEY_VGA && _language == Common::FR_FRA && _sound->_musicType == MDT_MIDI &&
+		memcmp(_gameMD5, "\xa0\x1f\xab\x4a\x64\xd4\x7b\x96\xe2\xe5\x8e\x6b\x0f\x82\x5c\xc7", 16) == 0) {
+		GUI::MessageDialog dialog(
+			_("This particular version of Monkey Island 1 is known to miss some\n"
+			"required resources for MT-32. Using AdLib instead."),
+			_("OK"));
+		dialog.runModal();
+		_sound->_musicType = MDT_ADLIB;
+	}
+
 	if (_game.platform == Common::kPlatformMacintosh && (_game.id == GID_MONKEY2 || _game.id == GID_INDY4)) {
 		// While the Mac versions do have ADL resources, the Mac player
 		// doesn't handle them. So if a song is missing a MAC resource,
@@ -1952,9 +1968,6 @@ void ScummEngine::setupMusic(int midi, const Common::String &macInstrumentFile) 
 		// only as ADL and SPK.
 		_sound->_musicType = MDT_MIDI;
 	}
-
-	// DOTT + SAM use General MIDI, so they shouldn't use GS settings
-	bool enable_gs = (_game.id == GID_TENTACLE || _game.id == GID_SAMNMAX) ? false : ConfMan.getBool("enable_gs");
 
 	/* Bind the mixer to the system => mixer will be invoked
 	 * automatically when samples need to be generated */
@@ -2029,10 +2042,14 @@ void ScummEngine::setupMusic(int midi, const Common::String &macInstrumentFile) 
 		bool multi_midi = ConfMan.getBool("multi_midi") && _sound->_musicType != MDT_NONE && _sound->_musicType != MDT_PCSPK && (midi & MDT_ADLIB);
 		bool useOnlyNative = false;
 
+		// DOTT + SAM use General MIDI, so they shouldn't use GS settings
+		bool enable_gs = (_game.id == GID_TENTACLE || _game.id == GID_SAMNMAX) ? false : (ConfMan.getBool("enable_gs") && MidiDriver::getMusicType(dev) != MT_MT32);
+		bool newSystem = (_game.id == GID_SAMNMAX);
+
 		if (isMacM68kIMuse()) {
 			// We setup this driver as native MIDI driver to avoid playback
 			// of the Mac music via a selected MIDI device.
-			nativeMidiDriver = new MacM68kDriver(_mixer);
+			nativeMidiDriver = new IMuseDriver_MacM68k(_mixer);
 			// The Mac driver is never MT-32.
 			_native_mt32 = false;
 			// Ignore non-native drivers. This also ignores the multi MIDI setting.
@@ -2042,29 +2059,29 @@ void ScummEngine::setupMusic(int midi, const Common::String &macInstrumentFile) 
 			_native_mt32 = enable_gs = false;
 			useOnlyNative = true;
 		} else if (_sound->_musicType != MDT_ADLIB && _sound->_musicType != MDT_TOWNS && _sound->_musicType != MDT_PCSPK) {
-			nativeMidiDriver = MidiDriver::createMidi(dev);
+			if (_native_mt32)
+				nativeMidiDriver = new IMuseDriver_MT32(dev, newSystem);
+			else
+				nativeMidiDriver = new IMuseDriver_GMidi(dev, enable_gs, newSystem);
 		}
 
-		if (nativeMidiDriver != nullptr && _native_mt32)
-			nativeMidiDriver->property(MidiDriver::PROP_CHANNEL_MASK, 0x03FE);
-
 		if (!useOnlyNative) {
-			if (_sound->_musicType == MDT_TOWNS) {
-				adlibMidiDriver = new MidiDriver_TOWNS(_mixer);
-			} else if (_sound->_musicType == MDT_ADLIB || multi_midi) {
-				adlibMidiDriver = MidiDriver::createMidi(MidiDriver::detectDevice(_sound->_musicType == MDT_TOWNS ? MDT_TOWNS : MDT_ADLIB));
+			if (_sound->_musicType == MDT_ADLIB || multi_midi) {
+				adlibMidiDriver = MidiDriver::createMidi(MidiDriver::detectDevice(MDT_ADLIB));
 				adlibMidiDriver->property(MidiDriver::PROP_OLD_ADLIB, (_game.features & GF_SMALL_HEADER) ? 1 : 0);
 				// Try to use OPL3 mode for Sam&Max when possible.
 				adlibMidiDriver->property(MidiDriver::PROP_SCUMM_OPL3, (_game.id == GID_SAMNMAX) ? 1 : 0);
+			} else if (_sound->_musicType == MDT_TOWNS) {
+				adlibMidiDriver = new IMuseDriver_FMTowns(_mixer);
 			} else if (_sound->_musicType == MDT_PCSPK) {
-				adlibMidiDriver = new PcSpkDriver(_mixer);
+				adlibMidiDriver = new IMuseDriver_PCSpk(_mixer);
 			}
 		}
 
-		uint32 imsFlags = 0;
+		uint32 imsFlags =  newSystem ? IMuse::kFlagNewSystem : 0;
 		if (_native_mt32)
 			imsFlags |= IMuse::kFlagNativeMT32;
-		if (enable_gs && MidiDriver::getMusicType(dev) != MT_MT32)
+		if (enable_gs)
 			imsFlags |= IMuse::kFlagRolandGS;
 
 		_imuse = IMuse::create(this, nativeMidiDriver, adlibMidiDriver, isMacM68kIMuse() ? MDT_MACINTOSH : _sound->_musicType, imsFlags);

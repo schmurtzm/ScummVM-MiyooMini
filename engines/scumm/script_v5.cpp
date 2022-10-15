@@ -1289,8 +1289,10 @@ void ScummEngine_v5::o5_getActorRoom() {
 	getResultPos();
 	int act = getVarOrDirectByte(PARAM_1);
 
-	// WORKAROUND bug #832: Invalid actor in o5_getActorRoom().
+	// Sometimes this function is called with an invalid actor argument.
+	// An example of that is INDY4 bug #832, in which (quoting dwatteau):
 	//
+	// ---
 	// Script 94-206 is started by script 94-200 this way:
 	//
 	// Var[442] = getObjectOwner(586)  (the metal rod)
@@ -1299,10 +1301,17 @@ void ScummEngine_v5::o5_getActorRoom() {
 	//
 	// Script 201 gets to run first, and it changes the value of Var[442],
 	// so by the time script 206 is invoked, it gets a bad value as param.
-	// This is a really odd bug in either the script or in our script
-	// engine. Might be a good idea to investigate this further by e.g.
-	// looking at the FOA engine a bit closer. The original doesn't crash.
-	if (_game.id == GID_INDY4 && _roomResource == 94 && vm.slot[_currentScript].number == 206 && !isValidActor(act)) {
+	// ---
+	//
+	// The original doesn't use a structure for actors' data, and instead uses
+	// several scattered arrays (one for each parameter, e.g. x, y, room,
+	// elevation, etc.), each one with as many max elements as the max number
+	// of actors allowed in the engine. Whenever an edge case like this happens,
+	// _actorRoom[<invalid-idx>] basically yields whichever value is found in
+	// memory after the bounds of the array, so it's pretty much undefined behavior.
+	//
+	// We certainly can't allow that in our code, so we just set the result to 0.
+	if (!isValidActor(act)) {
 		setResult(0);
 		return;
 	}
@@ -2808,11 +2817,13 @@ void ScummEngine_v5::o5_stopScript() {
 
 	script = getVarOrDirectByte(PARAM_1);
 
-	if (_game.id == GID_INDY4 && script == 164 &&
-		_roomResource == 50 && vm.slot[_currentScript].number == 213 && VAR(VAR_HAVE_MSG)) {
+	if (_game.id == GID_INDY4 && script == 164 && _roomResource == 50 &&
+		vm.slot[_currentScript].number == 213 && VAR(VAR_HAVE_MSG) &&
+		getOwner(933) == VAR(VAR_EGO) && getClass(933, 146) && _enableEnhancements) {
 		// WORKAROUND bug #2215: Due to a script bug, a line of text is skipped
 		// which Indy is supposed to speak when he finds Orichalcum in some old
-		// bones in the caves below Crete.
+		// bones in the caves below Crete, if (and only if) he has already put
+		// some beads in the gold box beforehand. Also happens in DREAMM.
 		_scriptPointer = oldaddr;
 		o5_breakHere();
 		return;
@@ -3119,6 +3130,24 @@ void ScummEngine_v5::o5_walkActorTo() {
 	a = derefActor(getVarOrDirectByte(PARAM_1), "o5_walkActorTo");
 	x = getVarOrDirectWord(PARAM_2);
 	y = getVarOrDirectWord(PARAM_3);
+
+	// WORKAROUND: In MI1 CD, when the storekeeper comes back from outside,
+	// he will close the door *after* going to his counter, which looks very
+	// strange, since he's then quite far away from the door. Force calling
+	// the script which closes the door *before* he starts walking away from
+	// it, as in the other releases. Another v5 bug fixed on SegaCD, though!
+	if (_game.id == GID_MONKEY && _game.platform != Common::kPlatformSegaCD && _currentRoom == 30 &&
+		vm.slot[_currentScript].number == 207 && a->_number == 11 && x == 232 && y == 141 &&
+		_enableEnhancements && strcmp(_game.variant, "SE Talkie") != 0) {
+		if (whereIsObject(387) == WIO_ROOM && getState(387) == 1 && getState(437) == 1) {
+			int args[NUM_SCRIPT_LOCAL];
+			memset(args, 0, sizeof(args));
+			args[0] = 387;
+			args[1] = 437;
+			runScript(26, 0, 0, args);
+		}
+	}
+
 	a->startWalkActor(x, y, -1);
 }
 
@@ -3250,6 +3279,27 @@ void ScummEngine_v5::decodeParseString() {
 			// strange.
 			if (_game.id == GID_INDY3 && _game.platform == Common::kPlatformMacintosh && vm.slot[_currentScript].number == 134 && color == 0x8F)
 				color = 0x87;
+
+			// WORKAROUND: In the CD version of MI1, the text in
+			// the sign about the dogs only sleeping has the wrong
+			// color. We can't find an exact match to what the
+			// floppy version used, but we pick on that's as close
+			// as we can get.
+			//
+			// The SEGA CD version uses the old colors already, and
+			// the FM Towns version makes the text more readable by
+			// giving it a black outline.
+
+			else if (_game.id == GID_MONKEY &&
+					_game.platform != Common::kPlatformSegaCD &&
+					_game.platform != Common::kPlatformFMTowns &&
+					_currentRoom == 36 &&
+					vm.slot[_currentScript].number == 201 &&
+					color == 2 &&
+					strcmp(_game.variant, "SE Talkie") != 0 &&
+					_enableEnhancements) {
+				color = findClosestPaletteColor(_currentPalette, 256, 0, 171, 0);
+			}
 
 			_string[textSlot].color = color;
 			break;
@@ -3428,7 +3478,7 @@ void ScummEngine_v5::decodeParseStringTextString(int textSlot) {
 		// releases (except for the SegaCD one with the smaller palette).
 		// Fix this while making sure that it doesn't apply to Elaine saying
 		// "I heard that!" offscreen.
-		_string[textSlot].color = 0xF9;
+		_string[textSlot].color = (_game.platform == Common::kPlatformFMTowns) ? 0x0A : 0xF9;
 		printString(textSlot, _scriptPointer);
 	} else if (_game.id == GID_MONKEY && _game.platform != Common::kPlatformSegaCD &&
 			(vm.slot[_currentScript].number == 140 || vm.slot[_currentScript].number == 294) &&
@@ -3441,7 +3491,7 @@ void ScummEngine_v5::decodeParseStringTextString(int textSlot) {
 		// options may also look wrong in that scene, but we don't fix that, as
 		// this font in displayed in green, white or purple between the
 		// different releases and scenes, so we don't know the original intent.
-		_string[textSlot].color = 0xEA;
+		_string[textSlot].color = (_game.platform == Common::kPlatformFMTowns) ? 0x0C : 0xEA;
 		printString(textSlot, _scriptPointer);
 	} else if (_game.id == GID_MONKEY && _roomResource == 25 && vm.slot[_currentScript].number == 205) {
 		printPatchedMI1CannibalString(textSlot, _scriptPointer);

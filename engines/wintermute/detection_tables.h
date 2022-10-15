@@ -327,6 +327,10 @@ static const WMEGameDescription gameDescriptions[] = {
 	WME_WINENTRY("alphapolaris", "",
 		WME_ENTRY1s("data.dcp", "6d5d2264a3135dae3a9a74de50b4ea68", 706780438), Common::EN_ANY, ADGF_UNSTABLE | GF_3D, WME_1_9_1),
 
+	// Alpha Polaris (English, UK CD release)
+	WME_WINENTRY("alphapolaris", "",
+		WME_ENTRY1s("data.dcp", "1df8eb749676752c3e0ab6e24d31971c", 748056178), Common::EN_ANY, ADGF_UNSTABLE | GF_3D, WME_1_9_1),
+
 	// Alpha Polaris (Polish)
 	WME_WINENTRY("alphapolaris", "",
 		WME_ENTRY1s("data.dcp", "24ebca07b7cf0bd94ec994f26bdccf83", 710319064), Common::PL_POL, ADGF_UNSTABLE | GF_3D, WME_1_9_1),
@@ -535,6 +539,10 @@ static const WMEGameDescription gameDescriptions[] = {
 	// Carol Reed 5 - The Colour of Murder (English)
 	WME_WINENTRY("carolreed5", "",
 		WME_ENTRY1s("data.dcp", "3fcfca44209545d0e26774156427b494", 603660415), Common::EN_ANY, ADGF_UNSTABLE, WME_1_8_6),
+
+	// Carol Reed 5 - The Colour of Murder (German) (Carol Reed collection DVD) - trac #13658
+	WME_WINENTRY("carolreed5", "",
+		WME_ENTRY1s("data.dcp", "3bc63ccbe18ef19f4af20231f8ce8c11", 617853131), Common::DE_DEU, ADGF_UNSTABLE, WME_1_8_6),
 
 	// Carol Reed 5 - The Colour of Murder (Spanish)
 	WME_WINENTRY("carolreed5", "",
@@ -1377,6 +1385,11 @@ static const WMEGameDescription gameDescriptions[] = {
 	WME_WINENTRY("ghostsheet", "",
 		WME_ENTRY2s("english.dcp", "e6d0aad2c89996bcabe416105a3d6d3a", 12221017,
 					"data.dcp", "b2f8b05328e4881e15e98e845b63f451", 168003), Common::EN_ANY, ADGF_UNSTABLE, WME_1_8_0),
+
+	// Ghost in the Sheet (Reflexive Arcade) (English)
+	WME_WINENTRY("ghostsheet", "",
+		WME_ENTRY2s("english.dcp", "e21c7278071cd2ee216ae72d5a39de29", 12008908,
+					"data.dcp", "43ba03f37a0f97249c1e0c3cf7d6f9a9", 167980), Common::EN_ANY, ADGF_UNSTABLE, WME_1_8_0),
 
 	// Ghost in the Sheet (Italian)
 	WME_WINENTRY("ghostsheet", "",

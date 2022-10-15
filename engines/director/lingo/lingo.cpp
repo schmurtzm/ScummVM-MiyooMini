@@ -356,7 +356,7 @@ void Lingo::printStack(const char *s, uint pc) {
 	Common::String stack(s);
 	stack += formatStack();
 
-	debugC(5, kDebugLingoExec, "[%3d]: %s", pc, stack.c_str());
+	debugC(5, kDebugLingoExec, "[%5d]: %s", pc, stack.c_str());
 }
 
 Common::String Lingo::formatCallStack(uint pc) {
@@ -374,12 +374,16 @@ Common::String Lingo::formatCallStack(uint pc) {
 			framePc = callstack[callstack.size() - i]->retPC;
 
 		if (frame->sp.type != VOIDSYM) {
-			result += Common::String::format("#%d %s:%d\n", i,
+			result += Common::String::format("#%d ", i);
+			if (frame->sp.ctx && frame->sp.ctx->_id) {
+				result += Common::String::format("%d:", frame->sp.ctx->_id);
+			}
+			result += Common::String::format("%s at [%5d]\n",
 				frame->sp.name->c_str(),
 				framePc
 			);
 		} else {
-			result += Common::String::format("#%d [unknown]:%d\n", i,
+			result += Common::String::format("#%d [unknown] at [%5d]\n", i,
 				framePc
 			);
 		}
@@ -404,7 +408,7 @@ Common::String Lingo::formatFrame() {
 		result += "[unknown]";
 	else
 		result += frame->sp.name->c_str();
-	result += Common::String::format(" at [%3d]", _pc);
+	result += Common::String::format(" at [%5d]", _pc);
 	return result;
 }
 
@@ -412,7 +416,7 @@ Common::String Lingo::formatCurrentInstruction() {
 	Common::String instr = decodeInstruction(_currentScript, _pc);
 	if (instr.empty())
 		return instr;
-	return Common::String::format("[%3d]: %s", _pc, instr.c_str());
+	return Common::String::format("[%5d]: %s", _pc, instr.c_str());
 }
 
 Common::String Lingo::decodeInstruction(ScriptData *sd, uint pc, uint *newPc) {
@@ -565,7 +569,7 @@ void Lingo::execute() {
 
 		if (debugChannelSet(3, kDebugLingoExec)) {
 			Common::String instr = decodeInstruction(_currentScript, _pc);
-			debugC(3, kDebugLingoExec, "[%3d]: %s", current, instr.c_str());
+			debugC(3, kDebugLingoExec, "[%5d]: %s", current, instr.c_str());
 		}
 
 		g_debugger->stepHook();
