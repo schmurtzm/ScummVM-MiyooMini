@@ -88,7 +88,7 @@ Common::KeyState ScummEngine::showBannerAndPause(int bannerId, int32 waitTime, c
 	int rightLineColor, leftLineColor, bottomLineColor, topLineColor;
 	int normalTextColor, normalFillColor;
 
-	_messageBannerActive = false;
+	_messageBannerActive = true;
 
 	// Fetch the translated string for the message...
 	convertMessageToString((const byte *)msg, (byte *)localizedMsg, sizeof(localizedMsg));
@@ -272,7 +272,7 @@ Common::KeyState ScummEngine::showOldStyleBannerAndPause(const char *msg, int co
 	int startingPointY;
 	int bannerSaveYStart;
 
-	_messageBannerActive = false;
+	_messageBannerActive = true;
 
 	// Fetch the translated string for the message...
 	convertMessageToString((const byte *)msg, (byte *)bannerMsg, sizeof(bannerMsg));
@@ -630,7 +630,7 @@ void ScummEngine_v7::queryQuit(bool returnToLauncher) {
 			byte *curGrabbedCursor;
 			int curCursorWidth, curCursorHeight, curCursorHotspotX, curCursorHotspotY, curCursorState;
 
-			_messageBannerActive = false;
+			_messageBannerActive = true;
 			_comiQuitMenuIsOpen = true;
 
 			// Force the cursor to be ON...
